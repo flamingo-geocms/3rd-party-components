@@ -22,27 +22,29 @@ Ext.define ("viewer.components.RoTercera",{
     extend: "viewer.components.Component",  
     panel: null,
     minWidth: 250,
-    minHeight: 500,
+    minHeight: 500,        
+    comboWidth: 200,    
+    //stores
     ownerStore: null,
     typeStore: null,
     statusStore: null,
     planStore: null,
     docStore: null,
-    
+    //combo boxes
     ownerCombo: null,
     typeCombo: null,
     statusCombo: null,
     planCombo: null,
     docCombo: null,
-        
-    comboWidth: 200,
     
+    currentPlans:null,
     config:{
-        name: "Print",
+        name: "Ro-Tercera client",
         title: "",
         titlebarIcon : "",
         tooltip : "",
-        label: ""
+        label: "",
+        roServiceUrl: ""
     },
     /**
      * @constructor
@@ -90,9 +92,9 @@ Ext.define ("viewer.components.RoTercera",{
         this.ownerStore=Ext.create('Ext.data.Store', {
             fields: ['code', 'name'],
             data: [
-                {code: 0355,name: 'Zeist'},
-                {code: 0355,name: 'Zeist2'},
-                {code: 0355,name: 'Zeist3'}
+                {code: "0355",name: 'Zeist'},
+                {code: "0355",name: 'Zeist2'},
+                {code: "0355",name: 'Zeist3'}
             ]
         });        
         this.typeStore = Ext.create('Ext.data.Store',{
@@ -124,8 +126,8 @@ Ext.define ("viewer.components.RoTercera",{
             labelAlign: 'top',
             store: this.typeStore,
             queryMode: 'local',
-            displayField: 'naam',
-            valueField: 'code',
+            displayField: 'value',
+            valueField: 'key',
 			width: this.comboWidth,
             listeners: {
                 change:{
@@ -139,8 +141,8 @@ Ext.define ("viewer.components.RoTercera",{
             labelAlign: 'top',
             store: this.statusStore,
             queryMode: 'local',
-            displayField: 'naam',
-            valueField: 'code',
+            displayField: 'value',
+            valueField: 'key',
 			width: this.comboWidth,
             listeners: {
                 change:{
@@ -200,8 +202,29 @@ Ext.define ("viewer.components.RoTercera",{
     /**
      * Changed functions:
      */     
-    ownerChanged: function(){
-        console.log("get plans!");
+    ownerChanged: function(obj,value){
+        this.panel.setLoading("Bezig met laden plannen");
+        Ext.Ajax.request({ 
+            url: this.roServiceUrl,
+            timeout: 240000,
+            scope:this,
+            params: { 
+                overheidsCode: value
+            }, 
+            success: function ( result, request ) { 
+                var res = Ext.JSON.decode(result.responseText);
+                if(res.success){
+                    this.setPlans(res.results);
+                }else{
+                    Ext.MessageBox.alert('Foutmelding', "Fout bij laden plannen" + res.error);
+                }
+                this.setLoading(false);
+            }, 
+            failure: function ( result, request) {
+                Ext.MessageBox.alert('Foutmelding', "Fout bij ophalen plannen" + result.responseText);
+                this.panel.setLoading(false);
+            } 
+        });
     },
     typeChanged: function(){        
     },
@@ -209,6 +232,39 @@ Ext.define ("viewer.components.RoTercera",{
     planChanged: function(){},
     docChanged: function(){},
     
+    setPlans: function (plans){
+        this.currentPlans = plans;
+        
+        var uniqueTypes = [];
+        var uniqueStatus = [];
+        for (var planId in this.currentPlans){
+            var plan = this.currentPlans[planId];
+            if (plan.typePlan &&
+                    !Ext.Array.contains(uniqueTypes,plan.typePlan)){
+                uniqueTypes.push(plan.typePlan);
+            }
+            if (plan.planstatus &&
+                !Ext.Array.contains(uniqueStatus,plan.planstatus)){
+                uniqueStatus.push(plan.planstatus);
+            }
+        }
+        this.setTypes(uniqueTypes);
+        this.setStatus(uniqueStatus);
+    },
+    setTypes: function(types){
+        var values= [];
+        for (var i=0; i < types.length; i ++){
+            values.push({key: types[i],value : types[i]})
+        }
+        this.typeStore.loadData(values,false);
+    },
+    setStatus: function(status){
+        var values= [];
+        for (var i=0; i < status.length; i ++){
+            values.push({key: status[i],value : status[i]})
+        }
+        this.statusStore.loadData(values,false);
+    },
     getExtComponents: function() {
         return [ (this.panel !== null) ? this.panel.getId() : '' ];
     }

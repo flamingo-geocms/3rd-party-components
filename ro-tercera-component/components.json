@@ -40,6 +40,19 @@
         singleton: true,
         sources: ["RoTercera.js"],        
         type: "popup",
-        showHelp: true
+        showHelp: true,
+        extPropertyGridConfigs: {
+            propertyNames: {
+                tooltip: "Tooltip",
+                width: "Breedte venster",
+                height: "Hoogte venster",
+                roServiceUrl: "Url naar service"
+            },source: {
+                tooltip: "Ruimtelijke plannen",
+                height: 500,
+                width: 250,
+                roServiceUrl: ""
+            }
+        }
     }
 ]
