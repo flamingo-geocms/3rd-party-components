@@ -28,13 +28,11 @@ Ext.define ("viewer.components.RoTercera",{
     ownerStore: null,
     typeStore: null,
     statusStore: null,
-    planStore: null,
     docStore: null,
     //combo boxes
     ownerCombo: null,
     typeCombo: null,
     statusCombo: null,
-    planCombo: null,
     docCombo: null,
     
     currentPlans:null,
@@ -44,7 +42,8 @@ Ext.define ("viewer.components.RoTercera",{
         titlebarIcon : "",
         tooltip : "",
         label: "",
-        roServiceUrl: ""
+        roServiceUrl: "",
+        terceraRequestPage: "https://tercera.provincie-utrecht.nl/RequestPage.aspx"
     },
     /**
      * @constructor
@@ -93,8 +92,8 @@ Ext.define ("viewer.components.RoTercera",{
             fields: ['code', 'name'],
             data: [
                 {code: "0355",name: 'Zeist'},
-                {code: "0355",name: 'Zeist2'},
-                {code: "0355",name: 'Zeist3'}
+                {code: "0344",name: 'Utrecht'},
+                {code: "0351",name: 'Woudenberg'}
             ]
         });        
         this.typeStore = Ext.create('Ext.data.Store',{
@@ -103,7 +102,6 @@ Ext.define ("viewer.components.RoTercera",{
         this.statusStore = Ext.create('Ext.data.Store',{
             fields: ['key','value']
         });        
-        this.planStore;
         this.docStore;
         //create comboboxes
         this.ownerCombo = Ext.create('viewer.components.FlamingoCombobox', {
@@ -150,22 +148,7 @@ Ext.define ("viewer.components.RoTercera",{
                     fn: this.statusChanged
                 }
             }
-        });
-        this.planCombo = Ext.create('viewer.components.FlamingoCombobox', {
-            fieldLabel: 'Plan',
-            labelAlign: 'top',
-            store: this.planStore,
-            queryMode: 'local',
-            displayField: 'naam',
-            valueField: 'code',
-			width: this.comboWidth,
-            listeners: {
-                change:{
-                    scope: this,
-                    fn: this.planChanged
-                }
-            }
-        });
+        });        
         this.docCombo = Ext.create('viewer.components.FlamingoCombobox', {
             fieldLabel: 'Plan documenten',
             labelAlign: 'top',
@@ -181,20 +164,43 @@ Ext.define ("viewer.components.RoTercera",{
                 }
             }
         });
+        this.planContainer = Ext.create('Ext.panel.Panel',{
+            layout: { 
+                type: 'vbox',
+                align: 'stretch'
+            },
+            height: 200,            
+            autoScroll: true
+        });
+        
         //create panel
         this.panel = Ext.create('Ext.panel.Panel', {
-            frame: false,
-            bodyPadding: 5,
+            layout: { 
+                type: 'vbox',
+                align: 'stretch'
+            },
+            padding: 5,
             width: "100%",
-            height: "100%",
+            height: '100%',
             border: 0,
             renderTo: me.getContentDiv(),
             items: [
                 this.ownerCombo,
                 this.typeCombo,
                 this.statusCombo,
-                this.planCombo,
-                this.docCombo
+                {
+                    xtype: 'label',
+                    text: 'Plannen:'
+                },
+                this.planContainer,
+                this.docCombo,
+                {
+                    xtype: "container",
+                    html: "<a id='linkForVerwerk' href='javascript:void(0)' style='visibility:hidden;position:absolute;'></a>",
+                    style: {
+                        visibility: "hidden"
+                    }
+                }
             ]
             
         });
@@ -218,7 +224,7 @@ Ext.define ("viewer.components.RoTercera",{
                 }else{
                     Ext.MessageBox.alert('Foutmelding', "Fout bij laden plannen" + res.error);
                 }
-                this.setLoading(false);
+                this.panel.setLoading(false);
             }, 
             failure: function ( result, request) {
                 Ext.MessageBox.alert('Foutmelding', "Fout bij ophalen plannen" + result.responseText);
@@ -226,31 +232,68 @@ Ext.define ("viewer.components.RoTercera",{
             } 
         });
     },
-    typeChanged: function(){        
+    typeChanged: function(obj,value){
+        var plans= this.filterCurrentPlans(value);        
+        var uniqueStatus = this.getUniqueStatus(plans);        
+        this.setStatus(uniqueStatus);
+        this.updatePlansContainer(plans);
     },
-    statusChanged: function(){},
-    planChanged: function(){},
-    docChanged: function(){},
+    statusChanged: function(obj,value){
+        var typeValue= this.typeCombo.getValue();
+        var plans= this.filterCurrentPlans(typeValue,value);        
+        this.updatePlansContainer(plans);
+    },
     
+    /**
+     * Set the loaded plans.
+     * @param {object} plans a object array with plans.
+     */
     setPlans: function (plans){
         this.currentPlans = plans;
+        this.updatePlansContainer(plans);        
+        var uniqueTypes = this.getUniqueType(this.currentPlans);
+        var uniqueStatus = this.getUniqueStatus(this.currentPlans);
         
-        var uniqueTypes = [];
-        var uniqueStatus = [];
-        for (var planId in this.currentPlans){
-            var plan = this.currentPlans[planId];
-            if (plan.typePlan &&
-                    !Ext.Array.contains(uniqueTypes,plan.typePlan)){
-                uniqueTypes.push(plan.typePlan);
-            }
-            if (plan.planstatus &&
-                !Ext.Array.contains(uniqueStatus,plan.planstatus)){
-                uniqueStatus.push(plan.planstatus);
-            }
-        }
         this.setTypes(uniqueTypes);
         this.setStatus(uniqueStatus);
     },
+    /**
+     * Update the container with the list of plans.
+     * @param {object} plans a object array with plans.
+     */
+    updatePlansContainer: function(plans){
+        this.planContainer.removeAll();
+        for (var planId in plans){  
+            var plan = plans[planId];
+            var el=this.createPlanItem(plan);
+            this.planContainer.add(el);
+        }
+    },
+    /**
+     * Get a unique list of values of a property
+     * @param {object} plans a object of the plans
+     * @param {String} a string that represents the name of the property
+     */        
+    getUniqueValues: function (plans,property){
+        var uniqueStatus=[];
+        for (var planId in plans){
+            var plan = plans[planId];            
+            if (plan[property] &&
+                !Ext.Array.contains(uniqueStatus,plan[property])){
+                uniqueStatus.push(plan[property]);
+            }
+        }
+        return uniqueStatus;
+    },
+    getUniqueStatus: function(plans){
+        return this.getUniqueValues(plans,"planstatus");
+    },
+    getUniqueType: function(plans){
+        return this.getUniqueValues(plans,"typePlan");
+    },
+    /**
+     * Set the available types
+     */
     setTypes: function(types){
         var values= [];
         for (var i=0; i < types.length; i ++){
@@ -264,6 +307,95 @@ Ext.define ("viewer.components.RoTercera",{
             values.push({key: status[i],value : status[i]})
         }
         this.statusStore.loadData(values,false);
+    },
+    
+    /**
+     * Called when plan is clicked
+     */
+    onPlanClicked: function(plan){
+        if(plan.origin == 'Tercera' && plan.wms==undefined){
+            var me=this;
+            var id=plan.identificatie;
+            Ext.MessageBox.confirm({titel:'Verwerk plan',
+                msg:'Plan is niet verwerkt, wilt u het plan alsnog verwerken?',
+                width: 100,
+                buttons: Ext.Msg.YESNO,
+                buttonText: {
+                    yes: "Ja",
+                    no: "Nee"
+                },
+                fn: function(button,event){
+                    if(button=="yes"){
+                        var username=null;
+                        if (user!=null){
+                            username= encodeURIComponent(user.name);
+                        }
+                        var url= me.terceraRequestPage;
+                        url+= url.indexOf("?">0) ? "&" : "?";
+                        url+="idn="+encodeURIComponent(plan.identificatie);
+                        if (username){
+                            url+="&user="+username;
+                        }
+                        var link = document.getElementById("linkForVerwerk");  
+                        link.target = "_parent";  
+                        link.href = url;  
+                        link.click();
+                    }
+                }
+            });
+        }
+    },
+    filterCurrentPlans: function (type,status){
+        var plans=[];
+        for (var planId in this.currentPlans){
+            var plan = this.currentPlans[planId];
+            var cmp = Ext.getCmp(planId);
+            var filtered=false;
+            if (type && plan.typePlan != type){
+                filtered=true;
+            }
+            if (status && plan.planstatus != status){
+                filtered=true;
+            }
+            if (!filtered){
+                plans.push(plan);
+            }
+        }
+        return plans;
+    },            
+    createPlanItem: function(planObj){   
+        var me=this;
+        var color="#000000";
+        if (planObj.origin == "Tercera"){
+            if (planObj.wms){
+                color="green";
+            }else{
+                color="#888888";
+            }
+        }
+        var el={
+            xtype: 'label',
+            id: planObj.identificatie,
+            text: planObj.naam,
+            listeners:{
+                element: 'el',
+                click: function(){
+                    me.onPlanClicked(planObj);
+                }
+            },
+            style: {
+                color: color,
+                cursor: 'pointer'
+            }
+        };
+        return el;
+    },
+            
+    isPlanLoaded: function(plan){
+        if(plan.wms!=null){
+            return true;
+        }
+        return false;
     },
     getExtComponents: function() {
         return [ (this.panel !== null) ? this.panel.getId() : '' ];
