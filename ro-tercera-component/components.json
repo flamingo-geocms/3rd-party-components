@@ -46,12 +46,24 @@
                 tooltip: "Tooltip",
                 width: "Breedte venster",
                 height: "Hoogte venster",
-                roServiceUrl: "Url naar RO zoek service"
+                roServiceUrl: "Url naar RO zoek service",
+                terceraRequestPage: "Url naar Tercera Request Pagina",
+                roonlineLayers: "RO-online layers die gebruikt moeten worden",
+                roonlineServiceUrl: "De url naar de RO-online afnemers service"
             },source: {
                 tooltip: "Ruimtelijke plannen",
                 height: 500,
                 width: 250,
-                roServiceUrl: ""
+                roServiceUrl: "",       
+                terceraRequestPage: "https://tercera.provincie-utrecht.nl/RequestPage.aspx",
+                roonlineLayers: "BP:Bestemmingsplangebied,BP:Wijzigingsplangebied,BP:Enkelbestemming,\
+BP:Figuur,BP:Lettertekenaanduiding,BP:Maatvoering,BP:Dubbelbestemming,BP:Bouwvlak,\
+BP:Gebiedsaanduiding,BP:Inpassingsplangebied,BP:Bouwaanduiding,BP:Functieaanduiding,\
+PP:ProvinciaalPlangebied,PP:ProvinciaalGebied,PP:ProvinciaalComplex,\
+PP:ProvinciaalVerbinding,NP:NationaalPlangebied,XGB:Besluitvlak,XGB:Besluitsubvlak,\
+XGB:Exploitatieplangebied,XGB:Gerechtelijkeuitspraakgebied,XGB:Projectbesluitgebied,\
+XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Plangebied",
+                roonlineServiceUrl: "http://afnemers.ruimtelijkeplannen.nl/afnemers/services"
             }
         }
     }
