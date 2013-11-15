@@ -42,18 +42,19 @@ Ext.define ("viewer.components.RoTercera",{
         titlebarIcon : "",
         tooltip : "",
         label: "",
-        roServiceUrl: "",
-        terceraRequestPage: "https://tercera.provincie-utrecht.nl/RequestPage.aspx"
+        //TODO: make configurable
+        roServiceUrl: "",        
+        terceraRequestPage: "https://tercera.provincie-utrecht.nl/RequestPage.aspx",
+        roonlineLayers: null,
+        roonlineServiceUrl: null
+        
     },
     /**
      * @constructor
      * creating a print module.
      */
     constructor: function (conf){  
-        //set minWidth:
-        if(conf.details.width < this.minWidth || !Ext.isDefined(conf.details.width)) conf.details.width = this.minWidth; 
-        //set minHeight:
-        if(conf.details.height < this.minHeight || !Ext.isDefined(conf.details.height)) conf.details.height = this.minHeight; 
+        conf=this.setDefaults(conf);
         viewer.components.RoTercera.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         var me = this;
@@ -71,7 +72,26 @@ Ext.define ("viewer.components.RoTercera",{
         
         return this;
     },
-    
+    setDefaults: function(conf){
+        //set minWidth:
+        if(conf.details.width < this.minWidth || !Ext.isDefined(conf.details.width)) conf.details.width = this.minWidth; 
+        //set minHeight:
+        if(conf.details.height < this.minHeight || !Ext.isDefined(conf.details.height)) conf.details.height = this.minHeight; 
+        
+        if (Ext.isEmpty(conf.roonlineServiceUrl)){
+            conf.roonlineServiceUrl="http://afnemers.ruimtelijkeplannen.nl/afnemers/services";
+        }if (Ext.isEmpty(conf.roonlineLayers)){
+            conf.roonlineLayers="BP:Bestemmingsplangebied,BP:Wijzigingsplangebied,BP:Enkelbestemming,\
+BP:Figuur,BP:Lettertekenaanduiding,BP:Maatvoering,BP:Dubbelbestemming,BP:Bouwvlak,\
+BP:Gebiedsaanduiding,BP:Inpassingsplangebied,BP:Bouwaanduiding,BP:Functieaanduiding,\
+PP:ProvinciaalPlangebied,PP:ProvinciaalGebied,PP:ProvinciaalComplex,\
+PP:ProvinciaalVerbinding,NP:NationaalPlangebied,XGB:Besluitvlak,XGB:Besluitsubvlak,\
+XGB:Exploitatieplangebied,XGB:Gerechtelijkeuitspraakgebied,XGB:Projectbesluitgebied,\
+XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Plangebied";
+        }
+        return conf;
+    },
+            
     /**
      * Called when the button is clicked. Opens the print window (if not already opened) and creates a form.
      * If the window was invisible the preview will be redrawn
@@ -343,8 +363,58 @@ Ext.define ("viewer.components.RoTercera",{
                     }
                 }
             });
+        }else {
+            var ogcProps={
+                exceptions: "application/vnd.ogc.se_inimage",
+                srs: "EPSG:28992",
+                version: "1.1.1",                
+                styles: "",
+                format: "image/png",
+                transparent: true,
+                noCache: true
+            };
+            var options={};
+            if (plan.origin == 'Tercera'){
+                Ext.Ajax.request({ 
+                    url: this.roServiceUrl,
+                    timeout: 240000,
+                    scope:this,
+                    params: { 
+                        wmsUrl: plan.wms,
+                        getTerceraWMSLayers: 'b'
+                    }, 
+                    success: function ( result, request ) { 
+                        var res = Ext.JSON.decode(result.responseText);
+                        if(res.success){
+                            ogcProps.layers=res.layers;
+                            options.layers=res.layers;
+                        }else{
+                            Ext.MessageBox.alert('Foutmelding', "Fout bij laden plannen" + res.error);
+                        }
+                        this.setLayer(plan.wms,ogcProps,options);
+                    }, 
+                    failure: function ( result, request) {
+                        Ext.MessageBox.alert('Foutmelding', "Fout bij ophalen plannen" + result.responseText);                        
+                    } 
+                });                
+            }else{ //Ro-online plan
+                ogcProps.layers=this.roonlineLayers;
+                /*ogcProps.query_layers=this.roonlineLayers;*/
+                options.layers= this.roonlineLayers;
+                this.setLayer(this.roonlineServiceUrl,ogcProps,options);
+            }
+        }
+        if (plan.bbox){
+            var map=this.viewerController.mapComponent.getMap();
+            map.zoomToExtent(new viewer.viewercontroller.controller.Extent(plan.bbox.minx,plan.bbox.miny,plan.bbox.maxx,plan.bbox.maxy));
         }
     },
+    
+    setLayer: function (url,props,options){
+        this.wmsLayer = this.viewerController.mapComponent.createWMSLayer("rolayer", url ,props, options,this.viewerController);
+        this.viewerController.mapComponent.getMap().addLayer(this.wmsLayer);
+    },
+    
     filterCurrentPlans: function (type,status){
         var plans=[];
         for (var planId in this.currentPlans){

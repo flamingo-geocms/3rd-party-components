@@ -46,7 +46,7 @@
                 tooltip: "Tooltip",
                 width: "Breedte venster",
                 height: "Hoogte venster",
-                roServiceUrl: "Url naar service"
+                roServiceUrl: "Url naar RO zoek service"
             },source: {
                 tooltip: "Ruimtelijke plannen",
                 height: 500,
