@@ -401,7 +401,9 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 ogcProps.layers=this.roonlineLayers;
                 /*ogcProps.query_layers=this.roonlineLayers;*/
                 options.layers= this.roonlineLayers;
-                ogcProps.sld = Ext.create("viewer.SLD").createURL(options.layers,null,null,null,null,"app:plangebied='"+plan.identificatie+"'");
+                if (window.location.hostname ==undefined || window.location.hostname != "localhost"){
+                    ogcProps.sld = Ext.create("viewer.SLD").createURL(options.layers,null,null,null,null,"app:plangebied='"+plan.identificatie+"'");
+                }
                 this.setLayer(this.roonlineServiceUrl,ogcProps,options);
             }
         }
