@@ -401,6 +401,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 ogcProps.layers=this.roonlineLayers;
                 /*ogcProps.query_layers=this.roonlineLayers;*/
                 options.layers= this.roonlineLayers;
+                ogcProps.sld = Ext.create("viewer.SLD").createURL(options.layers,null,null,null,null,"app:plangebied='"+plan.identificatie+"'");
                 this.setLayer(this.roonlineServiceUrl,ogcProps,options);
             }
         }
@@ -409,12 +410,19 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             map.zoomToExtent(new viewer.viewercontroller.controller.Extent(plan.bbox.minx,plan.bbox.miny,plan.bbox.maxx,plan.bbox.maxy));
         }
     },
-    
+    /**
+     * Load layer in map
+     */
     setLayer: function (url,props,options){
+        if (this.wmsLayer!=null){
+            this.viewerController.mapComponent.getMap().removeLayer(this.wmsLayer);
+        }
         this.wmsLayer = this.viewerController.mapComponent.createWMSLayer("rolayer", url ,props, options,this.viewerController);
         this.viewerController.mapComponent.getMap().addLayer(this.wmsLayer);
     },
-    
+    /**
+     * Filter the plans
+     */
     filterCurrentPlans: function (type,status){
         var plans=[];
         for (var planId in this.currentPlans){
@@ -433,6 +441,9 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         }
         return plans;
     },            
+    /**
+     * Create a plan item.
+     */
     createPlanItem: function(planObj){   
         var me=this;
         var color="#000000";
@@ -461,12 +472,6 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         return el;
     },
             
-    isPlanLoaded: function(plan){
-        if(plan.wms!=null){
-            return true;
-        }
-        return false;
-    },
     getExtComponents: function() {
         return [ (this.panel !== null) ? this.panel.getId() : '' ];
     }
