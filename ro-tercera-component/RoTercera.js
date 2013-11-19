@@ -184,13 +184,20 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 }
             }
         });
-        this.planContainer = Ext.create('Ext.panel.Panel',{
+        var pContainer = Ext.create('Ext.panel.Panel',{
             layout: { 
-                type: 'vbox',
-                align: 'stretch'
+                type: 'vbox'
             },
-            height: 200,            
-            autoScroll: true
+            height: 200,
+            width: '100%',
+            items: [{
+                xtype: 'container',
+                name: 'planContainerValues',
+                id: "planContainerValues",
+                autoScroll: true,                
+                height: 190,
+                width: '100%'
+            }]
         });
         
         //create panel
@@ -212,7 +219,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                     xtype: 'label',
                     text: 'Plannen:'
                 },
-                this.planContainer,
+                pContainer,
                 this.docCombo,
                 {
                     xtype: "container",
@@ -282,12 +289,16 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
      * @param {object} plans a object array with plans.
      */
     updatePlansContainer: function(plans){
+        if (this.planContainer === undefined){
+            this.planContainer = Ext.getCmp("planContainerValues");
+        }
         this.planContainer.removeAll();
         for (var planId in plans){  
             var plan = plans[planId];
             var el=this.createPlanItem(plan);
             this.planContainer.add(el);
         }
+        this.planContainer.doLayout();
     },
     /**
      * Get a unique list of values of a property
@@ -457,9 +468,11 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             }
         }
         var el={
-            xtype: 'label',
+            xtype: 'container',
             id: planObj.identificatie,
-            text: planObj.naam,
+            html: planObj.naam,
+            width: '100%',
+            border: 1,
             listeners:{
                 element: 'el',
                 click: function(){
