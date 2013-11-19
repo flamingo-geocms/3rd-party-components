@@ -28,12 +28,13 @@ Ext.define ("viewer.components.RoTercera",{
     ownerStore: null,
     typeStore: null,
     statusStore: null,
-    docStore: null,
     //combo boxes
     ownerCombo: null,
     typeCombo: null,
     statusCombo: null,
-    docCombo: null,
+    
+    docContainer: null,
+    planContainer: null,
     
     currentPlans:null,
     config:{
@@ -168,27 +169,12 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                     fn: this.statusChanged
                 }
             }
-        });        
-        this.docCombo = Ext.create('viewer.components.FlamingoCombobox', {
-            fieldLabel: 'Plan documenten',
-            labelAlign: 'top',
-            store: this.docStore,
-            queryMode: 'local',
-            displayField: 'naam',
-            valueField: 'code',
-			width: this.comboWidth,
-            listeners: {
-                change:{
-                    scope: this,
-                    fn: this.docChanged
-                }
-            }
-        });
+        });                
         var pContainer = Ext.create('Ext.panel.Panel',{
             layout: { 
                 type: 'vbox'
             },
-            height: 200,
+            height: 190,
             width: '100%',
             items: [{
                 xtype: 'container',
@@ -196,6 +182,21 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 id: "planContainerValues",
                 autoScroll: true,                
                 height: 190,
+                width: '100%'
+            }]
+        });
+        var docContainer = Ext.create('Ext.panel.Panel',{
+            layout: { 
+                type: 'vbox'
+            },
+            height: 100,
+            width: '100%',
+            items: [{
+                xtype: 'container',
+                name: 'docContainerValues',
+                id: "docContainerValues",
+                autoScroll: true,                
+                height: 100,
                 width: '100%'
             }]
         });
@@ -220,7 +221,11 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                     text: 'Plannen:'
                 },
                 pContainer,
-                this.docCombo,
+                {
+                    xtype: 'label',
+                    text: 'Documenten:'
+                },
+                docContainer,
                 {
                     xtype: "container",
                     html: "<a id='linkForVerwerk' href='javascript:void(0)' style='visibility:hidden;position:absolute;'></a>",
@@ -280,20 +285,20 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         this.updatePlansContainer(plans);        
         var uniqueTypes = this.getUniqueType(this.currentPlans);
         var uniqueStatus = this.getUniqueStatus(this.currentPlans);
-        
+                
         this.setTypes(uniqueTypes);
-        this.setStatus(uniqueStatus);
+        this.setStatus(uniqueStatus);        
     },
     /**
      * Update the container with the list of plans.
      * @param {object} plans a object array with plans.
      */
     updatePlansContainer: function(plans){
-        if (this.planContainer === undefined){
+        if (this.planContainer===null){
             this.planContainer = Ext.getCmp("planContainerValues");
         }
         this.planContainer.removeAll();
-        for (var planId in plans){  
+        for (var planId in plans){
             var plan = plans[planId];
             var el=this.createPlanItem(plan);
             this.planContainer.add(el);
@@ -338,7 +343,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             values.push({key: status[i],value : status[i]})
         }
         this.statusStore.loadData(values,false);
-    },
+    },    
     
     /**
      * Called when plan is clicked
@@ -422,6 +427,36 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             var map=this.viewerController.mapComponent.getMap();
             map.zoomToExtent(new viewer.viewercontroller.controller.Extent(plan.bbox.minx,plan.bbox.miny,plan.bbox.maxx,plan.bbox.maxy));
         }
+        if (plan.verwijzingNaarTekst){
+            var docs = plan.verwijzingNaarTekst.split(",");
+            this.setDocs(docs);            
+        }
+    },
+    setDocs: function (docs){
+        if (this.docContainer === null){
+            this.docContainer = Ext.getCmp("docContainerValues");
+        }
+        this.docContainer.removeAll();
+        Ext.Array.forEach(docs, function(item,index){
+            var key=item.replace(" ","");
+            var value=key;                                        
+            var name=this.getDocType(key);            
+            var el={
+                xtype: 'container',
+                html: name,
+                width: '100%',                
+                listeners:{
+                    element: 'el',
+                    click: function(){
+                        window.open(value,key.replace(/ /g,"_"),{});
+                    }
+                },
+                style: {
+                    cursor: 'pointer'
+                }
+            };
+            this.docContainer.add(el);
+        },this);
     },
     /**
      * Load layer in map
@@ -485,6 +520,42 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             }
         };
         return el;
+    },
+    /**
+     * Get the full type name of the document.
+     */
+    getDocType: function(key){
+        var returnValue=key;
+        if (key.toLowerCase().indexOf("r_nl")>=0){
+            returnValue="Regels";
+        }else if(key.toLowerCase().indexOf("rb_nl")>=0){
+            returnValue="Bijlagen bij de regels";
+        }else if(key.toLowerCase().indexOf("t_nl")>=0){
+            returnValue="Toelichting";
+        }else if(key.toLowerCase().indexOf("tb_nl")>=0){
+            returnValue="Bijlagen bij de toelichting";
+        }else if(key.toLowerCase().indexOf("i_nl")>=0){
+            returnValue="Illustratie";
+        }else if(key.toLowerCase().indexOf("vb_nl")>=0){
+            returnValue="Vaststellingsbesluit";
+        }else if(key.toLowerCase().indexOf("v_nl")>=0){
+            returnValue="Voorschriften";
+        }else if(key.toLowerCase().indexOf("pt_nl")>=0){
+            returnValue="Plantekst";
+        }else if(key.toLowerCase().indexOf("g_nl")>=0){
+            returnValue="Geleideformulier";
+        }else if(key.toLowerCase().indexOf("d_nl")>=0){
+            returnValue="Besluitdocument";
+        }else if(key.toLowerCase().indexOf("db_nl")>=0){
+            returnValue="Bijlagen bij besluitdocument";
+        }else if(key.toLowerCase().indexOf("b_nl")>=0){
+            returnValue="Beleidstekst/besluittekst";
+        }else if(key.toLowerCase().indexOf("bb_nl")>=0){
+            returnValue="Bijlage bij beleidstekst/besluittekst";
+        }else if(key.toLowerCase().indexOf("p_nl")>=0){
+            returnValue="Plankaart";
+        }
+        return returnValue;
     },
             
     getExtComponents: function() {
