@@ -36,10 +36,10 @@ Ext.define ("viewer.components.RoTercera",{
     docContainer: null,
     planContainer: null,
     legendaButton: null, 
-    currentPlans:null,
+    selectedPlanContainer: null,
     
+    currentPlans:null,    
     selectedPlan:null,
-    
     wmsLayer: null,    
     roToc: null,
     config:{
@@ -216,6 +216,11 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 }
             }
         });
+        
+        this.selectedPlanContainer = Ext.create('Ext.container.Container',{
+            xtype: "container",
+            html: "Geen plan geselecteerd",            
+        });
         //create panel
         this.panel = Ext.create('Ext.panel.Panel', {
             layout: { 
@@ -242,6 +247,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 },
                 docContainer,
                 this.legendaButton,
+                this.selectedPlanContainer,
                 {
                     xtype: "container",
                     html: "<a id='linkForVerwerk' href='javascript:void(0)' style='visibility:hidden;position:absolute;'></a>",
@@ -258,6 +264,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
      * Changed functions:
      */     
     ownerChanged: function(obj,value){
+        this.setSelectedPlan(null);
         this.panel.setLoading("Bezig met laden plannen");
         Ext.Ajax.request({ 
             url: this.roServiceUrl,
@@ -282,12 +289,14 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         });
     },
     typeChanged: function(obj,value){
+        this.setSelectedPlan(null);
         var plans= this.filterCurrentPlans(value);        
         var uniqueStatus = this.getUniqueStatus(plans);        
         this.setStatus(uniqueStatus);
         this.updatePlansContainer(plans);
     },
     statusChanged: function(obj,value){
+        this.setSelectedPlan(null);
         var typeValue= this.typeCombo.getValue();
         var plans= this.filterCurrentPlans(typeValue,value);        
         this.updatePlansContainer(plans);
@@ -366,100 +375,112 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
      * Called when plan is clicked
      */
     onPlanClicked: function(plan){
+        this.setSelectedPlan(plan)
+    },
+    setSelectedPlan: function(plan){
         this.selectedPlan = plan;
-        if(plan.origin == 'Tercera' && plan.wms==undefined){
-            var me=this;
-            var id=plan.identificatie;
-            Ext.MessageBox.confirm({titel:'Verwerk plan',
-                msg:'Plan is niet verwerkt, wilt u het plan alsnog verwerken?',
-                width: 100,
-                buttons: Ext.Msg.YESNO,
-                buttonText: {
-                    yes: "Ja",
-                    no: "Nee"
-                },
-                fn: function(button,event){
-                    if(button=="yes"){
-                        var username=null;
-                        if (user!=null){
-                            username= encodeURIComponent(user.name);
+        if (this.selectedPlan==null){
+            this.clearLayer();
+            this.selectedPlanContainer.update("Geen plan geselecteerd");
+        }else{
+            if(plan.origin == 'Tercera' && plan.wms==undefined){
+                var me=this;
+                var id=plan.identificatie;
+                Ext.MessageBox.confirm({titel:'Verwerk plan',
+                    msg:'Plan is niet verwerkt, wilt u het plan alsnog verwerken?',
+                    width: 100,
+                    buttons: Ext.Msg.YESNO,
+                    buttonText: {
+                        yes: "Ja",
+                        no: "Nee"
+                    },
+                    fn: function(button,event){
+                        if(button=="yes"){
+                            var username=null;
+                            if (user!=null){
+                                username= encodeURIComponent(user.name);
+                            }
+                            var url= me.terceraRequestPage;
+                            url+= url.indexOf("?">0) ? "&" : "?";
+                            url+="idn="+encodeURIComponent(plan.identificatie);
+                            if (username){
+                                url+="&user="+username;
+                            }
+                            var link = document.getElementById("linkForVerwerk");  
+                            link.target = "_parent";  
+                            link.href = url;  
+                            link.click();
                         }
-                        var url= me.terceraRequestPage;
-                        url+= url.indexOf("?">0) ? "&" : "?";
-                        url+="idn="+encodeURIComponent(plan.identificatie);
-                        if (username){
-                            url+="&user="+username;
-                        }
-                        var link = document.getElementById("linkForVerwerk");  
-                        link.target = "_parent";  
-                        link.href = url;  
-                        link.click();
                     }
-                }
-            });
-        }else {
-            var ogcProps={
-                exceptions: "application/vnd.ogc.se_inimage",
-                srs: "EPSG:28992",
-                version: "1.1.1",                
-                styles: "",
-                format: "image/png",
-                transparent: true,
-                noCache: true
-            };
-            var options={};
-            if (plan.origin == 'Tercera'){
-                Ext.Ajax.request({ 
-                    url: this.roServiceUrl,
-                    timeout: 240000,
-                    scope:this,
-                    params: { 
-                        wmsUrl: plan.wms,
-                        getTerceraWMSLayers: 'b'
-                    }, 
-                    success: function ( result, request ) { 
-                        var res = Ext.JSON.decode(result.responseText);
-                        if(res.success){
-                            ogcProps.layers=res.layers;
-                            options.layers=res.layers;
-                        }else{
-                            Ext.MessageBox.alert('Foutmelding', "Fout bij laden plannen" + res.error);
-                        }
-                        this.setLayer(plan.wms,ogcProps,options);
-                        
-                        this.roToc.reset({
-                            type: this.selectedPlan.origin,
-                            planId: this.selectedPlan.identificatie,
-                            wmsLayer: this.wmsLayer
-                        });
-                    }, 
-                    failure: function ( result, request) {
-                        Ext.MessageBox.alert('Foutmelding', "Fout bij ophalen plannen" + result.responseText);                        
-                    } 
-                });                
-            }else{ //Ro-online plan
-                ogcProps.layers=this.roonlineLayers.split(",");
-                /*ogcProps.query_layers=this.roonlineLayers;*/
-                options.layers= this.roonlineLayers.split(",");
-                if (window.location.hostname ==undefined || window.location.hostname != "localhost"){
-                    ogcProps.sld = Ext.create("viewer.SLD").createURL(options.layers,null,null,null,null,"app:plangebied='"+plan.identificatie+"'");
-                }
-                this.setLayer(this.roonlineServiceUrl,ogcProps,options);
-                
-                this.roToc.reset({
-                    type: this.selectedPlan.origin,
-                    planId: this.selectedPlan.identificatie,
-                    wmsLayer: this.wmsLayer
                 });
+            }else {
+                var prePlanText="";
+                var ogcProps={
+                    exceptions: "application/vnd.ogc.se_inimage",
+                    srs: "EPSG:28992",
+                    version: "1.1.1",                
+                    styles: "",
+                    format: "image/png",
+                    transparent: true,
+                    noCache: true
+                };
+                var options={};
+                if (plan.origin == 'Tercera'){
+                    prePlanText = "(L0K) ";
+                    Ext.Ajax.request({ 
+                        url: this.roServiceUrl,
+                        timeout: 240000,
+                        scope:this,
+                        params: { 
+                            wmsUrl: plan.wms,
+                            getTerceraWMSLayers: 'b'
+                        }, 
+                        success: function ( result, request ) { 
+                            var res = Ext.JSON.decode(result.responseText);
+                            if(res.success){
+                                ogcProps.layers=res.layers;
+                                options.layers=res.layers;
+                            }else{
+                                Ext.MessageBox.alert('Foutmelding', "Fout bij laden plannen" + res.error);
+                            }
+                            this.setLayer(plan.wms,ogcProps,options);
+
+                            this.roToc.reset({
+                                type: this.selectedPlan.origin,
+                                planId: this.selectedPlan.identificatie,
+                                wmsLayer: this.wmsLayer
+                            });
+                        }, 
+                        failure: function ( result, request) {
+                            Ext.MessageBox.alert('Foutmelding', "Fout bij ophalen plannen" + result.responseText);                        
+                        } 
+                    });                
+                }else{ //Ro-online plan
+                    prePlanText="(RO) ";
+                    ogcProps.layers=this.roonlineLayers.split(",");
+                    /*ogcProps.query_layers=this.roonlineLayers;*/
+                    options.layers= this.roonlineLayers.split(",");
+                    if (window.location.hostname ==undefined || window.location.hostname != "localhost"){
+                        ogcProps.sld = Ext.create("viewer.SLD").createURL(options.layers,null,null,null,null,"app:plangebied='"+plan.identificatie+"'");
+                    }
+                    this.setLayer(this.roonlineServiceUrl,ogcProps,options);
+
+                    this.roToc.reset({
+                        type: this.selectedPlan.origin,
+                        planId: this.selectedPlan.identificatie,
+                        wmsLayer: this.wmsLayer
+                    });
+                }
+                this.selectedPlanContainer.update(prePlanText+this.selectedPlan.identificatie);
             }
-        }
-        if (plan.bbox){
-            var map=this.viewerController.mapComponent.getMap();
-            map.zoomToExtent(new viewer.viewercontroller.controller.Extent(plan.bbox.minx,plan.bbox.miny,plan.bbox.maxx,plan.bbox.maxy));
-        }
-        if (plan.verwijzingNaarTekst){
-            var docs = plan.verwijzingNaarTekst.split(",");
-            this.setDocs(docs);            
+            if (plan.bbox){
+                var map=this.viewerController.mapComponent.getMap();
+                map.zoomToExtent(new viewer.viewercontroller.controller.Extent(plan.bbox.minx,plan.bbox.miny,plan.bbox.maxx,plan.bbox.maxy));
+            }
+            if (plan.verwijzingNaarTekst){
+                var docs = plan.verwijzingNaarTekst.split(",");
+                this.setDocs(docs);            
+            }
         }
     },
     setDocs: function (docs){
@@ -502,11 +523,14 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
      * Load layer in map
      */
     setLayer: function (url,props,options){
+        this.clearLayer();
+        this.wmsLayer = this.viewerController.mapComponent.createWMSLayer("rolayer", url ,props, options,this.viewerController);
+        this.viewerController.mapComponent.getMap().addLayer(this.wmsLayer);
+    },
+    clearLayer: function (){
         if (this.wmsLayer!=null){
             this.viewerController.mapComponent.getMap().removeLayer(this.wmsLayer);
         }
-        this.wmsLayer = this.viewerController.mapComponent.createWMSLayer("rolayer", url ,props, options,this.viewerController);
-        this.viewerController.mapComponent.getMap().addLayer(this.wmsLayer);
     },
     /**
      * Filter the plans
