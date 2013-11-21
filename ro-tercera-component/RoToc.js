@@ -218,10 +218,11 @@ Ext.define ("viewer.components.rotercera.LegendController",{
             //flamingoWindow.addNewFlamingoWmsLayer(fl.getId(),fl.getUrl(),fl.getLayers(),fl.getQuerylayers(),fl.getVisible_layers(),fl.getSrs(),fl.getAlpha(),new Array(),null,false,false,false,null,null,fl.getSld(),true);
             var newLayers=this.getEnabledLayers();
             this.wmsLayer.setOGCParams({
+                "SLD" : this.sldUrl,
                 "LAYERS" : newLayers.split(",")
             });
             
-                //"SLD" : this.sldUrl,
+                //
             this.wmsLayer.reload();
             /*
             flamingoWindow.setSldInLayer(this.layerId,this.sldUrl); 
