@@ -213,18 +213,15 @@ Ext.define ("viewer.components.rotercera.LegendController",{
      *Reload the layer
      */
     reloadLayer : function(){
-        var flamingoWindow=null;
-        if (window.opener){
-            flamingoWindow=window.opener;
-        }else if (window.parent){
-            flamingoWindow=window.parent;
-        }
-        if (flamingoWindow){
+        if (this.wmsLayer){
             //function addNewFlamingoWmsLayer(name,url,layers,querylayers,visiblelayers,srs,alpha,maptips,maxMapTips,initService,identPerLayer,zoomToLayer,minscale,maxscale,sldUrl){
             //flamingoWindow.addNewFlamingoWmsLayer(fl.getId(),fl.getUrl(),fl.getLayers(),fl.getQuerylayers(),fl.getVisible_layers(),fl.getSrs(),fl.getAlpha(),new Array(),null,false,false,false,null,null,fl.getSld(),true);
             var newLayers=this.getEnabledLayers();
-            this.wmsLayer.setSld(this.sldUrl);
-            this.wmsLayer.setLayers(newLayers);
+            this.wmsLayer.setOGCParams({
+                "LAYERS" : newLayers.split(",")
+            });
+            
+                //"SLD" : this.sldUrl,
             this.wmsLayer.reload();
             /*
             flamingoWindow.setSldInLayer(this.layerId,this.sldUrl); 
