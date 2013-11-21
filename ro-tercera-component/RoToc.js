@@ -260,7 +260,8 @@ Ext.define ("viewer.components.rotercera.RoOnlineLegendController",{
             
     reset : function(){
         this.callParent();   
-        document.getElementById("disclaimer").style.display="inline";
+        this.layers= this.wmsLayer.getLayers();
+        //document.getElementById("disclaimer").style.display="inline";
     },
     /**
      *Refresh the map
@@ -344,16 +345,15 @@ Ext.define ("viewer.components.rotercera.RoOnlineLegendController",{
                 sldFilters.push(this.addPlanFilter("",this.planId));
             }
         }
-        var sldUrl=null;
-        if (sldLayers.length > 0 && sldLayers.length==sldFilters.length){
-            sldUrl=sldServletUrl;
-            sldUrl+=sldUrl.indexOf("?")>0 ? "&": "?";
-            sldUrl+="layers="+encodeURIComponent(sldLayers.join(","));
-            sldUrl+="&filters="+encodeURIComponent(JSON.stringify(sldFilters));
+        
+        var layerParam=null;
+        var filterParam=null;
+        if (sldLayers.length > 0 && sldLayers.length==sldFilters.length){            
+            layerParam=sldLayers;
+            filterParam=sldFilters;
         }
-        sldUrl+=sldUrl.indexOf("?")>0 ? "&": "?";
-        sldUrl+="allAndFilter="+encodeURIComponent((this.PG_ATTR_NAME +" = '"+this.planId +"'"));
-        this.sldUrl=sldUrl;
+        
+        this.sldUrl=Ext.create("viewer.SLD").createURL(layerParam,null,filterParam,null,null,this.PG_ATTR_NAME +" = '"+this.planId +"'");
         this.reloadLayer();
     },
     /**
