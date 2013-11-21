@@ -38,7 +38,7 @@
         shortName: "Terc",
         restrictions: ["left_menu"],
         singleton: true,
-        sources: ["RoTercera.js"],        
+        sources: ["RoTercera.js","RoToc.js"],        
         type: "popup",
         showHelp: true,
         extPropertyGridConfigs: {

@@ -22,7 +22,7 @@ Ext.define ("viewer.components.RoTercera",{
     extend: "viewer.components.Component",  
     panel: null,
     minWidth: 250,
-    minHeight: 500,        
+    minHeight: 530,        
     comboWidth: 200,    
     //stores
     ownerStore: null,
@@ -35,8 +35,13 @@ Ext.define ("viewer.components.RoTercera",{
     
     docContainer: null,
     planContainer: null,
-    
+    legendaButton: null, 
     currentPlans:null,
+    
+    selectedPlan:null,
+    
+    wmsLayer: null,    
+    roToc: null,
     config:{
         name: "Ro-Tercera client",
         title: "",
@@ -52,7 +57,7 @@ Ext.define ("viewer.components.RoTercera",{
     },
     /**
      * @constructor
-     * creating a print module.
+     * creating a Ro tercera component
      */
     constructor: function (conf){  
         conf=this.setDefaults(conf);
@@ -70,7 +75,6 @@ Ext.define ("viewer.components.RoTercera",{
                 label: me.label
             });
         }
-        
         return this;
     },
     setDefaults: function(conf){
@@ -201,6 +205,17 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             }]
         });
         
+        this.legendaButton = Ext.create('Ext.container.Container',{
+            xtype: "container",
+            html: "Legenda",
+            listeners:{
+                element: 'el',
+                scope: this,
+                click: function(){
+                    this.showToc();
+                }
+            }
+        });
         //create panel
         this.panel = Ext.create('Ext.panel.Panel', {
             layout: { 
@@ -226,6 +241,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                     text: 'Documenten:'
                 },
                 docContainer,
+                this.legendaButton,
                 {
                     xtype: "container",
                     html: "<a id='linkForVerwerk' href='javascript:void(0)' style='visibility:hidden;position:absolute;'></a>",
@@ -236,6 +252,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             ]
             
         });
+        this.roToc = Ext.create("viewer.components.rotercera.RoToc",{});
     },
     /**
      * Changed functions:
@@ -349,6 +366,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
      * Called when plan is clicked
      */
     onPlanClicked: function(plan){
+        this.selectedPlan = plan;
         if(plan.origin == 'Tercera' && plan.wms==undefined){
             var me=this;
             var id=plan.identificatie;
@@ -408,6 +426,12 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                             Ext.MessageBox.alert('Foutmelding', "Fout bij laden plannen" + res.error);
                         }
                         this.setLayer(plan.wms,ogcProps,options);
+                        
+                        this.roToc.reset({
+                            type: this.selectedPlan.origin,
+                            planId: this.selectedPlan.identificatie,
+                            wmsLayer: this.wmsLayer
+                        });
                     }, 
                     failure: function ( result, request) {
                         Ext.MessageBox.alert('Foutmelding', "Fout bij ophalen plannen" + result.responseText);                        
@@ -421,6 +445,12 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                     ogcProps.sld = Ext.create("viewer.SLD").createURL(options.layers,null,null,null,null,"app:plangebied='"+plan.identificatie+"'");
                 }
                 this.setLayer(this.roonlineServiceUrl,ogcProps,options);
+                
+                this.roToc.reset({
+                    type: this.selectedPlan.origin,
+                    planId: this.selectedPlan.identificatie,
+                    wmsLayer: this.wmsLayer
+                });
             }
         }
         if (plan.bbox){
@@ -457,6 +487,16 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             };
             this.docContainer.add(el);
         },this);
+    },
+    showToc: function(){
+        this.roToc.show();
+        if (this.selectedPlan){
+            this.roToc.reset({
+                type: this.selectedPlan.origin,
+                planId: this.selectedPlan.identificatie,
+                wmsLayer: this.wmsLayer
+            });
+        }
     },
     /**
      * Load layer in map
