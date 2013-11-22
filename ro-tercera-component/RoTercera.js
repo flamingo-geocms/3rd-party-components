@@ -328,8 +328,8 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             this.planContainer = Ext.getCmp("planContainerValues");
         }
         this.planContainer.removeAll();
-        for (var planId in plans){
-            var plan = plans[planId];
+        for (var i=0; i < plans.length; i++){
+            var plan = plans[i];
             var el=this.createPlanItem(plan);
             this.planContainer.add(el);
         }
@@ -342,8 +342,8 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
      */        
     getUniqueValues: function (plans,property){
         var uniqueStatus=[];
-        for (var planId in plans){
-            var plan = plans[planId];            
+        for (var i=0; i < plans.length; i++){
+            var plan = plans[i];            
             if (plan[property] &&
                 !Ext.Array.contains(uniqueStatus,plan[property])){
                 uniqueStatus.push(plan[property]);
@@ -541,9 +541,9 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
      */
     filterCurrentPlans: function (type,status){
         var plans=[];
-        for (var planId in this.currentPlans){
-            var plan = this.currentPlans[planId];
-            var cmp = Ext.getCmp(planId);
+        for (var i=0; i < this.currentPlans.length; i++){
+            var plan = this.currentPlans[i];
+            var cmp = Ext.getCmp(this.currentPlans[i].identificatie);
             var filtered=false;
             if (type && plan.typePlan != type){
                 filtered=true;
