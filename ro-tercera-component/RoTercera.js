@@ -21,8 +21,8 @@
 Ext.define ("viewer.components.RoTercera",{
     extend: "viewer.components.Component",  
     panel: null,
-    minWidth: 250,
-    minHeight: 530,        
+    minWidth: 280,
+    minHeight: 540,        
     comboWidth: 200,    
     //stores
     ownerStore: null,
@@ -443,6 +443,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                             var res = Ext.JSON.decode(result.responseText);
                             if(res.success){
                                 ogcProps.layers=res.layers;
+                                ogcProps.query_layers=res.layers;
                                 options.layers=res.layers;
                             }else{
                                 Ext.MessageBox.alert('Foutmelding', "Fout bij laden plannen" + res.error);
@@ -462,7 +463,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 }else{ //Ro-online plan
                     prePlanText="(RO) ";
                     ogcProps.layers=this.roonlineLayers.split(",");
-                    /*ogcProps.query_layers=this.roonlineLayers;*/
+                    ogcProps.query_layers=this.roonlineLayers.split(",");
                     options.layers= this.roonlineLayers.split(",");
                     if (window.location.hostname ==undefined || window.location.hostname != "localhost"){
                         ogcProps.sld = Ext.create("viewer.SLD").createURL(options.layers,null,null,null,null,"app:plangebied='"+plan.identificatie+"'");
@@ -529,6 +530,12 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
     setLayer: function (url,props,options){
         this.clearLayer();
         this.wmsLayer = this.viewerController.mapComponent.createWMSLayer("rolayer", url ,props, options,this.viewerController);
+        this.wmsLayer.setDetails({
+            "summary.description" : "Omschrijving lalala",
+            "summary.link": "",
+            "summary.image": "",
+            "summary.title": ""
+        });
         this.viewerController.mapComponent.getMap().addLayer(this.wmsLayer);
     },
     clearLayer: function (){
