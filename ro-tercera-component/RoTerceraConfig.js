@@ -24,6 +24,7 @@ Ext.define("viewer.components.CustomConfiguration",{
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);        
         //this.createCheckBoxes(this.configObject.layers);
         this.addFormItems(configObject);
+        this.createCheckBoxes(this.configObject.layers,{editable:true});
     },
     addFormItems: function(){
         var me =this;        
