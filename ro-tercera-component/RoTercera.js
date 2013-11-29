@@ -36,12 +36,14 @@ Ext.define ("viewer.components.RoTercera",{
     docContainer: null,
     planContainer: null,
     legendaButton: null, 
+    drawCommentButton: null,
     selectedPlanContainer: null,
     
     currentPlans:null,    
     selectedPlan:null,
     wmsLayer: null,    
     roToc: null,
+    roComment: null,
     config:{
         name: "Ro-Tercera client",
         title: "",
@@ -52,8 +54,8 @@ Ext.define ("viewer.components.RoTercera",{
         roServiceUrl: "",        
         terceraRequestPage: "https://tercera.provincie-utrecht.nl/RequestPage.aspx",
         roonlineLayers: null,
-        roonlineServiceUrl: null
-        
+        roonlineServiceUrl: null,
+        layers: null
     },
     /**
      * @constructor
@@ -75,7 +77,11 @@ Ext.define ("viewer.components.RoTercera",{
                 label: me.label
             });
         }
+        this.test();
         return this;
+    },
+    test: function(){
+        this.buttonClick();
     },
     setDefaults: function(conf){
         //set minWidth:
@@ -221,6 +227,23 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             }
         });
         
+        this.drawCommentButton = Ext.create('Ext.container.Container',{
+            xtype: "container",
+            html: "Teken commentaar",
+            style: {
+                fontWeight: 'bold',
+                cursor: 'pointer',
+            },
+            listeners:{
+                element: 'el',
+                scope: this,
+                click: function(){
+                    this.drawComment();
+                }
+            },
+            visible: false
+        });
+        
         this.selectedPlanContainer = Ext.create('Ext.container.Container',{
             xtype: "container",
             html: "Geen plan geselecteerd",            
@@ -251,6 +274,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 },
                 docContainer,
                 this.legendaButton,
+                this.drawCommentButton,
                 this.selectedPlanContainer,
                 {
                     xtype: "container",
@@ -263,6 +287,11 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             
         });
         this.roToc = Ext.create("viewer.components.rotercera.RoToc",{});
+        this.roComment = Ext.create("viewer.components.rotercera.RoComment",{
+            viewerController: this.viewerController,
+            layers: this.layers,
+            div : this.div
+        });
     },
     /**
      * Changed functions:
@@ -486,6 +515,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 var docs = plan.verwijzingNaarTekst.split(",");
                 this.setDocs(docs);            
             }
+            this.drawCommentButton.setVisible(true);
         }
     },
     setDocs: function (docs){
@@ -523,6 +553,9 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 wmsLayer: this.wmsLayer
             });
         }
+    },
+    drawComment: function(){
+        this.roComment.createNew();
     },
     /**
      * Load layer in map
