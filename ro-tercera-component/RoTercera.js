@@ -555,7 +555,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         }
     },
     drawComment: function(){
-        this.roComment.createNew();
+        this.roComment.startComment();
     },
     /**
      * Load layer in map

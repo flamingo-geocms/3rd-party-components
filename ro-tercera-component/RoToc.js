@@ -14,12 +14,7 @@ Ext.define ("viewer.components.rotercera.RoToc",{
             height: 600,
             width: 200,
             layout: 'fit',
-            closeAction: 'hide',
-            listeners:{
-                destroy: {
-                    fn: function(){alert("destroy")}
-                }
-            },
+            closeAction: 'hide',            
             html: '<div class="legendContent" id="roLegendContainer">\n\
                 <a class="refreshLink" href="javascript: void(0)" onclick="legendController.refreshMap()">Klik hier om de kaart te verversen</a> <br/>\n\
                 <div id="disclaimer">De legenda toont de mogelijke bestemmingen. Deze hoeven niet voor te komen op de kaart.</div>\n\
