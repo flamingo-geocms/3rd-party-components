@@ -111,7 +111,15 @@ Ext.define ("viewer.components.rotercera.RoComment",{
         });
     },
     changeFeatureBeforeSave: function(feature){
+        if (this.planId ==null || this.planId == undefined){
+            throw "Geen plan geselecteerd";
+        }
+        if (this.user==null){
+            throw "Er is niet ingelogd. Er kan geen commentaar worden aangemaakt";
+        }
         feature[this.planIdAttributeName]=this.planId;
+        //add user
+        feature.eigenaar=user;
         return feature;
     }
 });
