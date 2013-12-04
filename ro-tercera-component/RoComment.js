@@ -30,7 +30,6 @@ Ext.define ("viewer.components.rotercera.RoComment",{
         this.planId=planId;
         if (this.vectorLayer==null){
             this.createVectorLayer();
-        }else{
             this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
         }
         if (this.window==null){
@@ -114,9 +113,9 @@ Ext.define ("viewer.components.rotercera.RoComment",{
         if (this.planId ==null || this.planId == undefined){
             throw "Geen plan geselecteerd";
         }
-        if (this.user==null){
+        /*if (this.user==null){
             throw "Er is niet ingelogd. Er kan geen commentaar worden aangemaakt";
-        }
+        }*/
         feature[this.planIdAttributeName]=this.planId;
         //add user
         feature.eigenaar=user;
