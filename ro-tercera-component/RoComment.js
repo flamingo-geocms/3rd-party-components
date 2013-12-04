@@ -2,7 +2,10 @@ Ext.define ("viewer.components.rotercera.RoComment",{
     extend: "viewer.components.Edit",
     
     window: null,
-    
+    planId: null,
+    config: {
+        planIdAttributeName : "bestemmingsplangebiedid"
+    },
     constructor: function(conf){
         conf.isPopup=true;
         viewer.components.Edit.superclass.constructor.call(this, conf);        
@@ -23,7 +26,8 @@ Ext.define ("viewer.components.rotercera.RoComment",{
             }
         };
     },
-    startComment: function(){
+    startComment: function(planId){
+        this.planId=planId;
         if (this.vectorLayer==null){
             this.createVectorLayer();
         }else{
@@ -105,5 +109,9 @@ Ext.define ("viewer.components.rotercera.RoComment",{
                 }
             ] 
         });
+    },
+    changeFeatureBeforeSave: function(feature){
+        feature[this.planIdAttributeName]=this.planId;
+        return feature;
     }
 });

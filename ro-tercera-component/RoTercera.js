@@ -241,7 +241,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                     this.drawComment();
                 }
             },
-            visible: false
+            hidden: true
         });
         
         this.selectedPlanContainer = Ext.create('Ext.container.Container',{
@@ -408,13 +408,14 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
      * Called when plan is clicked
      */
     onPlanClicked: function(plan){
-        this.setSelectedPlan(plan)
+        this.setSelectedPlan(plan);
     },
     setSelectedPlan: function(plan){
         this.selectedPlan = plan;
         if (this.selectedPlan==null){
             this.clearLayer();
             this.selectedPlanContainer.update("Geen plan geselecteerd");
+            this.drawCommentButton.hide();
         }else{
             if(plan.origin == 'Tercera' && plan.wms==undefined){
                 var me=this;
@@ -515,7 +516,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 var docs = plan.verwijzingNaarTekst.split(",");
                 this.setDocs(docs);            
             }
-            this.drawCommentButton.setVisible(true);
+            this.drawCommentButton.show();
         }
     },
     setDocs: function (docs){
@@ -555,7 +556,9 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         }
     },
     drawComment: function(){
-        this.roComment.startComment();
+        if(this.selectedPlan && this.selectedPlan.identificatie){
+            this.roComment.startComment(this.selectedPlan.identificatie);
+        }
     },
     /**
      * Load layer in map
