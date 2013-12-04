@@ -51,7 +51,7 @@ Ext.define ("viewer.components.rotercera.RoComment",{
             this.vectorLayer.drawFeature(this.newGeomType);
         }
     },
-            
+    
     createInputWindow: function(){
         var me = this;
         this.inputContainer = Ext.create("Ext.form.Panel",{             
@@ -59,7 +59,7 @@ Ext.define ("viewer.components.rotercera.RoComment",{
             border: 0,
             autoScroll: true,
             width: '100%',
-            height: 200
+            height: 300
         });
         this.window = Ext.create("Ext.window.Window",{
             title: "Ro-Commentaar",
@@ -108,6 +108,12 @@ Ext.define ("viewer.components.rotercera.RoComment",{
                 }
             ] 
         });
+    },
+            
+    cancel: function (){
+        this.callParent(arguments);
+        this.window.hide();
+        this.vectorLayer.stopDrawing();
     },
     changeFeatureBeforeSave: function(feature){
         if (this.planId ==null || this.planId == undefined){
