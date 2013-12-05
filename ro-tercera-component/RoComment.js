@@ -5,7 +5,8 @@ Ext.define ("viewer.components.rotercera.RoComment",{
     planId: null,
     config: {
         planIdAttributeName : "bestemmingsplangebiedid",
-        publicAttributeName:  "openbaar"
+        publicAttributeName:  "openbaar",
+        ownerAttributeName: "eigenaar"
     },
     constructor: function(conf){
         conf.isPopup=true;

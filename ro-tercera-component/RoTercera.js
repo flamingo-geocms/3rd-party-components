@@ -47,6 +47,7 @@ Ext.define ("viewer.components.RoTercera",{
     publicCommentfilter: null,
     planCommentFilter: null,
     commentAppLayer: null,
+    
     config:{
         name: "Ro-Tercera client",
         title: "",
@@ -84,11 +85,7 @@ Ext.define ("viewer.components.RoTercera",{
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
         
         this.roToc = Ext.create("viewer.components.rotercera.RoToc",{});
-        this.roComment = Ext.create("viewer.components.rotercera.RoComment",{
-            viewerController: this.viewerController,
-            layers: this.layers,
-            div : this.div
-        });
+        this.roComment = Ext.create("viewer.components.rotercera.RoComment",conf);
         
         return this;
     },
@@ -97,9 +94,13 @@ Ext.define ("viewer.components.RoTercera",{
         if (mapLayer.appLayerId && mapLayer.appLayerId === this.layers[0]){
             this.commentAppLayer = this.viewerController.getAppLayerById(this.layers[0]);
             
+            var cql = this.roComment.publicAttributeName+"=true"
+            if (user){
+                cql+= " OR "+this.roComment.ownerAttributeName+ "='"+user+"'";
+            }
             this.publicCommentfilter = Ext.create("viewer.components.CQLFilterWrapper",{
                 id: "publicFilter_"+this.getName(),
-                cql: this.roComment.publicAttributeName+"=true",
+                cql: cql,
                 operator : "AND",
                 type: "ATTRIBUTE"
             });
