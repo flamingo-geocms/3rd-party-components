@@ -45,7 +45,8 @@ Ext.define ("viewer.components.RoTercera",{
     roToc: null,
     roComment: null,
     publicCommentfilter: null,
-    
+    planCommentFilter: null,
+    commentAppLayer: null,
     config:{
         name: "Ro-Tercera client",
         title: "",
@@ -82,7 +83,6 @@ Ext.define ("viewer.components.RoTercera",{
         //this.test();
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
         
-        
         this.roToc = Ext.create("viewer.components.rotercera.RoToc",{});
         this.roComment = Ext.create("viewer.components.rotercera.RoComment",{
             viewerController: this.viewerController,
@@ -95,15 +95,15 @@ Ext.define ("viewer.components.RoTercera",{
     onAddLayer: function(map,options){
         var mapLayer=options.layer;
         if (mapLayer.appLayerId && mapLayer.appLayerId === this.layers[0]){
-            var commentAppLayer = this.viewerController.getAppLayerById(this.layers[0]);
+            this.commentAppLayer = this.viewerController.getAppLayerById(this.layers[0]);
             
-            publicCommentfilter = Ext.create("viewer.components.CQLFilterWrapper",{
-                id: "filter_"+this.getName(),
+            this.publicCommentfilter = Ext.create("viewer.components.CQLFilterWrapper",{
+                id: "publicFilter_"+this.getName(),
                 cql: this.roComment.publicAttributeName+"=true",
                 operator : "AND",
                 type: "ATTRIBUTE"
             });
-            this.viewerController.setFilter(publicCommentfilter,commentAppLayer);
+            this.viewerController.setFilter(this.publicCommentfilter,this.commentAppLayer);
         }
     },
     test: function(){
@@ -436,6 +436,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             this.clearLayer();
             this.selectedPlanContainer.update("Geen plan geselecteerd");
             this.drawCommentButton.hide();
+            this.setPlanCommentFilter(null);
         }else{
             if(plan.origin == 'Tercera' && plan.wms==undefined){
                 var me=this;
@@ -528,6 +529,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 }
                 this.selectedPlanContainer.update(prePlanText+this.selectedPlan.identificatie);
             }
+            this.setPlanCommentFilter(plan.identificatie);
             if (plan.bbox){
                 var map=this.viewerController.mapComponent.getMap();
                 map.zoomToExtent(new viewer.viewercontroller.controller.Extent(plan.bbox.minx,plan.bbox.miny,plan.bbox.maxx,plan.bbox.maxy));
@@ -564,6 +566,22 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             };
             this.docContainer.add(el);
         },this);
+    },
+    
+    setPlanCommentFilter: function(planId){
+        if (planId==null && this.planCommentFilter!==null){
+            this.viewerController.removeFilter(this.planCommentFilter.id,this.commentAppLayer);
+            this.planCommentFilter=null;
+        }else if (planId !=null){
+            this.planCommentFilter = Ext.create("viewer.components.CQLFilterWrapper",{
+                id: "planFilter_"+this.getName(),
+                cql: this.roComment.planIdAttributeName+"='"+planId+"'",
+                operator : "AND",
+                type: "ATTRIBUTE"
+            });
+            this.viewerController.setFilter(this.planCommentFilter,this.commentAppLayer);
+        }
+        
     },
     showToc: function(){
         this.roToc.show();
