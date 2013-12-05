@@ -42,12 +42,15 @@ Ext.define ("viewer.components.RoTercera",{
     currentPlans:null,    
     selectedPlan:null,
     wmsLayer: null,    
+    
     roToc: null,
     roComment: null,
+    
     publicCommentfilter: null,
     planCommentFilter: null,
-    commentAppLayer: null,
     
+    commentAppLayer: null,
+    commentLayerIndex: null,
     config:{
         name: "Ro-Tercera client",
         title: "",
@@ -604,7 +607,16 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
      * Load layer in map
      */
     setLayer: function (url,props,options){
+        var index =0;
+        if (this.wmsLayer!=null){
+            index = this.viewerController.mapComponent.getMap().getLayerIndex(this.wmsLayer);
+        }else{
+            var mapCommentLayer = this.viewerController.mapComponent.getMap().getLayer(this.layers[0]);
+            index = this.viewerController.mapComponent.getMap().getLayerIndex(mapCommentLayer);
+            index--;
+        }
         this.clearLayer();
+        
         this.wmsLayer = this.viewerController.mapComponent.createWMSLayer("rolayer", url ,props, options,this.viewerController);
         this.wmsLayer.setDetails({
             "summary.description" : "Omschrijving lalala",
@@ -613,6 +625,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             "summary.title": ""
         });
         this.viewerController.mapComponent.getMap().addLayer(this.wmsLayer);
+        this.viewerController.mapComponent.getMap().setLayerIndex(this.wmsLayer,index);
     },
     clearLayer: function (){
         if (this.wmsLayer!=null){
