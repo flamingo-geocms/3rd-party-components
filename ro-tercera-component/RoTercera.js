@@ -44,6 +44,8 @@ Ext.define ("viewer.components.RoTercera",{
     wmsLayer: null,    
     roToc: null,
     roComment: null,
+    publicCommentfilter: null,
+    
     config:{
         name: "Ro-Tercera client",
         title: "",
@@ -77,8 +79,32 @@ Ext.define ("viewer.components.RoTercera",{
                 label: me.label
             });
         }
-        this.test();
+        //this.test();
+        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
+        
+        
+        this.roToc = Ext.create("viewer.components.rotercera.RoToc",{});
+        this.roComment = Ext.create("viewer.components.rotercera.RoComment",{
+            viewerController: this.viewerController,
+            layers: this.layers,
+            div : this.div
+        });
+        
         return this;
+    },
+    onAddLayer: function(map,options){
+        var mapLayer=options.layer;
+        if (mapLayer.appLayerId && mapLayer.appLayerId === this.layers[0]){
+            var commentAppLayer = this.viewerController.getAppLayerById(this.layers[0]);
+            
+            publicCommentfilter = Ext.create("viewer.components.CQLFilterWrapper",{
+                id: "filter_"+this.getName(),
+                cql: this.roComment.publicAttributeName+"=true",
+                operator : "AND",
+                type: "ATTRIBUTE"
+            });
+            this.viewerController.setFilter(publicCommentfilter,commentAppLayer);
+        }
     },
     test: function(){
         this.buttonClick();
@@ -285,12 +311,6 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 }
             ]
             
-        });
-        this.roToc = Ext.create("viewer.components.rotercera.RoToc",{});
-        this.roComment = Ext.create("viewer.components.rotercera.RoComment",{
-            viewerController: this.viewerController,
-            layers: this.layers,
-            div : this.div
         });
     },
     /**

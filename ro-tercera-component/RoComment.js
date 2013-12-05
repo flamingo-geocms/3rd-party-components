@@ -4,14 +4,17 @@ Ext.define ("viewer.components.rotercera.RoComment",{
     window: null,
     planId: null,
     config: {
-        planIdAttributeName : "bestemmingsplangebiedid"
+        planIdAttributeName : "bestemmingsplangebiedid",
+        publicAttributeName:  "openbaar"
     },
     constructor: function(conf){
         conf.isPopup=true;
+        this.initConfig(conf);
         viewer.components.Edit.superclass.constructor.call(this, conf);        
         var div = this.getContentDiv();        
         this.loadWindow();
     },
+    
     createLayerSelector: function(){
         var me = this;
         //dummy layer selector
