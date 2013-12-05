@@ -94,10 +94,11 @@ Ext.define ("viewer.components.RoTercera",{
         if (mapLayer.appLayerId && mapLayer.appLayerId === this.layers[0]){
             this.commentAppLayer = this.viewerController.getAppLayerById(this.layers[0]);
             
-            var cql = this.roComment.publicAttributeName+"=true"
+            var cql = "("+this.roComment.publicAttributeName+"=true"
             if (user){
                 cql+= " OR "+this.roComment.ownerAttributeName+ "='"+user+"'";
             }
+            cql+=")"
             this.publicCommentfilter = Ext.create("viewer.components.CQLFilterWrapper",{
                 id: "publicFilter_"+this.getName(),
                 cql: cql,
