@@ -22,11 +22,19 @@ Ext.define ("viewer.components.rotercera.RoComment",{
         this.layerSelector= {
             initLayers: function(){                
             },getValue: function(){
-                return me.viewerController.getAppLayerById(me.layers[0]);
+                if (me.layers){
+                    return me.viewerController.getAppLayerById(me.layers[0]);
+                }else{
+                    return null;
+                }
             },combobox: {
                 select: function(){}
             },getSelectedAppLayer: function(){
-                return me.viewerController.getAppLayerById(me.layers[0]);
+                if (me.layers){
+                    return me.viewerController.getAppLayerById(me.layers[0]);
+                }else{
+                    return null;
+                }
             }
         };
     },

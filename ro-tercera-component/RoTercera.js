@@ -93,22 +93,24 @@ Ext.define ("viewer.components.RoTercera",{
         return this;
     },
     onAddLayer: function(map,options){
-        var mapLayer=options.layer;
-        if (mapLayer.appLayerId && mapLayer.appLayerId === this.layers[0]){
-            this.commentAppLayer = this.viewerController.getAppLayerById(this.layers[0]);
-            
-            var cql = "("+this.roComment.publicAttributeName+"=true"
-            if (user){
-                cql+= " OR "+this.roComment.ownerAttributeName+ "='"+user+"'";
+        if (this.layers){
+            var mapLayer=options.layer;
+            if (mapLayer.appLayerId && mapLayer.appLayerId === this.layers[0]){
+                this.commentAppLayer = this.viewerController.getAppLayerById(this.layers[0]);
+
+                var cql = "("+this.roComment.publicAttributeName+"=true"
+                if (user){
+                    cql+= " OR "+this.roComment.ownerAttributeName+ "='"+user+"'";
+                }
+                cql+=")"
+                this.publicCommentfilter = Ext.create("viewer.components.CQLFilterWrapper",{
+                    id: "publicFilter_"+this.getName(),
+                    cql: cql,
+                    operator : "AND",
+                    type: "ATTRIBUTE"
+                });
+                this.viewerController.setFilter(this.publicCommentfilter,this.commentAppLayer);
             }
-            cql+=")"
-            this.publicCommentfilter = Ext.create("viewer.components.CQLFilterWrapper",{
-                id: "publicFilter_"+this.getName(),
-                cql: cql,
-                operator : "AND",
-                type: "ATTRIBUTE"
-            });
-            this.viewerController.setFilter(this.publicCommentfilter,this.commentAppLayer);
         }
     },
     test: function(){
@@ -607,10 +609,10 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
      * Load layer in map
      */
     setLayer: function (url,props,options){
-        var index =0;
+        var index =-1;
         if (this.wmsLayer!=null){
             index = this.viewerController.mapComponent.getMap().getLayerIndex(this.wmsLayer);
-        }else{
+        }else if (this.layers){
             var mapCommentLayer = this.viewerController.mapComponent.getMap().getLayer(this.layers[0]);
             index = this.viewerController.mapComponent.getMap().getLayerIndex(mapCommentLayer);
             index--;
@@ -625,7 +627,9 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             "summary.title": ""
         });
         this.viewerController.mapComponent.getMap().addLayer(this.wmsLayer);
-        this.viewerController.mapComponent.getMap().setLayerIndex(this.wmsLayer,index);
+        if (index>=0){
+            this.viewerController.mapComponent.getMap().setLayerIndex(this.wmsLayer,index);
+        }
     },
     clearLayer: function (){
         if (this.wmsLayer!=null){
