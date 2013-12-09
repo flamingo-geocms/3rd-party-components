@@ -37,6 +37,7 @@ Ext.define ("viewer.components.RoTercera",{
     planContainer: null,
     legendaButton: null, 
     drawCommentButton: null,
+    showAllCommentButton: null,
     selectedPlanContainer: null,
     
     currentPlans:null,    
@@ -89,6 +90,7 @@ Ext.define ("viewer.components.RoTercera",{
         
         this.roToc = Ext.create("viewer.components.rotercera.RoToc",{});
         this.roComment = Ext.create("viewer.components.rotercera.RoComment",conf);
+        this.roAllComment = Ext.create("viewer.components.rotercera.RoAllComment",conf);
         
         return this;
     },
@@ -276,6 +278,22 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             },
             hidden: true
         });
+        this.showAllCommentButton = Ext.create('Ext.container.Container',{
+            xtype: "container",
+            html: "Toon alle commentaar",
+            style: {
+                fontWeight: 'bold',
+                cursor: 'pointer',
+            },
+            listeners:{
+                element: 'el',
+                scope: this,
+                click: function(){
+                    this.roAllComment.getAllComments();
+                }
+            },
+            hidden: true
+        });
         
         this.selectedPlanContainer = Ext.create('Ext.container.Container',{
             xtype: "container",
@@ -308,6 +326,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 docContainer,
                 this.legendaButton,
                 this.drawCommentButton,
+                this.showAllCommentButton,
                 this.selectedPlanContainer,
                 {
                     xtype: "container",
@@ -443,6 +462,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             this.clearLayer();
             this.selectedPlanContainer.update("Geen plan geselecteerd");
             this.drawCommentButton.hide();
+            this.showAllCommentButton.hide();
             this.setPlanCommentFilter(null);
         }else{
             if(plan.origin == 'Tercera' && plan.wms==undefined){
@@ -546,6 +566,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 this.setDocs(docs);            
             }
             this.drawCommentButton.show();
+            this.showAllCommentButton.show();
         }
     },
     setDocs: function (docs){
