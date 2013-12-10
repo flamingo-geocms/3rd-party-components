@@ -86,37 +86,11 @@ Ext.define ("viewer.components.RoTercera",{
             });
         }
         //this.test();
-        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
-        
         this.roToc = Ext.create("viewer.components.rotercera.RoToc",{});
         this.roComment = Ext.create("viewer.components.rotercera.RoComment",conf);
         this.roAllComment = Ext.create("viewer.components.rotercera.RoAllComment",conf);
         
         return this;
-    },
-    onAddLayer: function(map,options){
-        if (this.layers){
-            var mapLayer=options.layer;
-            if (mapLayer.appLayerId && mapLayer.appLayerId === this.layers[0]){
-                this.commentAppLayer = this.viewerController.getAppLayerById(this.layers[0]);
-
-                var cql = "("+this.roComment.publicAttributeName+"=true"
-                if (user){
-                    cql+= " OR "+this.roComment.ownerAttributeName+ "='"+user+"'";
-                }
-                cql+=")"
-                this.publicCommentfilter = Ext.create("viewer.components.CQLFilterWrapper",{
-                    id: "publicFilter_"+this.getName(),
-                    cql: cql,
-                    operator : "AND",
-                    type: "ATTRIBUTE"
-                });
-                this.viewerController.setFilter(this.publicCommentfilter,this.commentAppLayer);
-            }
-        }
-    },
-    test: function(){
-        this.buttonClick();
     },
     setDefaults: function(conf){
         //set minWidth:
@@ -625,20 +599,40 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
     },
     
     setPlanCommentFilter: function(planId){
-        if (this.planCommentFilter!==null){
-            if (planId==null){
-                this.viewerController.removeFilter(this.planCommentFilter.id,this.commentAppLayer);
-                this.planCommentFilter=null;
-            }else if (planId !=null){
-                this.planCommentFilter = Ext.create("viewer.components.CQLFilterWrapper",{
-                    id: "planFilter_"+this.getName(),
-                    cql: this.roComment.planIdAttributeName+"='"+planId+"'",
+        if (planId==null && this.planCommentFilter!==null){
+            this.viewerController.removeFilter(this.planCommentFilter.id,this.getCommentAppLayer());
+            this.planCommentFilter=null;
+        }else if (planId !=null){
+            this.planCommentFilter = Ext.create("viewer.components.CQLFilterWrapper",{
+                id: "planFilter_"+this.getName(),
+                cql: this.roComment.planIdAttributeName+"='"+planId+"'",
+                operator : "AND",
+                type: "ATTRIBUTE"
+            });
+            this.viewerController.setFilter(this.planCommentFilter,this.getCommentAppLayer());
+        }
+    },
+    getCommentAppLayer: function(){
+        if (this.commentAppLayer==null || this.commentAppLayer == undefined){
+            if (this.layers){
+                this.commentAppLayer = this.viewerController.getAppLayerById(this.layers[0]);
+                var mapLayer = this.viewerController.getOrCreateLayer(this.commentAppLayer);
+                
+                var cql = "("+this.roComment.publicAttributeName+"=true"
+                if (user){
+                    cql+= " OR "+this.roComment.ownerAttributeName+ "='"+user+"'";
+                }
+                cql+=")"
+                this.publicCommentfilter = Ext.create("viewer.components.CQLFilterWrapper",{
+                    id: "publicFilter_"+this.getName(),
+                    cql: cql,
                     operator : "AND",
                     type: "ATTRIBUTE"
                 });
-                this.viewerController.setFilter(this.planCommentFilter,this.commentAppLayer);
+                this.viewerController.setFilter(this.publicCommentfilter,this.commentAppLayer);            
             }
         }
+        return this.commentAppLayer;
     },
     showToc: function(){
         this.roToc.show();
