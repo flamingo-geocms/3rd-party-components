@@ -157,9 +157,37 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         this.ownerStore=Ext.create('Ext.data.Store', {
             fields: ['code', 'name'],
             data: [
-                {code: "0355",name: 'Zeist'},
-                {code: "0344",name: 'Utrecht'},
-                {code: "0351",name: 'Woudenberg'}
+                {name: "Abcoude", code: "0305"},
+                {name: "Amersfoort", code: "0307"},
+                {name: "Baarn", code: "0308"},
+                {name: "Breukelen", code: "0311"},
+                {name: "Bunnik", code: "0312"},
+                {name: "Bunschoten", code: "0313"},
+                {name: "De Bilt", code: "0310"},
+                {name: "De Ronde Venen", code: "0736"},
+                {name: "Eemnes", code: "0317"},
+                {name: "Houten", code: "0321"},
+                {name: "IJsselstein", code: "0353"},
+                {name: "Leusden", code: "0327"},
+                {name: "Loenen", code: "0329"},
+                {name: "Lopik", code: "0331"},
+                {name: "Maarssen", code: "0333"},
+                {name: "Montfoort", code: "0335"},
+                {name: "Nieuwegein", code: "0356"},
+                {name: "Oudewater", code: "0589"},
+                {name: "Provincie Utrecht", code: "9926"},
+                {name: "Renswoude", code: "0339"},
+                {name: "Rhenen", code: "0340"},
+                {name: "Soest", code: "0342"},
+                {name: "Stichtse Vecht", code: "1904"},
+                {name: "Utrecht", code: "0344"},
+                {name: "Utrechtse Heuvelrug", code: "1581"},
+                {name: "Veenendaal", code: "0345"},
+                {name: "Vianen", code: "0620"},
+                {name: "Wijk bij Duurstede", code: "0352"},
+                {name: "Woerden", code: "0632"},
+                {name: "Woudenberg", code: "0351"},
+                {name: "Zeist", code: "0355"}
             ]
         });        
         this.typeStore = Ext.create('Ext.data.Store',{
@@ -597,19 +625,20 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
     },
     
     setPlanCommentFilter: function(planId){
-        if (planId==null && this.planCommentFilter!==null){
-            this.viewerController.removeFilter(this.planCommentFilter.id,this.commentAppLayer);
-            this.planCommentFilter=null;
-        }else if (planId !=null){
-            this.planCommentFilter = Ext.create("viewer.components.CQLFilterWrapper",{
-                id: "planFilter_"+this.getName(),
-                cql: this.roComment.planIdAttributeName+"='"+planId+"'",
-                operator : "AND",
-                type: "ATTRIBUTE"
-            });
-            this.viewerController.setFilter(this.planCommentFilter,this.commentAppLayer);
+        if (this.planCommentFilter!==null){
+            if (planId==null){
+                this.viewerController.removeFilter(this.planCommentFilter.id,this.commentAppLayer);
+                this.planCommentFilter=null;
+            }else if (planId !=null){
+                this.planCommentFilter = Ext.create("viewer.components.CQLFilterWrapper",{
+                    id: "planFilter_"+this.getName(),
+                    cql: this.roComment.planIdAttributeName+"='"+planId+"'",
+                    operator : "AND",
+                    type: "ATTRIBUTE"
+                });
+                this.viewerController.setFilter(this.planCommentFilter,this.commentAppLayer);
+            }
         }
-        
     },
     showToc: function(){
         this.roToc.show();
