@@ -73,16 +73,21 @@ Ext.define ("viewer.components.RoTercera",{
     constructor: function (conf){  
         conf=this.setDefaults(conf);
         viewer.components.RoTercera.superclass.constructor.call(this, conf);
-        this.haveSprite=false;
         this.initConfig(conf);
         var me = this;
+        var iconUrl = "";
+        if (actionBeans && actionBeans["componentresource"]){
+            iconUrl=actionBeans["componentresource"];
+        }
+        iconUrl=Ext.String.urlAppend(iconUrl,"className=viewer.components.RoTercera")
+        iconUrl=Ext.String.urlAppend(iconUrl,"resource=resources/images/icon46_gray.png");
         if(this.hasButton == null || this.hasButton){
             this.renderButton({
                 handler: function(){
                     me.buttonClick();
                 },
                 text: me.title,
-                icon: me.titlebarIcon,
+                icon: iconUrl,
                 tooltip: me.tooltip,
                 label: me.label
             });
