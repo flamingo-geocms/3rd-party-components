@@ -72,22 +72,24 @@ Ext.define ("viewer.components.RoTercera",{
      */
     constructor: function (conf){  
         conf=this.setDefaults(conf);
+        var resourceUrl = "";
+        if (actionBeans && actionBeans["componentresource"]){
+            resourceUrl=actionBeans["componentresource"];
+        }
+        resourceUrl=Ext.String.urlAppend(resourceUrl,"className=viewer.components.RoTercera")
+        
+        conf.iconUrl=Ext.String.urlAppend(resourceUrl,"resource=resources/images/icon16_gray.png");;
         viewer.components.RoTercera.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         var me = this;
-        var iconUrl = "";
-        if (actionBeans && actionBeans["componentresource"]){
-            iconUrl=actionBeans["componentresource"];
-        }
-        iconUrl=Ext.String.urlAppend(iconUrl,"className=viewer.components.RoTercera")
-        iconUrl=Ext.String.urlAppend(iconUrl,"resource=resources/images/icon46_gray.png");
+        
         if(this.hasButton == null || this.hasButton){
             this.renderButton({
                 handler: function(){
                     me.buttonClick();
                 },
                 text: me.title,
-                icon: iconUrl,
+                icon: Ext.String.urlAppend(resourceUrl,"resource=resources/images/icon38_gray.png"),
                 tooltip: me.tooltip,
                 label: me.label
             });
