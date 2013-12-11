@@ -51,6 +51,7 @@ Ext.define ("viewer.components.RoTercera",{
     planCommentFilter: null,
     
     commentAppLayer: null,
+    commentMapLayer: null,
     commentLayerIndex: null,
     config:{
         name: "Ro-Tercera client",
@@ -72,6 +73,7 @@ Ext.define ("viewer.components.RoTercera",{
     constructor: function (conf){  
         conf=this.setDefaults(conf);
         viewer.components.RoTercera.superclass.constructor.call(this, conf);
+        this.haveSprite=false;
         this.initConfig(conf);
         var me = this;
         if(this.hasButton == null || this.hasButton){
@@ -602,6 +604,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         if (planId==null && this.planCommentFilter!==null){
             this.viewerController.removeFilter(this.planCommentFilter.id,this.getCommentAppLayer());
             this.planCommentFilter=null;
+            this.commentMapLayer.setVisible(false);
         }else if (planId !=null){
             this.planCommentFilter = Ext.create("viewer.components.CQLFilterWrapper",{
                 id: "planFilter_"+this.getName(),
@@ -610,26 +613,29 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 type: "ATTRIBUTE"
             });
             this.viewerController.setFilter(this.planCommentFilter,this.getCommentAppLayer());
+            this.commentMapLayer.setVisible(true);
         }
     },
     getCommentAppLayer: function(){
         if (this.commentAppLayer==null || this.commentAppLayer == undefined){
             if (this.layers){
                 this.commentAppLayer = this.viewerController.getAppLayerById(this.layers[0]);
-                var mapLayer = this.viewerController.getOrCreateLayer(this.commentAppLayer);
-                
-                var cql = "("+this.roComment.publicAttributeName+"=true"
-                if (user){
-                    cql+= " OR "+this.roComment.ownerAttributeName+ "='"+user+"'";
+                if (this.commentAppLayer){
+                    this.commentMapLayer = this.viewerController.getOrCreateLayer(this.commentAppLayer);
+
+                    var cql = "("+this.roComment.publicAttributeName+"=true"
+                    if (user){
+                        cql+= " OR "+this.roComment.ownerAttributeName+ "='"+user+"'";
+                    }
+                    cql+=")"
+                    this.publicCommentfilter = Ext.create("viewer.components.CQLFilterWrapper",{
+                        id: "publicFilter_"+this.getName(),
+                        cql: cql,
+                        operator : "AND",
+                        type: "ATTRIBUTE"
+                    });
+                    this.viewerController.setFilter(this.publicCommentfilter,this.commentAppLayer);            
                 }
-                cql+=")"
-                this.publicCommentfilter = Ext.create("viewer.components.CQLFilterWrapper",{
-                    id: "publicFilter_"+this.getName(),
-                    cql: cql,
-                    operator : "AND",
-                    type: "ATTRIBUTE"
-                });
-                this.viewerController.setFilter(this.publicCommentfilter,this.commentAppLayer);            
             }
         }
         return this.commentAppLayer;
@@ -657,9 +663,8 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         if (this.wmsLayer!=null){
             index = this.viewerController.mapComponent.getMap().getLayerIndex(this.wmsLayer);
         }else if (this.layers){
-            var mapCommentLayer = this.viewerController.mapComponent.getMap().getLayer(this.layers[0]);
-            index = this.viewerController.mapComponent.getMap().getLayerIndex(mapCommentLayer);
-            index--;
+            index = this.viewerController.mapComponent.getMap().getLayerIndex(this.commentMapLayer);
+            //index--;
         }
         this.clearLayer();
         
@@ -673,6 +678,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         this.viewerController.mapComponent.getMap().addLayer(this.wmsLayer);
         if (index>=0){
             this.viewerController.mapComponent.getMap().setLayerIndex(this.wmsLayer,index);
+            this.viewerController.mapComponent.getMap().setLayerIndex(this.commentMapLayer,index+1);
         }
     },
     clearLayer: function (){
