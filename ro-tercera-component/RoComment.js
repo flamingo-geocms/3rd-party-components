@@ -131,12 +131,12 @@ Ext.define ("viewer.components.rotercera.RoComment",{
         if (this.planId ==null || this.planId == undefined){
             throw "Geen plan geselecteerd";
         }
-        /*if (this.user==null){
+        if (user==null){
             throw "Er is niet ingelogd. Er kan geen commentaar worden aangemaakt";
-        }*/
+        }
         feature[this.planIdAttributeName]=this.planId;
         //add user
-        feature.eigenaar=user;
+        feature.eigenaar=user.name;
         return feature;
     }
 });
