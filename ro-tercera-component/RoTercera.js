@@ -97,7 +97,7 @@ Ext.define ("viewer.components.RoTercera",{
         //this.test();
         this.roToc = Ext.create("viewer.components.rotercera.RoToc",{});
         this.roComment = Ext.create("viewer.components.rotercera.RoComment",conf);
-        this.roAllComment = Ext.create("viewer.components.rotercera.RoAllComment",conf);
+        this.roAllComment = Ext.create("viewer.components.rotercera.RoAllComment",conf,this);
         
         return this;
     },
