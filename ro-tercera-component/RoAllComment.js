@@ -16,7 +16,9 @@ Ext.define ("viewer.components.rotercera.RoAllComment",{
             
     getAllComments: function(){
         var fs = this.getFeatureService();
-        fs.loadFeatures(this.viewerController.getAppLayerById(this.layers[0]),this.showFeatures,this.onFail,1000,this);
+        var options = {limit: 1000,edit:true};
+        
+        fs.loadFeatures(this.viewerController.getAppLayerById(this.layers[0]),this.showFeatures,this.onFail,options,this);
     },
     showFeatures: function(features){
         if (this.window==null){
@@ -31,7 +33,6 @@ Ext.define ("viewer.components.rotercera.RoAllComment",{
             var el = this.createCommentElement(f);
             this.featureContainer.add(el);
         }
-        
     },
     createCommentElement: function(feature){
         var tekst= feature.tekst? feature.tekst : "";
@@ -40,6 +41,7 @@ Ext.define ("viewer.components.rotercera.RoAllComment",{
         var openbaar= feature.openbaar? feature.openbaar : false;
         var compleetplan= feature.compleetplan? feature.compleetplan : false;
         
+        var me = this;
         
         var topItems=[{
                 xtype: 'container',
@@ -51,11 +53,17 @@ Ext.define ("viewer.components.rotercera.RoAllComment",{
                 flex: 1
             }];
             
-        if (user!=null && user == eigenaar){
+        if (user!=null && user.name == eigenaar){
             topItems.push({
                 type: "container",
                 html: "Wijzig",
-                flex: 1
+                flex: 1,
+                listeners:{
+                    element: 'el',
+                    click: function(){
+                        me.onEditClick(feature);
+                    }
+                }
             });
         }
         
@@ -90,6 +98,14 @@ Ext.define ("viewer.components.rotercera.RoAllComment",{
     },
     onFail: function (message){
         Ext.MessageBox.alert('Foutmelding', "Fout bij laden features" + message);
+    },
+    onEditClick: function(feature){
+        this.component.roComment.showWindow();
+        this.component.roComment.layerChanged(this.component.commentAppLayer,function(){
+            //if scope ommited: the scope is the component
+            this.mode = "edit";
+            this.handleFeature(feature);
+        });
     },
     createWindow: function(){        
         this.planContainer = Ext.create("Ext.container.Container",{

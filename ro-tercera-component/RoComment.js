@@ -47,14 +47,10 @@ Ext.define ("viewer.components.rotercera.RoComment",{
         if (this.window==null){
             this.createInputWindow();
         }
-        this.layerChanged(this.layerSelector.getValue());
+        this.layerChanged(this.layerSelector.getValue(),this.createNew);
         this.window.show();
     },
-            
-    initAttributeInputs: function(){
-        this.callParent(arguments);
-        this.createNew();
-    },
+        
     createNew : function(){
         this.vectorLayer.removeAllFeatures();
         this.viewerController.mapComponent.getMap().removeMarker("edit");
