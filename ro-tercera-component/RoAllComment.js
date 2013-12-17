@@ -4,6 +4,7 @@ Ext.define ("viewer.components.rotercera.RoAllComment",{
     featureService: null,
     featureContainer: null,
     planContainer:null,
+    planId: null,
     config: {
         viewerController: null,
         layers: null,
@@ -14,11 +15,15 @@ Ext.define ("viewer.components.rotercera.RoAllComment",{
         this.initConfig(conf);
     },
             
-    getAllComments: function(){
+    getAllComments: function(planId){
+        this.planId = planId;
         var fs = this.getFeatureService();
         var options = {limit: 1000,edit:true};
         
         fs.loadFeatures(this.viewerController.getAppLayerById(this.layers[0]),this.showFeatures,this.onFail,options,this);
+    },
+    reload: function (planId){
+        this.getAllComments(this.planId);
     },
     showFeatures: function(features){
         if (this.window==null){
@@ -101,8 +106,10 @@ Ext.define ("viewer.components.rotercera.RoAllComment",{
     },
     onEditClick: function(feature){
         this.component.roComment.showWindow();
+        var me = this;
         this.component.roComment.layerChanged(this.component.commentAppLayer,function(){
             //if scope ommited: the scope is the component
+            this.planId=me.planId;
             this.mode = "edit";
             this.handleFeature(feature);
         });

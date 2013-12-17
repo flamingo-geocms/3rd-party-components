@@ -96,7 +96,7 @@ Ext.define ("viewer.components.RoTercera",{
         }
         //this.test();
         this.roToc = Ext.create("viewer.components.rotercera.RoToc",{});
-        this.roComment = Ext.create("viewer.components.rotercera.RoComment",conf);
+        this.roComment = Ext.create("viewer.components.rotercera.RoComment",conf,this);
         this.roAllComment = Ext.create("viewer.components.rotercera.RoAllComment",conf,this);
         
         return this;
@@ -300,7 +300,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 element: 'el',
                 scope: this,
                 click: function(){
-                    this.roAllComment.getAllComments();
+                    this.showAllComment();
                 }
             },
             hidden: true
@@ -661,6 +661,9 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         if(this.selectedPlan && this.selectedPlan.identificatie){
             this.roComment.startComment(this.selectedPlan.identificatie);
         }
+    },
+    showAllComment: function(){
+        this.roAllComment.getAllComments(this.selectedPlan.identificatie);
     },
     /**
      * Load layer in map

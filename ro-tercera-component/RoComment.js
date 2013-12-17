@@ -6,10 +6,12 @@ Ext.define ("viewer.components.rotercera.RoComment",{
     config: {
         planIdAttributeName : "bestemmingsplangebiedid",
         publicAttributeName:  "openbaar",
-        ownerAttributeName: "eigenaar"
+        ownerAttributeName: "eigenaar",
+        component: null
     },
-    constructor: function(conf){
+    constructor: function(conf,component){
         conf.isPopup=true;
+        conf.component=component;
         this.initConfig(conf);
         viewer.components.Edit.superclass.constructor.call(this, conf);        
         var div = this.getContentDiv();        
@@ -117,10 +119,15 @@ Ext.define ("viewer.components.rotercera.RoComment",{
             ] 
         });
     },
-            
+        
+    /**
+     * @override
+     */ 
     cancel: function (){
         this.callParent(arguments);
-        this.window.hide();
+        if (this.window){
+            this.window.hide();
+        }
         this.vectorLayer.stopDrawing();
     },
     changeFeatureBeforeSave: function(feature){
@@ -134,5 +141,12 @@ Ext.define ("viewer.components.rotercera.RoComment",{
         //add user
         feature.eigenaar=user.name;
         return feature;
+    },
+    /**
+     * @override
+     */
+    saveSucces  : function(fid){
+        this.component.roAllComment.reload();
+        this.callParent(arguments);
     }
 });
