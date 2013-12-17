@@ -159,5 +159,16 @@ Ext.define ("viewer.components.rotercera.RoComment",{
     saveSucces  : function(fid){
         this.component.roAllComment.reload();
         this.callParent(arguments);
+    },
+    /**
+     * @override
+     */
+    allowedEditable: function(attribute){
+        if (attribute.name === this.ownerAttributeName){
+            return false;
+        }else{
+            return true;
+        }
     }
+         
 });
