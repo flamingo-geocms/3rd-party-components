@@ -105,14 +105,7 @@ Ext.define ("viewer.components.rotercera.RoAllComment",{
         Ext.MessageBox.alert('Foutmelding', "Fout bij laden features" + message);
     },
     onEditClick: function(feature){
-        this.component.roComment.showWindow();
-        var me = this;
-        this.component.roComment.layerChanged(this.component.commentAppLayer,function(){
-            //if scope ommited: the scope is the component
-            this.planId=me.planId;
-            this.mode = "edit";
-            this.handleFeature(feature);
-        });
+        this.component.roComment.editComment(this.planId,feature);
     },
     createWindow: function(){        
         this.planContainer = Ext.create("Ext.container.Container",{

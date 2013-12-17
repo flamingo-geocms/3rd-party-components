@@ -40,7 +40,18 @@ Ext.define ("viewer.components.rotercera.RoComment",{
             }
         };
     },
-    startComment: function(planId){
+    newComment: function (planId){
+        this.startComment(planId,this.createNew);
+    },            
+    editComment: function(planId,feature){
+        this.startComment(planId,function(){
+            //if scope ommited: the scope is the component
+            this.planId=planId;
+            this.mode = "edit";
+            this.handleFeature(feature);
+        });    
+    },
+    startComment: function(planId,afterLoadAttributes){
         this.planId=planId;
         if (this.vectorLayer==null){
             this.createVectorLayer();
@@ -49,7 +60,7 @@ Ext.define ("viewer.components.rotercera.RoComment",{
         if (this.window==null){
             this.createInputWindow();
         }
-        this.layerChanged(this.layerSelector.getValue(),this.createNew);
+        this.layerChanged(this.layerSelector.getValue(),afterLoadAttributes);
         this.window.show();
     },
         
