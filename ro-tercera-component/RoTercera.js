@@ -515,9 +515,9 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                     styles: "",
                     format: "image/png",
                     transparent: true,
-                    noCache: true
+                    noCache: true,
                 };
-                var options={};
+                var options={id: "RoTerceraLayer"};
                 if (plan.origin == 'Tercera'){
                     prePlanText = "(L0K) ";
                     Ext.Ajax.request({ 
