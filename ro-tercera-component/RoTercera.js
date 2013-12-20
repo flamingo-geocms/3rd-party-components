@@ -53,6 +53,8 @@ Ext.define ("viewer.components.RoTercera",{
     commentAppLayer: null,
     commentMapLayer: null,
     commentLayerIndex: null,
+    
+    customInfoEnabled: false,
     config:{
         name: "Ro-Tercera client",
         title: "",
@@ -98,6 +100,11 @@ Ext.define ("viewer.components.RoTercera",{
         this.roToc = Ext.create("viewer.components.rotercera.RoToc",{});
         this.roComment = Ext.create("viewer.components.rotercera.RoComment",conf,this);
         this.roAllComment = Ext.create("viewer.components.rotercera.RoAllComment",conf,this);
+        
+        var me = this;
+        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,function(){
+            me.setCreateInfoHtmlElements();
+        });
         
         return this;
     },
@@ -475,7 +482,9 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             this.drawCommentButton.hide();
             this.showAllCommentButton.hide();
             this.setPlanCommentFilter(null);
+            this.customInfoEnabled=false
         }else{
+            this.customInfoEnabled=true
             if(plan.origin == 'Tercera' && plan.wms==undefined){
                 var me=this;
                 var id=plan.identificatie;
@@ -785,6 +794,25 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             returnValue="Plankaart";
         }
         return returnValue;
+    },
+            
+    setCreateInfoHtmlElements: function(){
+        var comps=this.viewerController.getComponentsByClassName("viewer.components.FeatureInfo");
+        var me = this;
+        Ext.each(comps,function(comp,index,array){
+            var oldFunction = comp.createInfoHtmlElements;
+            comp.createInfoHtmlElements = function(data){
+                var els = oldFunction.call(this,data);
+                var thisEls=me.createInfoHtmlElements(data);
+                return els.concat(thisEls);
+            }
+        });
+    },
+    createInfoHtmlElements: function (data){
+        var els= [];
+        alert(this.customInfoEnabled);
+        alert(data);
+        return els;
     },
             
     getExtComponents: function() {
