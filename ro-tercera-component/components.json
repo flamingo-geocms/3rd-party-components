@@ -38,7 +38,7 @@
         shortName: "Terc",
         restrictions: ["left_menu"],
         singleton: true,
-        sources: ["RoTercera.js","RoToc.js","RoAllComment.js","Edit.js","RoComment.js"],        
+        sources: ["RoTercera.js","IdentifyParser.js","RoToc.js","RoAllComment.js","Edit.js","RoComment.js"],        
         type: "popup",
         showHelp: true,
         configSource: ["ConfigObject.js","SelectionWindowConfig.js","RoTerceraConfig.js"]
