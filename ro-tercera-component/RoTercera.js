@@ -827,6 +827,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         this.parser.prepareData(data,origin,planId);
         var el = new Ext.Element(document.createElement("div"));
         el.update(this.parser.getInfo());
+        el.addCls("planinfo-feature")
         var returnVal = [];
         returnVal.push(el);
         return returnVal;
@@ -835,7 +836,8 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
     addStyleSheet: function(){
         var css=".planinfo-table tbody tr .td0{font-weight: bold;}\
                 .planinfo-table tbody tr td{padding-right: 5px;}\
-                .featureinfo-table tbody tr td{padding-right: 5px;}";
+                .featureinfo-table tbody tr td{padding-right: 5px;}\
+                .planinfo-feature{border-bottom: 1px solid #666666;}";
         Ext.util.CSS.createStyleSheet(css);
     },
             
