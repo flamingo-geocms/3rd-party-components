@@ -569,8 +569,9 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                     ogcProps.layers=this.roonlineLayers.split(",");
                     ogcProps.query_layers=this.roonlineLayers.split(",");
                     options.layers= this.roonlineLayers.split(",");
-                    if (window.location.hostname ==undefined || window.location.hostname != "localhost"){
-                        ogcProps.sld = Ext.create("viewer.SLD").createURL(options.layers,null,null,null,null,"app:plangebied='"+plan.identificatie+"'");
+                    ogcProps.sld = Ext.create("viewer.SLD").createURL(options.layers,null,null,null,null,"app:plangebied='"+plan.identificatie+"'");
+                    if(this.viewerController.isDebug() && ogcProps.sld.indexOf("http://localhost:8084/viewer/action/sld")===0){
+                        ogcProps.sld=ogcProps.sld.replace("http://localhost:8084","http://webkaart.b3p.nl")
                     }
                     this.setLayer(this.roonlineServiceUrl,ogcProps,options);
 
