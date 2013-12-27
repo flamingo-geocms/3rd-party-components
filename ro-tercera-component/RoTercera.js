@@ -481,6 +481,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
     },
     setSelectedPlan: function(plan){
         this.selectedPlan = plan;
+        this.highlight(null,null);
         if (this.selectedPlan==null){
             this.clearLayer();
             this.selectedPlanContainer.update("Geen plan geselecteerd");
@@ -906,6 +907,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                     "SLD" : sldUrl,
                     "LAYERS" : sldLayer
                 });
+                this.highlightLayer.setUrl(url);
             }
             this.highlightLayer.setVisible(true);
         }

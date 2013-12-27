@@ -236,7 +236,8 @@ Ext.define("viewer.components.rotercera.IdentifyParser",{
     },
             
     createSLDButton : function (id,layer){
-        if (this.wfsToWmsLayer[layer]!=undefined){
+        if (this.component.selectedPlan.origin !== "Tercera" &&
+                this.wfsToWmsLayer[layer]!==undefined){
             layer= this.wfsToWmsLayer[layer];
         }
         var html="<a href='#'";
@@ -304,11 +305,20 @@ Ext.define("viewer.components.rotercera.IdentifyParser",{
         }
         return newS;
     },
-    makeSimple : function (obj){
+    makeSimple : function (obj,layerId){
+        var tercera = false;
+        if (layerId==this.TERCERALAYERID){
+            tercera = true;
+        }
         var newObj= new Object();
         for (var featureName in obj){
-            var simpleFeatureName=this.makeSimpleName(featureName)
-            newObj[simpleFeatureName] = new Object();
+            var simpleFeatureName=this.makeSimpleName(featureName);
+            if (tercera){
+                simpleFeatureName = obj[featureName][0].objecttype;
+            }
+            if (newObj[simpleFeatureName]==undefined){
+                newObj[simpleFeatureName] = new Object();
+            }
             for (var featureIndex in obj[featureName]){
                 newObj[simpleFeatureName][featureIndex]= new Object();
                 for (var attributeName in obj[featureName][featureIndex]){
@@ -326,6 +336,11 @@ Ext.define("viewer.components.rotercera.IdentifyParser",{
     getComplexName : function(complexObj,simpleName){            
         for (var featureName in complexObj){
             if (featureName.toLowerCase().indexOf(simpleName)>=0){
+                return featureName;
+            }
+            if (complexObj[featureName][0]!=undefined &&
+                    complexObj[featureName][0].objecttype!=undefined &&
+                    complexObj[featureName][0].objecttype === simpleName){
                 return featureName;
             }
         }
@@ -376,7 +391,7 @@ Ext.define("viewer.components.rotercera.IdentifyParser",{
     parse : function (data,layerId,plangebied){  
         var objcomplex = this.dataToObj(data);
         //remove all ':' and set all names to lowercase.
-        var obj = this.makeSimple(objcomplex);
+        var obj = this.makeSimple(objcomplex,layerId);
         //Zoek het juiste bestemmingsplan object
         var hetPlanObject=null;
         //if tercera layer then the info is always of the loaded plan
@@ -406,7 +421,7 @@ Ext.define("viewer.components.rotercera.IdentifyParser",{
             infoPart+="<table class='featureinfo-table'>";
             //enkel
             if (obj["enkelbestemming"]){
-                infoPart+=this.createBestemmingRow("Enkelbestemming",obj["enkelbestemming"],plangebied,this.getComplexName(objcomplex,"enkelbestemming"));
+                infoPart+=this.createBestemmingRow("Enkelbestemming",obj["enkelbestemming"],plangebied,this.getComplexName(objcomplex,"enkelbestemming"),forcePartOfPlan);
             }else if (layerId==this.TERCERALAYERID){
                 //maybe it's a tercera feature?
                 for (var i=0; i < this.terceraMapping.enkelbestemming.length; i++){
@@ -417,7 +432,7 @@ Ext.define("viewer.components.rotercera.IdentifyParser",{
                 }
             }
             if (obj["dubbelbestemming"]){
-                infoPart+=this.createBestemmingRow("Dubbelbestemming",obj["dubbelbestemming"],plangebied,this.getComplexName(objcomplex,"dubbelbestemming"));
+                infoPart+=this.createBestemmingRow("Dubbelbestemming",obj["dubbelbestemming"],plangebied,this.getComplexName(objcomplex,"dubbelbestemming"),forcePartOfPlan);
             }else if (layerId==this.TERCERALAYERID){
                 for (var i=0; i < this.terceraMapping.dubbelbestemming.length; i++){
                     var mapping = this.terceraMapping.dubbelbestemming[i];
@@ -427,7 +442,7 @@ Ext.define("viewer.components.rotercera.IdentifyParser",{
                 }
             }
             if (obj["gebiedsaanduiding"]){ 
-                infoPart+=this.createBestemmingRow("Gebiedsaanduiding",obj["gebiedsaanduiding"],plangebied,this.getComplexName(objcomplex,"gebiedsaanduiding"));
+                infoPart+=this.createBestemmingRow("Gebiedsaanduiding",obj["gebiedsaanduiding"],plangebied,this.getComplexName(objcomplex,"gebiedsaanduiding"),forcePartOfPlan);
             }else if (layerId==this.TERCERALAYERID){
                 for (var i=0; i < this.terceraMapping.gebiedsaanduiding.length; i++){
                     var mapping = this.terceraMapping.gebiedsaanduiding[i];
@@ -441,12 +456,12 @@ Ext.define("viewer.components.rotercera.IdentifyParser",{
                     var feature=obj["bouwvlak"][featureCount];
                     if (forcePartOfPlan || this.isPartOfPlan(feature,plangebied))
                         if (feature["fid"]){
-                            infoPart+=this.createRow("Bouwvlak","","",this.createSLDButton(feature["fid"],this.getComplexName(objcomplex,"bouwvlak")));
+                            infoPart+=this.createRow("Bouwvlak","","",this.createSLDButton(feature["fid"],this.getComplexName(objcomplex,"bouwvlak")),forcePartOfPlan);
                         }
                 }
             }
             if (obj["bouwaanduiding"]){          
-                infoPart+=this.createBestemmingRow("Bouwaanduiding",obj["bouwaanduiding"],plangebied,forcePartOfPlan);
+                infoPart+=this.createBestemmingRow("Bouwaanduiding",obj["bouwaanduiding"],plangebied,null,forcePartOfPlan);
 
             }
             if (obj["maatvoering"]){
