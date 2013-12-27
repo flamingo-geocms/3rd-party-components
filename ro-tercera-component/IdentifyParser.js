@@ -208,9 +208,9 @@ Ext.define("viewer.components.rotercera.IdentifyParser",{
         if (this.wfsToWmsLayer[layer]!=undefined){
             layer= this.wfsToWmsLayer[layer];
         }
-        var html="<a href='javascript: void(0)'";
-        html+=" onclick='showElementWithFid("+id+",\""+layer+"\")'>";
-        html+="<img src=\"<html:rewrite module='' page='/images/map.png'/>\" id=\"image_"+id+"\"/>";
+        var html="<a href='#'";
+        html+=" onclick=\"viewerController.getComponentByName('"+this.component.name+"').highlight('"+id+"','"+layer+"')\">";
+        html+="<img src='/images/map.png' id=\"image_"+id+"\"/>";
         html+="</a>";
         return html;
     },
@@ -228,7 +228,7 @@ Ext.define("viewer.components.rotercera.IdentifyParser",{
                if (linkText.length>0){
                    linkText+="<br/>";
                }
-               linkText+="<a href=\"#\" onclick=\"planDocWindow=popUp('"+theUrl+"','plantekst',650,550)\">"+typeDoc+"</a><br>";
+               linkText+="<a href=\"#\" onclick=\"planDocWindow=window.open('"+theUrl+"','info',{})\">"+typeDoc+"</a><br>";
            }
        }
        return linkText;
@@ -342,7 +342,7 @@ Ext.define("viewer.components.rotercera.IdentifyParser",{
     /**
      *Makes the html.
      */
-    prepareData : function (data,layerId,plangebied){  
+    parse : function (data,layerId,plangebied){  
         var objcomplex = this.dataToObj(data);
         //remove all ':' and set all names to lowercase.
         var obj = this.makeSimple(objcomplex);
@@ -530,6 +530,7 @@ Ext.define("viewer.components.rotercera.IdentifyParser",{
             infoPart+=this.createPlanInfo(hetPlanObject);
             this.info+=infoPart;
         }
+        return this.info;
 
     },   
     getInfo : function(){

@@ -42,7 +42,8 @@ Ext.define ("viewer.components.RoTercera",{
     
     currentPlans:null,    
     selectedPlan:null,
-    wmsLayer: null,    
+    wmsLayer: null,
+    highlightLayer: null,
     
     roToc: null,
     roComment: null,
@@ -55,6 +56,7 @@ Ext.define ("viewer.components.RoTercera",{
     commentLayerIndex: null,
     
     customInfoEnabled: false,
+    previousSLDFid: null,
     config:{
         name: "Ro-Tercera client",
         title: "",
@@ -607,7 +609,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 listeners:{
                     element: 'el',
                     click: function(){
-                        window.open(value,key.replace(/ /g,"_"),{});
+                        window.open(value,key.replace(/ /g,"_"),'Document',{});
                     }
                 },
                 style: {
@@ -816,7 +818,9 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 }
                 var els = oldFunction.call(otherData);
                 var roEls=me.createInfoHtmlElements(roData);
-                var els = roEls.concat(els);
+                if (roEls!=null){
+                    els = roEls.concat(els);
+                }
                 return els;
             }
         });
@@ -824,12 +828,19 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
     createInfoHtmlElements: function (data){
         var origin = this.selectedPlan.origin;
         var planId = this.selectedPlan.identificatie;
-        this.parser.prepareData(data,origin,planId);
-        var el = new Ext.Element(document.createElement("div"));
-        el.update(this.parser.getInfo());
-        el.addCls("planinfo-feature")
-        var returnVal = [];
-        returnVal.push(el);
+        this.parser.resetData();
+        var info=this.parser.parse(data,origin,planId);
+        var el = null;
+        if (!Ext.isEmpty(info)){
+            el = new Ext.Element(document.createElement("div"));
+            el.update(info);
+            el.addCls("planinfo-feature");
+        }
+        var returnVal=null;
+        if (el!=null){
+            returnVal = [];
+            returnVal.push(el);
+        }
         return returnVal;
     },
             
@@ -839,6 +850,59 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 .featureinfo-table tbody tr td{padding-right: 5px;}\
                 .planinfo-feature{border-bottom: 1px solid #666666;}";
         Ext.util.CSS.createStyleSheet(css);
+    },      
+    
+    highlight: function (fid,sldLayer){
+        //first handle the images buttons.
+        if (this.previousSLDFid!=null){
+            if (document.getElementById("image_"+this.previousSLDFid)){
+                document.getElementById("image_"+this.previousSLDFid).src="/images/map.png";
+            }
+        }
+        //toggle
+        if (fid==null || (this.previousSLDFid!=null && this.previousSLDFid==fid)){
+            if (this.highlightLayer){
+                this.highlightLayer.setVisible(false);
+            }
+            this.previousSLDFid=null;
+        }//set new
+        else{
+            this.previousSLDFid=fid;
+            document.getElementById("image_"+this.previousSLDFid).src="/images/map_go.png";
+            
+            var url=this.wmsLayer.getUrl();                 
+            var sldUrl = Ext.create("viewer.SLD").createURL(sldLayer,null,"fid='"+fid+"'",null,null,null,"#FF0000");
+            if(this.viewerController.isDebug() && sldUrl.indexOf("http://localhost:8084/viewer/action/sld")===0){
+                sldUrl=sldUrl.replace("http://localhost:8084","http://webkaart.b3p.nl")
+            }
+            if (!this.highlightLayer){
+                 var ogcProps={
+                    exceptions: "application/vnd.ogc.se_inimage",
+                    srs: "EPSG:28992",
+                    version: "1.1.1",                
+                    styles: "",
+                    format: "image/png",
+                    transparent: true,
+                    noCache: true,
+                    layers: sldLayer,
+                    sld: sldUrl
+                };
+                var options={
+                    layers :sldLayer,
+                    id: "RoHighlightLayer",
+                    alpha: 50
+                }
+                this.highlightLayer = this.viewerController.mapComponent.createWMSLayer("highlightLayer", url ,ogcProps,options,this.viewerController);
+                
+                this.viewerController.mapComponent.getMap().addLayer(this.highlightLayer);
+            }else{
+                this.highlightLayer.setOGCParams({
+                    "SLD" : sldUrl,
+                    "LAYERS" : sldLayer
+                });
+            }
+            this.highlightLayer.setVisible(true);
+        }
     },
             
     getExtComponents: function() {
