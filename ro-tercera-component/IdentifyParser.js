@@ -18,6 +18,9 @@ Ext.define("viewer.components.rotercera.IdentifyParser",{
     info: "",
     commentaarInfo: "",
     
+    highlightImage: null,
+    highlightedImage: null,
+    
     component: null,
     config: {
         domElement: null
@@ -36,7 +39,35 @@ Ext.define("viewer.components.rotercera.IdentifyParser",{
         this.wfsToWmsLayer['Besluitgebied_X'] = "XGB:Besluitgebied";
         this.wfsToWmsLayer['Besluitvlak_A'] = "AMB:Besluitgebied";      
         this.wfsToWmsLayer['Besluitgebied_A'] = "AMB:Besluitgebied";
+        this.wfsToWmsLayer["Bestemmingsplangebied"] = "BP:Bestemmingsplangebied"; 
+        this.wfsToWmsLayer["Wijzigingsplangebied"] = "BP:Wijzigingsplangebied"; 
+        this.wfsToWmsLayer["Enkelbestemming"] = "BP:Enkelbestemming"; 
+        this.wfsToWmsLayer["Figuur"] = "BP:Figuur"; 
+        this.wfsToWmsLayer["Lettertekenaanduiding"] = "BP:Lettertekenaanduiding"; 
+        this.wfsToWmsLayer["Maatvoering"] = "BP:Maatvoering"; 
+        this.wfsToWmsLayer["Dubbelbestemming"] = "BP:Dubbelbestemming"; 
+        this.wfsToWmsLayer["Bouwvlak"] = "BP:Bouwvlak"; 
+        this.wfsToWmsLayer["Gebiedsaanduiding"] = "BP:Gebiedsaanduiding"; 
+        this.wfsToWmsLayer["Inpassingsplangebied"] = "BP:Inpassingsplangebied";
+        this.wfsToWmsLayer["Bouwaanduiding"] = "BP:Bouwaanduiding";
+        this.wfsToWmsLayer["Functieaanduiding"] = "BP:Functieaanduiding";
+        this.wfsToWmsLayer["ProvinciaalPlangebied"] = "PP:ProvinciaalPlangebied";
+        this.wfsToWmsLayer["ProvinciaalGebied"] = "PP:ProvinciaalGebied";
+        this.wfsToWmsLayer["ProvinciaalComplex"] = "PP:ProvinciaalComplex";
+        this.wfsToWmsLayer["ProvinciaalVerbinding"] = "PP:ProvinciaalVerbinding";
+        this.wfsToWmsLayer["NationaalPlangebied"] = "NP:NationaalPlangebied";
+        this.wfsToWmsLayer["Besluitvlak"] = "XGB:Besluitvlak";
+        this.wfsToWmsLayer["Besluitsubvlak"] = "XGB:Besluitsubvlak";
+        this.wfsToWmsLayer["Exploitatieplangebied"] = "XGB:Exploitatieplangebied";
+        this.wfsToWmsLayer["Gerechtelijkeuitspraakgebied"] = "XGB:Gerechtelijkeuitspraakgebied";
+        this.wfsToWmsLayer["Projectbesluitgebied"] = "XGB:Projectbesluitgebied";
+        this.wfsToWmsLayer["Tijdelijkeontheffingbuitenplansgebied"] = "XGB:Tijdelijkeontheffingbuitenplansgebied";
+        this.wfsToWmsLayer["Voorbereidingsbesluitgebied"] = "XGB:Voorbereidingsbesluitgebied";
+        this.wfsToWmsLayer["Plangebied"] = "PCP:Plangebied";
 
+        this.highlightImage = Ext.String.urlAppend(this.component.resourceUrl,"resource=resources/images/map.png");
+        this.highlightedImage = Ext.String.urlAppend(this.component.resourceUrl,"resource=resources/images/map_go.png");
+        
         this.terceraMapping={
             enkelbestemming: [
                 {key: "agrarisch", title: "Agrarisch"},
@@ -210,7 +241,7 @@ Ext.define("viewer.components.rotercera.IdentifyParser",{
         }
         var html="<a href='#'";
         html+=" onclick=\"viewerController.getComponentByName('"+this.component.name+"').highlight('"+id+"','"+layer+"')\">";
-        html+="<img src='/images/map.png' id=\"image_"+id+"\"/>";
+        html+="<img src='"+this.highlightImage+"' id=\"image_"+id+"\"/>";
         html+="</a>";
         return html;
     },

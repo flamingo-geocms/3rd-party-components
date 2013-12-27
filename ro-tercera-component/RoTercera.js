@@ -24,6 +24,7 @@ Ext.define ("viewer.components.RoTercera",{
     minWidth: 280,
     minHeight: 540,        
     comboWidth: 200,    
+    resourceUrl: null,
     //stores
     ownerStore: null,
     typeStore: null,
@@ -76,13 +77,13 @@ Ext.define ("viewer.components.RoTercera",{
      */
     constructor: function (conf){  
         conf=this.setDefaults(conf);
-        var resourceUrl = "";
+        this.resourceUrl = "";
         if (actionBeans && actionBeans["componentresource"]){
-            resourceUrl=actionBeans["componentresource"];
+            this.resourceUrl=actionBeans["componentresource"];
         }
-        resourceUrl=Ext.String.urlAppend(resourceUrl,"className=viewer.components.RoTercera")
+        this.resourceUrl=Ext.String.urlAppend(this.resourceUrl,"className=viewer.components.RoTercera")
         
-        conf.iconUrl=Ext.String.urlAppend(resourceUrl,"resource=resources/images/icon16_gray.png");;
+        conf.iconUrl=Ext.String.urlAppend(this.resourceUrl,"resource=resources/images/icon16_gray.png");
         viewer.components.RoTercera.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         var me = this;
@@ -93,7 +94,7 @@ Ext.define ("viewer.components.RoTercera",{
                     me.buttonClick();
                 },
                 text: me.title,
-                icon: Ext.String.urlAppend(resourceUrl,"resource=resources/images/icon38_gray.png"),
+                icon: Ext.String.urlAppend(me.resourceUrl,"resource=resources/images/icon38_gray.png"),
                 tooltip: me.tooltip,
                 label: me.label
             });
@@ -856,7 +857,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         //first handle the images buttons.
         if (this.previousSLDFid!=null){
             if (document.getElementById("image_"+this.previousSLDFid)){
-                document.getElementById("image_"+this.previousSLDFid).src="/images/map.png";
+                document.getElementById("image_"+this.previousSLDFid).src=this.parser.highlightImage;
             }
         }
         //toggle
@@ -868,10 +869,15 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         }//set new
         else{
             this.previousSLDFid=fid;
-            document.getElementById("image_"+this.previousSLDFid).src="/images/map_go.png";
+            document.getElementById("image_"+this.previousSLDFid).src=this.parser.highlightedImage;
             
+            
+            var useRuleFilter = false;
+            if (this.selectedPlan.origin == 'Tercera'){
+                useRuleFilter=true;
+            }
             var url=this.wmsLayer.getUrl();                 
-            var sldUrl = Ext.create("viewer.SLD").createURL(sldLayer,null,"fid='"+fid+"'",null,null,null,"#FF0000");
+            var sldUrl = Ext.create("viewer.SLD").createURL(sldLayer,null,"fid='"+fid+"'",null,null,null,"#FF0000",useRuleFilter);
             if(this.viewerController.isDebug() && sldUrl.indexOf("http://localhost:8084/viewer/action/sld")===0){
                 sldUrl=sldUrl.replace("http://localhost:8084","http://webkaart.b3p.nl")
             }
