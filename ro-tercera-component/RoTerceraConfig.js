@@ -31,13 +31,13 @@ Ext.define("viewer.components.CustomConfiguration",{
         this.form.add([{
                 xtype: "textfield",
                 name: "width",
-                value: me.configObject.width ? me.configObject.width : 250,
+                value: me.configObject.width ? me.configObject.width : 280,
                 fieldLabel: "width",
                 labelWidth: this.labelWidth
             },{
                 xtype: "textfield",
                 name: "height",
-                value: me.configObject.height ? me.configObject.height: 500,
+                value: me.configObject.height ? me.configObject.height: 580,
                 fieldLabel: "height",
                 labelWidth: this.labelWidth
             },{

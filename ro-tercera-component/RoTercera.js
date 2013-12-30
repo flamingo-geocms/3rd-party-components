@@ -22,7 +22,7 @@ Ext.define ("viewer.components.RoTercera",{
     extend: "viewer.components.Component",  
     panel: null,
     minWidth: 280,
-    minHeight: 540,        
+    minHeight: 580,        
     comboWidth: 200,    
     resourceUrl: null,
     //stores
