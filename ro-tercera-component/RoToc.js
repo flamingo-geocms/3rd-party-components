@@ -332,7 +332,7 @@ Ext.define ("viewer.components.rotercera.RoOnlineLegendController",{
             this.enableLayer(this.F_LAYER_NAME);
         } 
         //make missing plan filters
-        var layers=this.getFilteredLayers().split(",");
+        var layers=this.getFilteredLayers();
         for (var i =0; i < layers.length; i++){
             //if not a filter is set, add the layer with filter
             if (!Ext.Array.contains(sldLayers,layers[i])){
@@ -349,6 +349,9 @@ Ext.define ("viewer.components.rotercera.RoOnlineLegendController",{
         }
         
         this.sldUrl=Ext.create("viewer.SLD").createURL(layerParam,null,filterParam,null,null,this.PG_ATTR_NAME +" = '"+this.planId +"'");
+        if (this.sldUrl.indexOf("http://localhost:8084/viewer/action/sld")==0){
+            this.sldUrl = this.sldUrl.replace("http://localhost:8084","http://webkaart.b3p.nl");
+        }
         this.reloadLayer();
     },
     /**
@@ -375,7 +378,7 @@ Ext.define ("viewer.components.rotercera.RoOnlineLegendController",{
      * Overwrite the getFilteredLayers and return "", no layers= param needed for new RO-online service
      */
     getEnabledLayers : function(){
-        return " ";
+        return "";
     },
     /**
      *Adds a filter to the sld so it wil only show this sld
