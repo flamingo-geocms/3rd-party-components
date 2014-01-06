@@ -66,7 +66,7 @@ Ext.define ("viewer.components.RoTercera",{
         label: "",
         //TODO: make configurable
         roServiceUrl: "",        
-        terceraRequestPage: "https://tercera.provincie-utrecht.nl/RequestPage.aspx",
+        terceraRequestPage: "https://tercera.provincie-utrecht.nl/RequestPage.aspx",        
         roonlineLayers: null,
         roonlineServiceUrl: null,
         layers: null
@@ -104,10 +104,7 @@ Ext.define ("viewer.components.RoTercera",{
         this.roComment = Ext.create("viewer.components.rotercera.RoComment",conf,this);
         this.roAllComment = Ext.create("viewer.components.rotercera.RoAllComment",conf,this);
         this.parser = Ext.create("viewer.components.rotercera.IdentifyParser",{},this);
-        var me = this;
-        this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,function(){
-            me.setCreateInfoHtmlElements();
-        });
+        var me = this;        
         
         this.addStyleSheet();
         
@@ -322,6 +319,30 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             xtype: "container",
             html: "Geen plan geselecteerd",            
         });
+        this.uploadPlanButton = Ext.create('Ext.container.Container',{
+            xtype: "container",
+            html: "Upload eigen plan",
+            style: {
+                fontWeight: 'bold',
+                cursor: 'pointer',
+            },
+            listeners:{
+                element: 'el',
+                scope: this,
+                click: function(){
+                    if (user){
+                        var link = document.getElementById("linkForVerwerk");  
+                        link.target = "_blank";  
+                        var url= this.terceraRequestPage;
+                        url+= url.indexOf("?")>0 ? "&" : "?";
+                        url+= "user="+user.name;
+                        link.href = url;  
+                        link.click();
+                    }
+                }
+            },
+            hidden: user===null
+        });
         //create panel
         this.panel = Ext.create('Ext.panel.Panel', {
             layout: { 
@@ -351,6 +372,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 this.drawCommentButton,
                 this.showAllCommentButton,
                 this.selectedPlanContainer,
+                this.uploadPlanButton,
                 {
                     xtype: "container",
                     html: "<a id='linkForVerwerk' href='javascript:void(0)' style='visibility:hidden;position:absolute;'></a>",
@@ -361,6 +383,8 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             ]
             
         });
+        //make sure the info html elements function is created.
+        this.setCreateInfoHtmlElements();
     },
     /**
      * Changed functions:
@@ -509,7 +533,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                                 username= encodeURIComponent(user.name);
                             }
                             var url= me.terceraRequestPage;
-                            url+= url.indexOf("?">0) ? "&" : "?";
+                            url+= url.indexOf("?")>0 ? "&" : "?";
                             url+="idn="+encodeURIComponent(plan.identificatie);
                             if (username){
                                 url+="&user="+username;
@@ -820,7 +844,10 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                     }
                 }
                 var els = oldFunction.call(otherData);
-                var roEls=me.createInfoHtmlElements(roData);
+                var roEls=null;
+                if (roData.length >0){
+                    roEls=me.createInfoHtmlElements(roData);
+                }
                 if (roEls!=null){
                     els = roEls.concat(els);
                 }

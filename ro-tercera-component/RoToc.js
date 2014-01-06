@@ -399,7 +399,7 @@ Ext.define ("viewer.components.rotercera.TerceraLegendController",{
     EB_LAYER_NAME : "enkelbestemming",
     DB_LAYER_NAME : "dubbelbestemming",
     GA_LAYER_NAME : "gebiedsaanduiding",
-    F_LAYER_NAME : "figuur",
+    F_LAYER_NAME :  "figuur",
     FA_LAYER_NAME : "functieaanduiding",
     BA_LAYER_NAME : "bouwaanduiding",
     MV_LAYER_NAME : "maatvoering",
