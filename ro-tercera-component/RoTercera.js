@@ -504,7 +504,11 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         this.setSelectedPlan(plan);
     },
     setSelectedPlan: function(plan){
+        if (this.selectedPlan !==null){
+            Ext.get(this.selectedPlan.identificatie).removeCls("selected");
+        }        
         this.selectedPlan = plan;
+        
         this.highlight(null,null);
         if (this.selectedPlan==null){
             this.clearLayer();
@@ -514,6 +518,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             this.setPlanCommentFilter(null);
             this.customInfoEnabled=false
         }else{
+            Ext.get(this.selectedPlan.identificatie).addCls("selected");
             this.customInfoEnabled=true
             if(plan.origin == 'Tercera' && plan.wms==undefined){
                 var me=this;
@@ -878,7 +883,8 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         var css=".planinfo-table tbody tr .td0{font-weight: bold;}\
                 .planinfo-table tbody tr td{padding-right: 5px;}\
                 .featureinfo-table tbody tr td{padding-right: 5px;}\
-                .planinfo-feature{border-bottom: 1px solid #666666;}";
+                .planinfo-feature{border-bottom: 1px solid #666666;}\
+                .selected{background-color: #0066CC;color: #000000;}";
         Ext.util.CSS.createStyleSheet(css);
     },      
     
