@@ -270,7 +270,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         
         this.legendaButton = Ext.create('Ext.container.Container',{
             xtype: "container",
-            html: "Legenda",
+            html: "Planlagen",
             style: {
                 fontWeight: 'bold',
                 cursor: 'pointer'
@@ -680,7 +680,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
 
                     var cql = "("+this.roComment.publicAttributeName+"=true"
                     if (user){
-                        cql+= " OR "+this.roComment.ownerAttributeName+ "='"+user+"'";
+                        cql+= " OR "+this.roComment.ownerAttributeName+ "='"+user.name+"'";
                     }
                     cql+=")"
                     this.publicCommentfilter = Ext.create("viewer.components.CQLFilterWrapper",{
@@ -851,7 +851,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                         otherData.push(d);
                     }
                 }
-                var els = oldFunction.call(otherData);
+                var els = oldFunction.call(comp,otherData);
                 var roEls=null;
                 if (roData.length >0){
                     roEls=me.createInfoHtmlElements(roData);
@@ -886,7 +886,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         var css=".planinfo-table tbody tr .td0{font-weight: bold;}\
                 .planinfo-table tbody tr td{padding-right: 5px;}\
                 .featureinfo-table tbody tr td{padding-right: 5px;}\
-                .planinfo-feature{border-bottom: 1px solid #666666;}\
+                .planinfo-feature{border-bottom: 1px solid #D7D7D7;}\
                 .selected{background-color: #0066CC;color: #000000;}";
         Ext.util.CSS.createStyleSheet(css);
     },      
