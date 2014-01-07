@@ -194,6 +194,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             fieldLabel: 'Eigenaar',
             labelAlign: 'top',
             store: this.ownerStore,
+            editable: false,
             queryMode: 'local',
             displayField: 'name',
             valueField: 'code',
@@ -209,6 +210,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             fieldLabel: 'Plan type',
             labelAlign: 'top',
             store: this.typeStore,
+            editable: false,
             queryMode: 'local',
             displayField: 'value',
             valueField: 'key',
@@ -436,8 +438,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         this.currentPlans = plans;
         this.updatePlansContainer(plans);        
         var uniqueTypes = this.getUniqueType(this.currentPlans);
-        var uniqueStatus = this.getUniqueStatus(this.currentPlans);
-                
+        var uniqueStatus = this.getUniqueStatus(this.currentPlans);        
         this.setTypes(uniqueTypes);
         this.setStatus(uniqueStatus);        
     },
@@ -484,6 +485,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
      */
     setTypes: function(types){
         var values= [];
+        values.push({key: null,value: "Alle typen"});
         for (var i=0; i < types.length; i ++){
             values.push({key: types[i],value : types[i]})
         }
@@ -491,6 +493,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
     },
     setStatus: function(status){
         var values= [];
+        values.push({key: null,value: "Alle statussen"});
         for (var i=0; i < status.length; i ++){
             values.push({key: status[i],value : status[i]})
         }
