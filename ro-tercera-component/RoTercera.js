@@ -58,6 +58,7 @@ Ext.define ("viewer.components.RoTercera",{
     
     customInfoEnabled: false,
     previousSLDFid: null,
+    wmsLayerId: "ulRooTercera",
     config:{
         name: "Ro-Tercera client",
         title: "",
@@ -107,6 +108,8 @@ Ext.define ("viewer.components.RoTercera",{
         var me = this;        
         
         this.addStyleSheet();
+        
+        this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
         
         return this;
     },
@@ -388,6 +391,23 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         //make sure the info html elements function is created.
         this.setCreateInfoHtmlElements();
     },
+    onAddLayer: function(map,options){
+        var mapLayer=options.layer;
+        if (mapLayer==null)
+            return;
+        if (mapLayer.id==this.wmsLayerId){
+            this.wmsLayer = mapLayer;
+            //todo: heel veel
+            //reset toc, only for RoOnline layers. The tercera is done later, when it's clear which layers must be shown
+            if (this.selectedPlan && this.selectedPlan.origin=="Roonline"){
+                this.roToc.reset({
+                    type: this.selectedPlan.origin,
+                    planId: this.selectedPlan.identificatie,
+                    wmsLayer: this.wmsLayer
+                });
+            }
+        }
+    },
     /**
      * Changed functions:
      */     
@@ -606,12 +626,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                         ogcProps.sld=ogcProps.sld.replace("http://localhost:8084","http://webkaart.b3p.nl")
                     }
                     this.setLayer(this.roonlineServiceUrl,ogcProps,options);
-
-                    this.roToc.reset({
-                        type: this.selectedPlan.origin,
-                        planId: this.selectedPlan.identificatie,
-                        wmsLayer: this.wmsLayer
-                    });
+                    
                 }
                 this.selectedPlanContainer.update(prePlanText+this.selectedPlan.identificatie);
             }
@@ -717,7 +732,59 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
      * Load layer in map
      */
     setLayer: function (url,props,options){
-        var index =-1;
+        var me = this;
+        var si = Ext.create("viewer.ServiceInfo", {
+            protocol: "wms",
+            url: url
+        });
+
+        si.loadInfo(
+            function(info) {
+                info.id = "usRooTercera";
+                info.status = 'added';
+                info.layers["usRooTercera"]={
+                    name: options.layers.join(","),
+                    queryable: true
+                }                
+                me.viewerController.addOrReplaceService(info);
+                
+                var appLayer={
+                    background: false,
+                    checked: true,
+                    id: me.wmsLayerId,
+                    layerName: "usRooTercera",
+                    alias: "Udrop planlaag",
+                    serviceId: "usRooTercera",
+                    status: 'added',
+                    details:{
+                        "summary.description" : "",
+                        "summary.link": "",
+                        "summary.image": "",
+                        "summary.title": " "
+                    }
+                };
+                me.viewerController.addOrReplaceAppLayer(appLayer);
+                var found=false;
+                for (var i=0; i< me.viewerController.app.selectedContent.length; i++){
+                    var contentItem = me.viewerController.app.selectedContent[i];
+                    if (contentItem && contentItem.id == me.wmsLayerId){
+                        found=true;
+                        break;
+                    }
+                }
+                if (!found){
+                    me.viewerController.app.selectedContent.push({
+                        id: me.wmsLayerId,
+                        type: 'appLayer'
+                    });
+                }
+                me.viewerController.setSelectedContent(me.viewerController.app.selectedContent);
+            },
+            function(msg) {
+                Ext.MessageBox.alert("Foutmelding", msg);                
+            }
+        );
+        /*var index =-1;
         if (this.wmsLayer!=null){
             index = this.viewerController.mapComponent.getMap().getLayerIndex(this.wmsLayer);
         }else if (this.layers){
@@ -737,13 +804,15 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         if (index>=0){
             this.viewerController.mapComponent.getMap().setLayerIndex(this.wmsLayer,index);
             this.viewerController.mapComponent.getMap().setLayerIndex(this.commentMapLayer,index+1);
-        }
+        }*/
     },
     clearLayer: function (){
+        //todo: hier de layer uit zetten.
+        /*
         if (this.wmsLayer!=null){
             this.viewerController.mapComponent.getMap().removeLayer(this.wmsLayer);
             delete this.wmsLayer;
-        }
+        }*/
     },
     /**
      * Filter the plans
