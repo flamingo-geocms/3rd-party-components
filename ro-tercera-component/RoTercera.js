@@ -801,7 +801,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 var found=false;
                 for (var i=0; i< me.viewerController.app.selectedContent.length; i++){
                     var contentItem = me.viewerController.app.selectedContent[i];
-                    if (contentItem && contentItem.id == me.wmsLayerId){
+                    if (contentItem && contentItem.id == "l"+me.wmsLayerId){
                         found=true;
                         break;
                     }
