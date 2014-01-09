@@ -396,16 +396,13 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         if (mapLayer==null)
             return;
         if (mapLayer.id==this.wmsLayerId){
-            this.wmsLayer = mapLayer;
-            //todo: heel veel
-            //reset toc, only for RoOnline layers. The tercera is done later, when it's clear which layers must be shown
-            if (this.selectedPlan && this.selectedPlan.origin=="Roonline"){
-                this.roToc.reset({
-                    type: this.selectedPlan.origin,
-                    planId: this.selectedPlan.identificatie,
-                    wmsLayer: this.wmsLayer
-                });
-            }
+            this.wmsLayer = mapLayer;            
+            this.roToc.reset({
+                type: this.selectedPlan.origin,
+                planId: this.selectedPlan.identificatie,
+                wmsLayer: this.wmsLayer
+            });
+            
         }
     },
     /**
@@ -605,12 +602,6 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                                 Ext.MessageBox.alert('Foutmelding', "Fout bij laden plannen" + res.error);
                             }
                             this.setLayer(plan.wms,ogcProps,options);
-
-                            this.roToc.reset({
-                                type: this.selectedPlan.origin,
-                                planId: this.selectedPlan.identificatie,
-                                wmsLayer: this.wmsLayer
-                            });
                         }, 
                         failure: function ( result, request) {
                             Ext.MessageBox.alert('Foutmelding', "Fout bij ophalen plannen" + result.responseText);                        

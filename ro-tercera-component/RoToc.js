@@ -256,6 +256,9 @@ Ext.define ("viewer.components.rotercera.RoOnlineLegendController",{
     reset : function(){
         this.callParent();   
         this.layers= this.wmsLayer.getLayers();
+        if (!(this.layers instanceof Array)){
+            this.layers=this.layers.split(",");
+        }
         //document.getElementById("disclaimer").style.display="inline";
     },
     /**
@@ -437,6 +440,9 @@ Ext.define ("viewer.components.rotercera.TerceraLegendController",{
         
         var me=this;
         this.layers= this.wmsLayer.getLayers();
+        if (!(this.layers instanceof Array)){
+            this.layers=this.layers.split(",");
+        }
         var availableLayers = this.wmsLayer.getLayers();
         
         //walk the inputs and disable/enable them
