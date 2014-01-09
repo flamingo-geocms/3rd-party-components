@@ -45,6 +45,7 @@ Ext.define ("viewer.components.RoTercera",{
     selectedPlan:null,
     wmsLayer: null,
     highlightLayer: null,
+    sldUrl: null,
     
     roToc: null,
     roComment: null,
@@ -396,13 +397,19 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         if (mapLayer==null)
             return;
         if (mapLayer.id==this.wmsLayerId){
-            this.wmsLayer = mapLayer;            
+            this.wmsLayer = mapLayer;
+            
+            if (this.sldUrl){
+                this.wmsLayer.setOGCParams({
+                    "SLD" : this.sldUrl
+                });
+            }
+                
             this.roToc.reset({
                 type: this.selectedPlan.origin,
                 planId: this.selectedPlan.identificatie,
                 wmsLayer: this.wmsLayer
-            });
-            
+            });           
         }
     },
     /**
@@ -524,6 +531,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         this.setSelectedPlan(plan);
     },
     setSelectedPlan: function(plan){
+        this.sldUrl=null;
         if (this.selectedPlan !==null){
             Ext.get(this.selectedPlan.identificatie).removeCls("selected");
         }        
@@ -612,9 +620,9 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                     ogcProps.layers=this.roonlineLayers.split(",");
                     ogcProps.query_layers=this.roonlineLayers.split(",");
                     options.layers= this.roonlineLayers.split(",");
-                    ogcProps.sld = Ext.create("viewer.SLD").createURL(options.layers,null,null,null,null,"app:plangebied='"+plan.identificatie+"'");
-                    if(this.viewerController.isDebug() && ogcProps.sld.indexOf("http://localhost:8084/viewer/action/sld")===0){
-                        ogcProps.sld=ogcProps.sld.replace("http://localhost:8084","http://webkaart.b3p.nl")
+                    this.sldUrl= Ext.create("viewer.SLD").createURL(options.layers,null,null,null,null,"app:plangebied='"+plan.identificatie+"'");
+                    if(this.viewerController.isDebug() && this.sldUrl.indexOf("http://localhost:8084/viewer/action/sld")===0){
+                        this.sldUrl=this.sldUrl.replace("http://localhost:8084","http://webkaart.b3p.nl")
                     }
                     this.setLayer(this.roonlineServiceUrl,ogcProps,options);
                     
