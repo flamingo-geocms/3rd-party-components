@@ -716,16 +716,27 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                     var found=false;
                     for (var i=0; i< this.viewerController.app.selectedContent.length; i++){
                         var contentItem = this.viewerController.app.selectedContent[i];
-                        if (contentItem && contentItem.id == this.commentAppLayer.id){
+                        if (contentItem && contentItem.id == "l"+this.commentAppLayer.id){
                             found=true;
                             break;
                         }
                     }                    
                     if (!found){
                         this.viewerController.app.selectedContent.push({
+                            id: "l"+this.commentAppLayer.id,
+                            type: 'level'
+                        });
+                        this.viewerController.app.levels["l"+this.commentAppLayer.id]={
+                            background: false,
+                            layers: [
+                                this.commentAppLayer.id
+                            ],
+                            name: "Commentaar"
+                        }
+                        /*this.viewerController.app.selectedContent.push({
                             id: this.commentAppLayer.id,
                             type: 'appLayer'
-                        });
+                        });*/
                     }
                 }
             }
@@ -796,10 +807,17 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                     }
                 }
                 if (!found){
-                    me.viewerController.app.selectedContent.push({
-                        id: me.wmsLayerId,
-                        type: 'appLayer'
+                    this.viewerController.app.selectedContent.push({
+                        id: "l"+me.wmsLayerId,
+                        type: 'level'
                     });
+                    this.viewerController.app.levels["l"+me.wmsLayerId]={
+                        background: false,
+                        layers: [
+                            me.wmsLayerId
+                        ],
+                        name: "Bestemmingsplannen"
+                    }
                 }
                 //init the comment layer
                 me.getCommentAppLayer();
