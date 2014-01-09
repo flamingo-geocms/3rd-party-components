@@ -404,12 +404,35 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                     "SLD" : this.sldUrl
                 });
             }
-                
+            
             this.roToc.reset({
                 type: this.selectedPlan.origin,
                 planId: this.selectedPlan.identificatie,
                 wmsLayer: this.wmsLayer
             });           
+        }else if (mapLayer.id == this.layers[0]){
+            this.commentMapLayer = mapLayer;
+            
+            var index=this.viewerController.mapComponent.getMap().getLayerIndex(this.wmsLayer);
+            if (index>=0){
+                this.viewerController.mapComponent.getMap().setLayerIndex(this.commentMapLayer,index+1);
+            }            
+            var cql = "("+this.roComment.publicAttributeName+"=true"
+            if (user){
+                cql+= " OR "+this.roComment.ownerAttributeName+ "='"+user.name+"'";
+            }
+            cql+=")"
+            this.publicCommentfilter = Ext.create("viewer.components.CQLFilterWrapper",{
+                id: "publicFilter_"+this.getName(),
+                cql: cql,
+                operator : "AND",
+                type: "ATTRIBUTE"
+            });
+            if (this.selectedPlan){
+                this.setPlanCommentFilter(this.selectedPlan.identificatie);
+            }
+            this.viewerController.setFilter(this.publicCommentfilter,this.commentAppLayer); 
+            this.commentMapLayer.setVisible(true);
         }
     },
     /**
@@ -629,7 +652,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 }
                 this.selectedPlanContainer.update(prePlanText+this.selectedPlan.identificatie);
             }
-            this.setPlanCommentFilter(plan.identificatie);
+            
             if (plan.bbox){
                 var map=this.viewerController.mapComponent.getMap();
                 map.zoomToExtent(new viewer.viewercontroller.controller.Extent(plan.bbox.minx,plan.bbox.miny,plan.bbox.maxx,plan.bbox.maxy));
@@ -674,7 +697,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             this.viewerController.removeFilter(this.planCommentFilter.id,this.getCommentAppLayer());
             this.planCommentFilter=null;
             this.commentMapLayer.setVisible(false);
-        }else if (planId !=null){
+        }else if (planId !=null){            
             this.planCommentFilter = Ext.create("viewer.components.CQLFilterWrapper",{
                 id: "planFilter_"+this.getName(),
                 cql: this.roComment.planIdAttributeName+"='"+planId+"'",
@@ -689,21 +712,21 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         if (this.commentAppLayer==null || this.commentAppLayer == undefined){
             if (this.layers){
                 this.commentAppLayer = this.viewerController.getAppLayerById(this.layers[0]);
-                if (this.commentAppLayer){
-                    this.commentMapLayer = this.viewerController.getOrCreateLayer(this.commentAppLayer);
-
-                    var cql = "("+this.roComment.publicAttributeName+"=true"
-                    if (user){
-                        cql+= " OR "+this.roComment.ownerAttributeName+ "='"+user.name+"'";
+                if (this.commentAppLayer){                    
+                    var found=false;
+                    for (var i=0; i< this.viewerController.app.selectedContent.length; i++){
+                        var contentItem = this.viewerController.app.selectedContent[i];
+                        if (contentItem && contentItem.id == this.commentAppLayer.id){
+                            found=true;
+                            break;
+                        }
+                    }                    
+                    if (!found){
+                        this.viewerController.app.selectedContent.push({
+                            id: this.commentAppLayer.id,
+                            type: 'appLayer'
+                        });
                     }
-                    cql+=")"
-                    this.publicCommentfilter = Ext.create("viewer.components.CQLFilterWrapper",{
-                        id: "publicFilter_"+this.getName(),
-                        cql: cql,
-                        operator : "AND",
-                        type: "ATTRIBUTE"
-                    });
-                    this.viewerController.setFilter(this.publicCommentfilter,this.commentAppLayer);            
                 }
             }
         }
@@ -759,7 +782,8 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                         "summary.description" : "",
                         "summary.link": "",
                         "summary.image": "",
-                        "summary.title": " "
+                        "summary.title": " ",
+                        transparency: 30
                     }
                 };
                 me.viewerController.addOrReplaceAppLayer(appLayer);
@@ -777,6 +801,9 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                         type: 'appLayer'
                     });
                 }
+                //init the comment layer
+                me.getCommentAppLayer();
+                
                 me.viewerController.setSelectedContent(me.viewerController.app.selectedContent);
             },
             function(msg) {
