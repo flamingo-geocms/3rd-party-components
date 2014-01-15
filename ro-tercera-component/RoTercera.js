@@ -293,7 +293,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             html: "Teken commentaar",
             style: {
                 fontWeight: 'bold',
-                cursor: 'pointer',
+                cursor: 'pointer'
             },
             listeners:{
                 element: 'el',
@@ -309,7 +309,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             html: "Toon alle commentaar",
             style: {
                 fontWeight: 'bold',
-                cursor: 'pointer',
+                cursor: 'pointer'
             },
             listeners:{
                 element: 'el',
@@ -323,14 +323,14 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         
         this.selectedPlanContainer = Ext.create('Ext.container.Container',{
             xtype: "container",
-            html: "Geen plan geselecteerd",            
+            html: "Geen plan geselecteerd"            
         });
         this.uploadPlanButton = Ext.create('Ext.container.Container',{
             xtype: "container",
             html: "Upload eigen plan",
             style: {
                 fontWeight: 'bold',
-                cursor: 'pointer',
+                cursor: 'pointer'
             },
             listeners:{
                 element: 'el',
@@ -610,7 +610,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                     styles: "",
                     format: "image/png",
                     transparent: true,
-                    noCache: true,
+                    noCache: true
                 };
                 var options={id: "RoTerceraLayer"};
                 if (plan.origin == 'Tercera'){
