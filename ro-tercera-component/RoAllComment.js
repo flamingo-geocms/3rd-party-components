@@ -83,7 +83,7 @@ Ext.define ("viewer.components.rotercera.RoAllComment",{
                 //top
                 xtype: 'container',
                 layout: {
-                    type: 'hbox',
+                    type: 'hbox'
                 },
                 items: topItems,
                 flex: 1
