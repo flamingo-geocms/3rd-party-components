@@ -661,8 +661,10 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 var docs = plan.verwijzingNaarTekst.split(",");
                 this.setDocs(docs);            
             }
-            this.drawCommentButton.show();
-            this.showAllCommentButton.show();
+            if (user){
+                this.drawCommentButton.show();
+                this.showAllCommentButton.show();
+            }
         }
     },
     setDocs: function (docs){
