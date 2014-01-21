@@ -50,6 +50,8 @@ Ext.define ("viewer.components.RoTercera",{
     roToc: null,
     roComment: null,
     
+    roLegendUrl: null,
+    
     publicCommentfilter: null,
     planCommentFilter: null,
     
@@ -86,6 +88,7 @@ Ext.define ("viewer.components.RoTercera",{
         this.resourceUrl=Ext.String.urlAppend(this.resourceUrl,"className=viewer.components.RoTercera")
         
         conf.iconUrl=Ext.String.urlAppend(this.resourceUrl,"resource=resources/images/icon16_gray.png");
+        this.roLegendUrl = Ext.String.urlAppend(this.resourceUrl,"resource=resources/images/roLegend.png");
         viewer.components.RoTercera.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         var me = this;
@@ -796,7 +799,8 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                         "summary.link": "",
                         "summary.image": "",
                         "summary.title": " ",
-                        transparency: 30
+                        "transparency": 30,
+                        "legendImageUrl": me.roLegendUrl                        
                     }
                 };
                 me.viewerController.addOrReplaceAppLayer(appLayer);
