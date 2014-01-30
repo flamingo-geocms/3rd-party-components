@@ -79,20 +79,24 @@ Ext.define ("viewer.components.rotercera.RoComment",{
             id: this.name + 'InputPanel',
             border: 0,
             autoScroll: true,
-            width: '100%',
-            height: 300
+            flex: 1            
         });
         this.window = Ext.create("Ext.window.Window",{
             title: "Ro-Commentaar",
             height: 600,
             width: 400,            
-            closeAction: 'hide',
+            closeAction: 'hide',            
+            resizable: false,
+            layout: {
+                type: "vbox",
+                align: 'stretch',
+                pack: 'start'
+            },
             items: [
                 this.inputContainer,
                 {
                     id: this.name + 'savePanel',
                     xtype: "container",
-                    width: '100%',
                     height: MobileManager.isMobile() ? 45 : 30,
                     layout: {
                         type: 'hbox',
