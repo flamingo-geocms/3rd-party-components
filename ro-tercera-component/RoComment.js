@@ -42,6 +42,7 @@ Ext.define ("viewer.components.rotercera.RoComment",{
     },
     newComment: function (planId){
         this.startComment(planId,this.createNew);
+        Ext.getCmp(this.name + "deleteButton").hide();
     },            
     editComment: function(planId,feature){
         this.startComment(planId,function(){
@@ -49,6 +50,7 @@ Ext.define ("viewer.components.rotercera.RoComment",{
             this.planId=planId;
             this.mode = "edit";
             this.handleFeature(feature);
+            Ext.getCmp(this.name + "deleteButton").show();
         });    
     },
     startComment: function(planId,afterLoadAttributes){
@@ -71,6 +73,7 @@ Ext.define ("viewer.components.rotercera.RoComment",{
         if(this.newGeomType != null && this.geometryEditable){
             this.vectorLayer.drawFeature(this.newGeomType);
         }
+        Ext.getCmp(this.name + "deleteButton").hide();
     },
     
     createInputWindow: function(){
@@ -128,6 +131,17 @@ Ext.define ("viewer.components.rotercera.RoComment",{
                                 fn: me.save
                             }
                         }
+                    },
+                    {
+                        id : this.name + "deleteButton",
+                        tooltip: "Verwijder",
+                        text: "Verwijder",
+                        listeners: {
+                            click:{
+                                scope: me,
+                                fn: me.remove
+                            }
+                        }
                     }
                     ]
                 }
@@ -161,6 +175,14 @@ Ext.define ("viewer.components.rotercera.RoComment",{
      * @override
      */
     saveSucces  : function(fid){
+        this.component.roAllComment.reload();
+        this.callParent(arguments);        
+        Ext.getCmp(this.name + "deleteButton").show();
+    },
+    /**
+     * @override
+     */
+    deleteSucces: function(){
         this.component.roAllComment.reload();
         this.callParent(arguments);
     },
