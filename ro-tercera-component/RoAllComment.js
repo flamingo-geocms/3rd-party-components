@@ -15,15 +15,27 @@ Ext.define ("viewer.components.rotercera.RoAllComment",{
         this.initConfig(conf);
     },
             
-    getAllComments: function(planId){
+    getAllComments: function(planId,show){
+        if (show==undefined){
+            show=true;
+        }
         this.planId = planId;
         var fs = this.getFeatureService();
         var options = {limit: 1000,edit:true};
-        
-        fs.loadFeatures(this.viewerController.getAppLayerById(this.layers[0]),this.showFeatures,this.onFail,options,this);
+        var me = this;
+        fs.loadFeatures(this.viewerController.getAppLayerById(this.layers[0]),
+                function(features){
+                    me.showFeatures(features);
+                    if (show){
+                        me.window.show();
+                    }
+                },
+                this.onFail,
+                options,
+                this);
     },
     reload: function (planId){
-        this.getAllComments(this.planId);
+        this.getAllComments(this.planId,false);
     },
     showFeatures: function(features){
         if (this.window==null){
@@ -31,7 +43,7 @@ Ext.define ("viewer.components.rotercera.RoAllComment",{
         }
         this.featureContainer.removeAll();
         this.planContainer.update(this.component.selectedPlan.identificatie);
-        this.window.show();
+        
         
         for (var i=0; i < features.length; i++){
             var f = features[i];
