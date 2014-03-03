@@ -9,8 +9,10 @@ Ext.define ("viewer.components.rotercera.RoToc",{
         this.createWindow();
     },
     createWindow: function(){
+        
+        Ext.util.CSS.createStyleSheet(".legendContent { background-color: #fff;");        
         this.window = Ext.create("Ext.window.Window",{
-            title: "Ro-TOC",
+            title: "Bestemmingen",
             height: 600,
             width: 200,
             layout: 'fit',
