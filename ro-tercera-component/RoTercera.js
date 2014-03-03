@@ -727,17 +727,19 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                         }
                     }                    
                     if (!found){
-                        this.viewerController.app.selectedContent.push({
+                       this.viewerController.app.selectedContent.push({
                             id: "l"+this.commentAppLayer.id,
-                            type: 'level'
+                            type: 'level',
+                            checked:true
                         });
                         this.viewerController.app.levels["l"+this.commentAppLayer.id]={
                             background: false,
                             layers: [
-                                this.commentAppLayer.id
+                                ""+this.commentAppLayer.id
                             ],
                             name: "Commentaar"
-                        }
+                        };
+                        this.commentAppLayer.checked=true;
                         /*this.viewerController.app.selectedContent.push({
                             id: this.commentAppLayer.id,
                             type: 'appLayer'
