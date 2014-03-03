@@ -277,7 +277,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         
         this.legendaButton = Ext.create('Ext.container.Container',{
             xtype: "container",
-            html: "Planlagen",
+            html: "Bestemmingen aan/uit",
             style: {
                 fontWeight: 'bold',
                 cursor: 'pointer'
