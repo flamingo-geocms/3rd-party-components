@@ -330,7 +330,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         });
         this.uploadPlanButton = Ext.create('Ext.container.Container',{
             xtype: "container",
-            html: "Upload eigen plan",
+            html: "Planregister",
             style: {
                 fontWeight: 'bold',
                 cursor: 'pointer'
@@ -380,8 +380,8 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 this.legendaButton,
                 this.drawCommentButton,
                 this.showAllCommentButton,
-                this.selectedPlanContainer,
                 this.uploadPlanButton,
+                this.selectedPlanContainer,
                 {
                     xtype: "container",
                     html: "<a id='linkForVerwerk' href='javascript:void(0)' style='visibility:hidden;position:absolute;'></a>",
