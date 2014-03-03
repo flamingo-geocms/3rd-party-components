@@ -416,10 +416,6 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         }else if (mapLayer.id == this.layers[0]){
             this.commentMapLayer = mapLayer;
             
-            var index=this.viewerController.mapComponent.getMap().getLayerIndex(this.wmsLayer);
-            if (index>=0){
-                this.viewerController.mapComponent.getMap().setLayerIndex(this.commentMapLayer,index+1);
-            }            
             var cql = "("+this.roComment.publicAttributeName+"=true"
             if (user){
                 cql+= " OR "+this.roComment.ownerAttributeName+ "='"+user.name+"'";
@@ -434,8 +430,13 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             if (this.selectedPlan){
                 this.setPlanCommentFilter(this.selectedPlan.identificatie);
             }
-            this.viewerController.setFilter(this.publicCommentfilter,this.commentAppLayer); 
+            this.viewerController.setFilter(this.publicCommentfilter, this.commentAppLayer);
             this.commentMapLayer.setVisible(true);
+
+        }
+        var index = this.viewerController.mapComponent.getMap().getLayerIndex(this.wmsLayer);
+        if (index >= 0) {
+            this.viewerController.mapComponent.getMap().setLayerIndex(this.commentMapLayer, index );
         }
     },
     /**
