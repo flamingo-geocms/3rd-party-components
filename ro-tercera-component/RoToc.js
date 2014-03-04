@@ -185,9 +185,9 @@ Ext.define ("viewer.components.rotercera.LegendController",{
         }
         
         if (returnLayers.length>0){
-            return returnLayers.join(",");
+            return returnLayers;
         }else{
-            return "";
+            return [];
         }
     },
     /**
@@ -217,7 +217,7 @@ Ext.define ("viewer.components.rotercera.LegendController",{
             var newLayers=this.getEnabledLayers();
             this.wmsLayer.setOGCParams({
                 "SLD" : this.sldUrl,
-                "LAYERS" : newLayers.split(",")
+                "LAYERS" : newLayers
             });
             
                 //
