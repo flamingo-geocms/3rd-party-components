@@ -753,13 +753,6 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
     },
     showToc: function(){
         this.roToc.show();
-        if (this.selectedPlan){
-            this.roToc.reset({
-                type: this.selectedPlan.origin,
-                planId: this.selectedPlan.identificatie,
-                wmsLayer: this.wmsLayer
-            });
-        }
     },
     drawComment: function(){
         if(this.selectedPlan && this.selectedPlan.identificatie){
@@ -1038,8 +1031,8 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             }
             var url=this.wmsLayer.getUrl();                 
             var sldUrl = Ext.create("viewer.SLD").createURL(sldLayer,null,"fid='"+fid+"'",null,null,null,"#FF0000",useRuleFilter);
-            if(this.viewerController.isDebug() && sldUrl.indexOf("http://localhost:8084/viewer/action/sld")===0){
-                sldUrl=sldUrl.replace("http://localhost:8084","http://webkaart.b3p.nl")
+            if(this.viewerController.isDebug() && sldUrl.indexOf("http://192.168.1.18:8084/viewer/action/sld")===0){
+                sldUrl=sldUrl.replace("http://192.168.1.18:8084","http://webkaart.b3p.nl")
             }
             if (!this.highlightLayer){
                  var ogcProps={

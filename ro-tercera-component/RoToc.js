@@ -79,14 +79,16 @@ Ext.define ("viewer.components.rotercera.RoToc",{
                 <div><input name="analogeverbeelding" type="checkbox" value="analoge verbeelding"/> Analoge Verbeelding </div>\n\
             </div>' 
         });
+        this.window.show();
+        this.window.hide();
     },
     reset : function(conf){           
         conf.roToc=this;
         //welke layer
-        if(conf.type ==='Roonline'){
+        if (conf.type === 'Roonline') {
             legendController = new viewer.components.rotercera.RoOnlineLegendController(conf);
-        }else{
-            legendController = new viewer.components.rotercera.TerceraLegendController(conf);            
+        } else {
+            legendController = new viewer.components.rotercera.TerceraLegendController(conf);
         }
         legendController.reset();
     },
@@ -355,8 +357,8 @@ Ext.define ("viewer.components.rotercera.RoOnlineLegendController",{
         }
         
         this.sldUrl=Ext.create("viewer.SLD").createURL(layerParam,null,filterParam,null,null,this.PG_ATTR_NAME +" = '"+this.planId +"'");
-        if (this.sldUrl.indexOf("http://localhost:8084/viewer/action/sld")==0){
-            this.sldUrl = this.sldUrl.replace("http://localhost:8084","http://webkaart.b3p.nl");
+        if (this.sldUrl.indexOf("http://192.168.1.18:8084/viewer/action/sld")==0){
+            this.sldUrl = this.sldUrl.replace("http://192.168.1.18:8084","http://webkaart.b3p.nl");
         }
         this.reloadLayer();
     },
