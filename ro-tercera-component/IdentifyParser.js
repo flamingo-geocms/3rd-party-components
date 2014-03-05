@@ -509,11 +509,6 @@ Ext.define("viewer.components.rotercera.IdentifyParser",{
             this.info+=infoPart;
         }else if(hetPlanObject!=null && this.hasInfoWithLayout(obj,hetPlanObject,this.STRUCTUURVISIELAYOUT)){//hetPlanObject["typeplan"].indexOf("structuurvisie")>=0){
             var infoPart="";
-            /*var layerObject=null;
-            if (obj["structuurvisiegebied"])
-                layerObject=obj["structuurvisiegebied"];                                    
-            if (obj["structuurvisiecomplex"])
-                layerObject=obj["structuurvisiecomplex"];  */
 
             infoPart+=this.makeLayerHead(hetPlanObject);
             infoPart+="<table class='featureinfo-table'>"; 

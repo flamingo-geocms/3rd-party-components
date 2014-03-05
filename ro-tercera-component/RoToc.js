@@ -214,20 +214,13 @@ Ext.define ("viewer.components.rotercera.LegendController",{
      */
     reloadLayer : function(){
         if (this.wmsLayer){
-            //function addNewFlamingoWmsLayer(name,url,layers,querylayers,visiblelayers,srs,alpha,maptips,maxMapTips,initService,identPerLayer,zoomToLayer,minscale,maxscale,sldUrl){
-            //flamingoWindow.addNewFlamingoWmsLayer(fl.getId(),fl.getUrl(),fl.getLayers(),fl.getQuerylayers(),fl.getVisible_layers(),fl.getSrs(),fl.getAlpha(),new Array(),null,false,false,false,null,null,fl.getSld(),true);
-            var newLayers=this.getEnabledLayers();
+          var newLayers=this.getEnabledLayers();
             this.wmsLayer.setOGCParams({
                 "SLD" : this.sldUrl,
                 "LAYERS" : newLayers
             });
             
-                //
             this.wmsLayer.reload();
-            /*
-            flamingoWindow.setSldInLayer(this.layerId,this.sldUrl); 
-            flamingoWindow.setLayersInLayer(this.layerId,newLayers);
-            flamingoWindow.reloadLayer(this.layerId);*/
         }
     },
     getAllCheckboxValues : function(){
@@ -264,7 +257,6 @@ Ext.define ("viewer.components.rotercera.RoOnlineLegendController",{
         if (!(this.layers instanceof Array)){
             this.layers=this.layers.split(",");
         }
-        //document.getElementById("disclaimer").style.display="inline";
     },
     /**
      *Refresh the map
@@ -392,12 +384,6 @@ Ext.define ("viewer.components.rotercera.RoOnlineLegendController",{
      *Adds a filter to the sld so it wil only show this sld
      */
     addPlanFilter : function(sldFilter,planId){
-        /*var newSldFilter="";
-        if (sldFilter!=undefined && sldFilter!=null && sldFilter.length > 0){
-            newSldFilter="("+sldFilter+") AND ";
-        }
-        newSldFilter+=this.PG_ATTR_NAME +" = \""+planId +"\"";
-        return newSldFilter;*/
         return sldFilter;
     }    
 });
@@ -440,7 +426,6 @@ Ext.define ("viewer.components.rotercera.TerceraLegendController",{
      *Implement Reset function
      */
     reset : function(){
-        //xxx:document.getElementById("disclaimer").style.display="none";        
         var url = this.wmsLayer.getUrl();
         
         var me=this;
@@ -452,7 +437,6 @@ Ext.define ("viewer.components.rotercera.TerceraLegendController",{
         
         //walk the inputs and disable/enable them
         
-        //var allElements=document.getElementsByTagName("input");
         var legendContainer = document.getElementById("roLegendContainer");
         if (legendContainer==null){
             return;

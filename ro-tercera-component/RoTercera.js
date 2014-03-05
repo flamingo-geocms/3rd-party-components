@@ -104,7 +104,6 @@ Ext.define ("viewer.components.RoTercera",{
                 label: me.label
             });
         }
-        //this.test();
         this.roToc = Ext.create("viewer.components.rotercera.RoToc",{});
         this.roComment = Ext.create("viewer.components.rotercera.RoComment",conf,this);
         this.roAllComment = Ext.create("viewer.components.rotercera.RoAllComment",conf,this);
@@ -741,10 +740,6 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                             name: "Commentaar"
                         };
                         this.commentAppLayer.checked=true;
-                        /*this.viewerController.app.selectedContent.push({
-                            id: this.commentAppLayer.id,
-                            type: 'appLayer'
-                        });*/
                     }
                 }
             }
@@ -830,35 +825,10 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 Ext.MessageBox.alert("Foutmelding", msg);                
             }
         );
-        /*var index =-1;
-        if (this.wmsLayer!=null){
-            index = this.viewerController.mapComponent.getMap().getLayerIndex(this.wmsLayer);
-        }else if (this.layers){
-            index = this.viewerController.mapComponent.getMap().getLayerIndex(this.commentMapLayer);
-            //index--;
-        }
-        this.clearLayer();
-        
-        this.wmsLayer = this.viewerController.mapComponent.createWMSLayer("rolayer", url ,props, options,this.viewerController);
-        this.wmsLayer.setDetails({
-            "summary.description" : "",
-            "summary.link": "",
-            "summary.image": "",
-            "summary.title": " "
-        });
-        this.viewerController.mapComponent.getMap().addLayer(this.wmsLayer);
-        if (index>=0){
-            this.viewerController.mapComponent.getMap().setLayerIndex(this.wmsLayer,index);
-            this.viewerController.mapComponent.getMap().setLayerIndex(this.commentMapLayer,index+1);
-        }*/
+      
     },
     clearLayer: function (){
         //todo: hier de layer uit zetten.
-        /*
-        if (this.wmsLayer!=null){
-            this.viewerController.mapComponent.getMap().removeLayer(this.wmsLayer);
-            delete this.wmsLayer;
-        }*/
     },
     /**
      * Filter the plans
