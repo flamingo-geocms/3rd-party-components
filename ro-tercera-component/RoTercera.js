@@ -274,13 +274,8 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             }]
         });
         
-        this.legendaButton = Ext.create('Ext.container.Container',{
-            xtype: "container",
+        this.legendaButton = Ext.create('Ext.button.Button',{
             html: "Bestemmingen aan/uit",
-            style: {
-                fontWeight: 'bold',
-                cursor: 'pointer'
-            },
             listeners:{
                 element: 'el',
                 scope: this,
@@ -290,13 +285,8 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             }
         });
         
-        this.drawCommentButton = Ext.create('Ext.container.Container',{
-            xtype: "container",
+        this.drawCommentButton = Ext.create('Ext.button.Button',{
             html: "Teken commentaar",
-            style: {
-                fontWeight: 'bold',
-                cursor: 'pointer'
-            },
             listeners:{
                 element: 'el',
                 scope: this,
@@ -306,13 +296,8 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             },
             hidden: true
         });
-        this.showAllCommentButton = Ext.create('Ext.container.Container',{
-            xtype: "container",
+        this.showAllCommentButton = Ext.create('Ext.button.Button',{
             html: "Toon alle commentaar",
-            style: {
-                fontWeight: 'bold',
-                cursor: 'pointer'
-            },
             listeners:{
                 element: 'el',
                 scope: this,
@@ -327,13 +312,8 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             xtype: "container",
             html: "Geen plan geselecteerd"            
         });
-        this.uploadPlanButton = Ext.create('Ext.container.Container',{
-            xtype: "container",
+        this.uploadPlanButton = Ext.create('Ext.button.Button',{
             html: "Planregister",
-            style: {
-                fontWeight: 'bold',
-                cursor: 'pointer'
-            },
             listeners:{
                 element: 'el',
                 scope: this,
