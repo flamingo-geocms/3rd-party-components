@@ -391,7 +391,15 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 type: this.selectedPlan.origin,
                 planId: this.selectedPlan.identificatie,
                 wmsLayer: this.wmsLayer
-            });           
+            });          
+            if (this.commentMapLayer) {
+                var index = this.viewerController.mapComponent.getMap().getLayerIndex(this.wmsLayer);
+                if (index >= 0) {
+                    this.viewerController.mapComponent.getMap().setLayerIndex(this.commentMapLayer, index);
+                }
+            } else {
+                this.viewerController.logger.error("Commentlayer does not yet exist, but is expected to.");
+            }
         }else if (mapLayer.id == this.layers[0]){
             this.commentMapLayer = mapLayer;
             
@@ -412,10 +420,6 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             this.viewerController.setFilter(this.publicCommentfilter, this.commentAppLayer);
             this.commentMapLayer.setVisible(true);
 
-        }
-        var index = this.viewerController.mapComponent.getMap().getLayerIndex(this.wmsLayer);
-        if (index >= 0) {
-            this.viewerController.mapComponent.getMap().setLayerIndex(this.commentMapLayer, index+1 );
         }
     },
     /**
