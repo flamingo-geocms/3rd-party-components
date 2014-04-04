@@ -31,15 +31,23 @@ Ext.define ("viewer.components.rotercera.RoToc",{
     createWindow: function(){
         
         Ext.util.CSS.createStyleSheet(".legendContent { background-color: #fff;");        
+        var me  = this;
         this.window = Ext.create("Ext.window.Window",{
             title: "Bestemmingen",
             height: 600,
             width: 200,
+            bbar:[
+                 { xtype: 'button', text: 'Annuleren', handler: function(){
+                         me.window.close();
+                 }},
+                 { xtype: 'button', text: 'Ok',handler: function(){
+                         legendController.refreshMap();
+                 } }
+            ],
             layout: 'fit',
             autoScroll:true,
             closeAction: 'hide',            
             html: '<div class="legendContent" id="roLegendContainer">\n\
-                <a class="refreshLink" href="javascript: void(0)" onclick="legendController.refreshMap()">Klik hier om de kaart te verversen</a> <br/>\n\
                 <div id="disclaimer">De legenda toont de mogelijke bestemmingen. Deze hoeven niet voor te komen op de kaart.</div>\n\
                 <div><input name="all" type="checkbox" onclick="legendController.setAllChecked(this.checked)"/>Alle Lagen</div>\n\
                 <!--Enkel-->\n\
