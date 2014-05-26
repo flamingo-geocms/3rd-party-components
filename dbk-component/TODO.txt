@@ -1,0 +1,15 @@
+
+TODO
+====
+- Andere licentie terugkoppelen met Milo.
+- README.md nog afmaken/stroomlijnen.
+- Verder opschonen?
+- Dbk configuratie?
+- Afwijkendebinnendekking wordt nog niet getoond?
+- Verdiepingen worden nog niet getoond?
+- Wat als je heel veel gevaarlijke stoffen hebt? Krijg je dan een lijst?
+
+LETOP
+=====
+- De gebruikte features.json is anders dan de aangeleverde. De gebruikte
+  heeft dezelfde opbouw als die van Zeeland.

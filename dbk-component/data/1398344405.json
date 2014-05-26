@@ -1,0 +1,132 @@
+{
+    "DBKObject": {
+        "identificatie": 1398344405,
+        "BHVaanwezig": false,
+        "controleDatum": "2014-04-24 14:38:53.662",
+        "formeleNaam": "Archimedeslaan 6 Utrecht 4",
+        "informeleNaam": "",
+        "OMSnummer": null,
+        "inzetprocedure": null,
+        "laagsteBouwlaag": null,
+        "hoogsteBouwlaag": 0,
+        "bouwlaag": "BG",
+        "risicoklasse": "",
+        "gebouwconstructie": null,
+        "gebruikstype": "kantoorfunctie",
+        "verwerkt": null,
+        "verblijf": null,
+        "adres": [{
+                "bagId": 1398344585,
+                "openbareRuimteNaam": "Archimedeslaan",
+                "huisnummer": 6,
+                "huisletter": "",
+                "woonplaatsNaam": "Utrecht",
+                "gemeenteNaam": "Utrecht",
+                "adresseerbaarObject": 344010000076627,
+                "typeAdresseerbaarObject": "",
+                "huisnummertoevoeging": "",
+                "postcode": "3584BA"
+            }],
+        "afwijkendebinnendekking": [{
+                "alternatieveCommInfrastructuur": "",
+                "dekking": false,
+                "aanvullendeInformatie": "",
+                "geometry": {
+                    "type": "Point",
+                    "crs": {
+                        "type": "name",
+                        "properties": {
+                            "name": "EPSG:28992"
+                        }
+                    },
+                    "coordinates": [138981.9, 456316.2]
+                }
+            }, {
+                "alternatieveCommInfrastructuur": "",
+                "dekking": true,
+                "aanvullendeInformatie": "",
+                "geometry": {
+                    "type": "Point",
+                    "crs": {
+                        "type": "name",
+                        "properties": {
+                            "name": "EPSG:28992"
+                        }
+                    },
+                    "coordinates": [138926.5, 456317.5]
+                }
+            }],
+        "bijzonderheid": null,
+        "brandcompartiment": [{
+                "typeScheiding": "> 60 minuten brandwerende scheiding",
+                "Label": "240",
+                "aanvullendeInformatie": null,
+                "geometry": {
+                    "type": "MultiLineString",
+                    "crs": {
+                        "type": "name",
+                        "properties": {
+                            "name": "EPSG:28992"
+                        }
+                    },
+                    "coordinates": [[[138911.2, 456324.8], [138927.4, 456291]]]
+                }
+            }],
+        "brandweervoorziening": [{
+                "typeVoorziening": "Tb1.001",
+                "naamVoorziening": "Brandweeringang",
+                "namespace": "nen1414",
+                "aanvullendeInformatie": "",
+                "hoek": 21,
+                "radius": 12,
+                "geometry": {
+                    "type": "Point",
+                    "crs": {
+                        "type": "name",
+                        "properties": {
+                            "name": "EPSG:28992"
+                        }
+                    },
+                    "coordinates": [138896.9, 456300.5]
+                }
+            }],
+        "verdiepingen": [{
+                "identificatie": 1398344405,
+                "bouwlaag": "BG",
+                "type": "hoofdobject"
+            }],
+        "contact": null,
+        "foto": null,
+        "gevaarlijkestof": null,
+        "hulplijn": null,
+        "pandgeometrie": [{
+                "bagId": "",
+                "bagStatus": null,
+                "geometry": {
+                    "type": "MultiPolygon",
+                    "crs": {
+                        "type": "name",
+                        "properties": {
+                            "name": "EPSG:28992"
+                        }
+                    },
+                    "coordinates": [[[[138862.3, 456318.8], [138874.7, 456328.5], [138877, 456312], [138865.7, 456297], [138854.4, 456304.5], [138862.3, 456318.8]]]]
+                }
+            }, {
+                "bagId": "0344100000048051",
+                "bagStatus": null,
+                "geometry": {
+                    "type": "MultiPolygon",
+                    "crs": {
+                        "type": "name",
+                        "properties": {
+                            "name": "EPSG:28992"
+                        }
+                    },
+                    "coordinates": [[[[138956.5, 456285.6], [138960.5, 456275.3], [138974.7, 456280.9], [138970.7, 456291.2], [138976.3, 456293.5], [138974.7, 456297.4], [138969.1, 456295.2], [138966.9, 456300.7], [138985.3, 456307.9], [138991.5, 456277.8], [138994, 456277.6], [138996.5, 456277.7], [138999, 456277.9], [139000, 456278.1], [139001.5, 456278.3], [139003.9, 456278.9], [139006.3, 456279.5], [139008.7, 456280.4], [139011, 456281.4], [139013.2, 456282.5], [139015.4, 456283.8], [139017.5, 456285.2], [139019.4, 456286.8], [139021.3, 456288.4], [139023.1, 456290.2], [139007.7, 456315.2], [139006.9, 456316.5], [139025.6, 456323.9], [139009.2, 456365.6], [139000, 456362], [138950.5, 456342.4], [138945.7, 456354.6], [138951.3, 456356.7], [138949.7, 456360.8], [138944.1, 456358.6], [138940.1, 456368.9], [138925.9, 456363.2], [138929.9, 456353], [138924.3, 456350.8], [138925.9, 456346.8], [138931.5, 456349], [138936.2, 456336.8], [138892.1, 456319.4], [138908.6, 456277.6], [138952.7, 456295.1], [138954.9, 456289.6], [138949.3, 456287.4], [138950.9, 456283.4], [138956.5, 456285.6]]]]
+                }
+            }],
+        "tekstobject": null,
+        "toegangterrein": null
+    }
+}

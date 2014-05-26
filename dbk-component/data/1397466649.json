@@ -1,0 +1,270 @@
+{
+    "DBKObject": {
+        "identificatie": 1397466649,
+        "BHVaanwezig": false,
+        "controleDatum": "2014-04-14 12:48:21.134",
+        "formeleNaam": "Archimedeslaan 6 Utrecht",
+        "informeleNaam": "",
+        "OMSnummer": null,
+        "inzetprocedure": null,
+        "laagsteBouwlaag": 4,
+        "hoogsteBouwlaag": 16,
+        "bouwlaag": "BG",
+        "risicoklasse": "",
+        "gebouwconstructie": null,
+        "gebruikstype": "kantoorfunctie",
+        "verwerkt": null,
+        "verblijf": null,
+        "adres": [{
+                "bagId": 1397466661,
+                "openbareRuimteNaam": "Archimedeslaan",
+                "huisnummer": 6,
+                "huisletter": "",
+                "woonplaatsNaam": "Utrecht",
+                "gemeenteNaam": "Utrecht",
+                "adresseerbaarObject": 344010000076627,
+                "typeAdresseerbaarObject": "",
+                "huisnummertoevoeging": "",
+                "postcode": "3584BA"
+            }],
+        "afwijkendebinnendekking": null,
+        "bijzonderheid": null,
+        "brandcompartiment": null,
+        "brandweervoorziening": [{
+                "typeVoorziening": "Tb1.001",
+                "naamVoorziening": "Brandweeringang",
+                "namespace": "nen1414",
+                "aanvullendeInformatie": "",
+                "hoek": 111,
+                "radius": 12,
+                "geometry": {
+                    "type": "Point",
+                    "crs": {
+                        "type": "name",
+                        "properties": {
+                            "name": "EPSG:28992"
+                        }
+                    },
+                    "coordinates": [138971.2, 456276.9]
+                }
+            }, {
+                "typeVoorziening": "Tb1.002",
+                "naamVoorziening": "Overige ingangen",
+                "namespace": "nen1414",
+                "aanvullendeInformatie": "",
+                "hoek": 22,
+                "radius": 12,
+                "geometry": {
+                    "type": "Point",
+                    "crs": {
+                        "type": "name",
+                        "properties": {
+                            "name": "EPSG:28992"
+                        }
+                    },
+                    "coordinates": [138899.8, 456293.2]
+                }
+            }, {
+                "typeVoorziening": "Tb1.002",
+                "naamVoorziening": "Overige ingangen",
+                "namespace": "nen1414",
+                "aanvullendeInformatie": "",
+                "hoek": 117,
+                "radius": 12,
+                "geometry": {
+                    "type": "Point",
+                    "crs": {
+                        "type": "name",
+                        "properties": {
+                            "name": "EPSG:28992"
+                        }
+                    },
+                    "coordinates": [139013.3, 456279.8]
+                }
+            }, {
+                "typeVoorziening": "Tb1.002",
+                "naamVoorziening": "Overige ingangen",
+                "namespace": "nen1414",
+                "aanvullendeInformatie": "",
+                "hoek": 202,
+                "radius": 12,
+                "geometry": {
+                    "type": "Point",
+                    "crs": {
+                        "type": "name",
+                        "properties": {
+                            "name": "EPSG:28992"
+                        }
+                    },
+                    "coordinates": [138964.3, 456369.4]
+                }
+            }, {
+                "typeVoorziening": "Tb1.002",
+                "naamVoorziening": "Overige ingangen",
+                "namespace": "nen1414",
+                "aanvullendeInformatie": "",
+                "hoek": 292,
+                "radius": 12,
+                "geometry": {
+                    "type": "Point",
+                    "crs": {
+                        "type": "name",
+                        "properties": {
+                            "name": "EPSG:28992"
+                        }
+                    },
+                    "coordinates": [138930.2, 456367.6]
+                }
+            }, {
+                "typeVoorziening": "Tb1.004",
+                "naamVoorziening": "Brandweerpaneel",
+                "namespace": "nen1414",
+                "aanvullendeInformatie": "",
+                "hoek": 0,
+                "radius": 12,
+                "geometry": {
+                    "type": "Point",
+                    "crs": {
+                        "type": "name",
+                        "properties": {
+                            "name": "EPSG:28992"
+                        }
+                    },
+                    "coordinates": [139032.5, 456307.6]
+                }
+            }, {
+                "typeVoorziening": "Tb2.021",
+                "naamVoorziening": "Afsluiter gas",
+                "namespace": "nen1414",
+                "aanvullendeInformatie": "Zit hiero",
+                "hoek": 0,
+                "radius": 12,
+                "geometry": {
+                    "type": "Point",
+                    "crs": {
+                        "type": "name",
+                        "properties": {
+                            "name": "EPSG:28992"
+                        }
+                    },
+                    "coordinates": [138974, 456328]
+                }
+            }, {
+                "typeVoorziening": "Tb1.008",
+                "naamVoorziening": "Opstelplaats eerste blusvoertuig",
+                "namespace": "nen1414",
+                "aanvullendeInformatie": "",
+                "hoek": 45,
+                "radius": 14,
+                "geometry": {
+                    "type": "Point",
+                    "crs": {
+                        "type": "name",
+                        "properties": {
+                            "name": "EPSG:28992"
+                        }
+                    },
+                    "coordinates": [138938.5, 456409.3]
+                }
+            }, {
+                "typeVoorziening": "Tw01",
+                "naamVoorziening": "Algemeen gevaar",
+                "namespace": "nen1414",
+                "aanvullendeInformatie": "gevaar!",
+                "hoek": 0,
+                "radius": 12,
+                "geometry": {
+                    "type": "Point",
+                    "crs": {
+                        "type": "name",
+                        "properties": {
+                            "name": "EPSG:28992"
+                        }
+                    },
+                    "coordinates": [138866.8, 456377.1]
+                }
+            }],
+        "verdiepingen": [{
+                "identificatie": 1397466649,
+                "bouwlaag": "BG",
+                "type": "hoofdobject"
+            }],
+        "contact": null,
+        "foto": null,
+        "gevaarlijkestof": [{
+                "naamStof": "",
+                "gevaarsindicatienummer": 0,
+                "UNnummer": 0,
+                "hoeveelheid": "",
+                "symboolCode": "EU-GHS02",
+                "aanvullendeInformatie": "Frietvet",
+                "geometry": {
+                    "type": "Point",
+                    "crs": {
+                        "type": "name",
+                        "properties": {
+                            "name": "EPSG:28992"
+                        }
+                    },
+                    "coordinates": [138981, 456378.4]
+                }
+            }],
+        "hulplijn": null,
+        "pandgeometrie": [{
+                "bagId": "0344100000048051",
+                "bagStatus": null,
+                "geometry": {
+                    "type": "MultiPolygon",
+                    "crs": {
+                        "type": "name",
+                        "properties": {
+                            "name": "EPSG:28992"
+                        }
+                    },
+                    "coordinates": [[[[138956.5, 456285.6], [138960.5, 456275.3], [138974.7, 456280.9], [138970.7, 456291.2], [138976.3, 456293.5], [138974.7, 456297.4], [138969.1, 456295.2], [138966.9, 456300.7], [138985.3, 456307.9], [138991.5, 456277.8], [138994, 456277.6], [138996.5, 456277.7], [138999, 456277.9], [139000, 456278.1], [139001.5, 456278.3], [139003.9, 456278.9], [139006.3, 456279.5], [139008.7, 456280.4], [139011, 456281.4], [139013.2, 456282.5], [139015.4, 456283.8], [139017.5, 456285.2], [139019.4, 456286.8], [139021.3, 456288.4], [139023.1, 456290.2], [139007.7, 456315.2], [139006.9, 456316.5], [139025.6, 456323.9], [139015.4, 456380], [139000, 456362], [138950.5, 456342.4], [138945.7, 456354.6], [138951.3, 456356.7], [138949.7, 456360.8], [138944.1, 456358.6], [138940.1, 456368.9], [138925.9, 456363.2], [138929.9, 456353], [138924.3, 456350.8], [138925.9, 456346.8], [138931.5, 456349], [138936.2, 456336.8], [138892.1, 456319.4], [138908.6, 456277.6], [138952.7, 456295.1], [138954.9, 456289.6], [138949.3, 456287.4], [138950.9, 456283.4], [138956.5, 456285.6]]]]
+                }
+            }, {
+                "bagId": "",
+                "bagStatus": null,
+                "geometry": {
+                    "type": "MultiPolygon",
+                    "crs": {
+                        "type": "name",
+                        "properties": {
+                            "name": "EPSG:28992"
+                        }
+                    },
+                    "coordinates": [[[[139030.5, 456373.2], [139051.9, 456372.5], [139062.5, 456361.8], [139056.2, 456354.1], [139031.6, 456358.1], [139028.1, 456366.3], [139030.5, 456373.2]]]]
+                }
+            }, {
+                "bagId": "",
+                "bagStatus": null,
+                "geometry": {
+                    "type": "MultiPolygon",
+                    "crs": {
+                        "type": "name",
+                        "properties": {
+                            "name": "EPSG:28992"
+                        }
+                    },
+                    "coordinates": [[[[139080.7, 456371], [139099.4, 456370.8], [139103.2, 456357.9], [139094.4, 456354.5], [139090.1, 456365.6], [139084.4, 456366.1], [139083.5, 456366.1], [139080.3, 456352.1], [139080.7, 456371]]]]
+                }
+            }],
+        "tekstobject": null,
+        "toegangterrein": [{
+                "primair": true,
+                "naamRoute": "Route eerste TS (Primair)",
+                "aanvullendeInformatie": "",
+                "geometry": {
+                    "type": "MultiLineString",
+                    "crs": {
+                        "type": "name",
+                        "properties": {
+                            "name": "EPSG:28992"
+                        }
+                    },
+                    "coordinates": [[[138891.3, 456179], [138989.9, 456218.4], [138980.5, 456242]]]
+                }
+            }]
+    }
+}
