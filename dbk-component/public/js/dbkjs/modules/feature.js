@@ -307,7 +307,6 @@ dbkjs.modules.feature = {
 
                             //@@ Add a click-event to the list, for each anchor-tag
                             //@@ in the list.
-                            //$("#dbklist").on("click", "a", function() {
                             $("#dbklist").on("click", "a", function(event) {
                                 event.preventDefault();
                                 dbkjs.options.dbk = $ (this).attr("id");

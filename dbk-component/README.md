@@ -1,41 +1,30 @@
-Dbk-component
+Dbk component
 =============
 
-# safetymapsDBK
+REMARKS
+-------
+- Er wordt nog gebruik gemaakt van een lokaal fatures.json bestand voor
+  het tonen van de features. En van meerdere lokale json files voor het
+  tonen van object info.
+- De gebruikte features.json is anders dan de door B3P aangeleverde. De 
+  gebruikte heeft dezelfde opbouw als die van Zeeland.
+- In de aangeleverde features zitten meerdere features met hetzelfde adres!
+- Printen zit er niet in (aparte branch).
 
-Digitale bereikbaarheidskaarten voor de Brandweer.
+TODO
+----
+- Andere licentie, terugkoppelen met Milo.
+- README.md nog afmaken/stroomlijnen.
+- README_milo.md nog (deels) toevoegen.
+- Verder opschonen?
+- Dbk configuratie?
+- Wat als je heel veel gevaarlijke stoffen hebt? Krijg je dan een lijst?
+- Interfacing voor de Zoeker zit er nog niet in.
 
-Gebruikt de volgende componenten:
+TESTING
+-------
+..5326 Bizonsp. 332 - verblijf,afwijk,pand,brandcomp,brandw.voorz,verdiep,contact,foto,gevaarl,hulpl,toegang.
+..0505 Bizonsp. 1002 (niet Maarssen2) - brandw.voorz,verdiep,pand,hulpl.
+..8505 Utrechtsew. 351 - brandw.voorz,verdiep,pand,tekst.
+..2322 Univers.weg 100 - verblijf,pand,verdiep,contact,hulpl.
 
-Node.js, Express, Postgresql/Postgis, Jade, Fontawesome, jQuery, OpenLayers, moment.js en Bootstrap.
-
-[Demo](http://demo.safetymaps.nl)
-
-## Requirements
-* [NodeJS & NPM](http://nodejs.org/download)
-* Git, uiteraard
-* [Python (versie 2.7)] (https://www.python.org/download/releases/2.7.6/) Windows: voeg aan de system variables PYTHON met als waarde de bestandsnaam python.exe (inclusief directory) toe.
-* [PostgreSQL (versie 9.3)] (http://www.postgresql.org/download/) Windows: voeg aan de system variables PATH met als waarde de bin directory van PostgreSQL toe.
-* Microsoft Visual Studio C++
-
-Windows: na aanpassen system variables opnieuw opstarten.
-
-## Installatie
-
-Vanaf een terminal:
-
-    git clone git@github.com:opengeogroep/safetymapsDBK.git
-    cd safetymapsDBK
-    npm install .
-    
-*Let op:* Controleer het npm install . proces op fouten. De installatie vertelt namelijk of je b.v. de postgresql client nog moet installeren
-
-Maak een config.json bestand aan.
-
-*Tip:* kopieer config.default.json naar config.json en vul de juiste waarden in.
-
-start de applicatie in "development mode":
-
-    node app.js
-
-Ga met een browser naar [http://localhost:3000](http://localhost:3000) als het goed is is de applicatie nu gestart.

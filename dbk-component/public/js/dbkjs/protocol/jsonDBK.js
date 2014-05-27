@@ -236,6 +236,7 @@ dbkjs.protocol.jsonDBK = {
                 $('#systeem_meldingen').hide();
             };
             
+            // Construct additional geometries.
             _obj.constructPandGeometrie(dbkjs.options.feature);
             _obj.constructGeometrie(dbkjs.options.feature); 
             _obj.constructHulplijn(dbkjs.options.feature);
