@@ -1,0 +1,60 @@
+{
+    "DBKObject": {
+        "identificatie": 1398848270,
+        "BHVaanwezig": false,
+        "controleDatum": "2014-04-30 09:58:01.091",
+        "formeleNaam": "Utrechtseweg 341 De Bilt",
+        "informeleNaam": "",
+        "OMSnummer": null,
+        "inzetprocedure": null,
+        "laagsteBouwlaag": null,
+        "hoogsteBouwlaag": 0,
+        "bouwlaag": "BG",
+        "risicoklasse": "",
+        "gebouwconstructie": null,
+        "gebruikstype": "industriefunctie",
+        "verwerkt": null,
+        "verblijf": null,
+        "adres": [{
+                "bagId": 1398848271,
+                "openbareRuimteNaam": "Utrechtseweg",
+                "huisnummer": 341,
+                "huisletter": "",
+                "woonplaatsNaam": "De Bilt",
+                "gemeenteNaam": "De Bilt",
+                "adresseerbaarObject": 310010000696615,
+                "typeAdresseerbaarObject": "",
+                "huisnummertoevoeging": "",
+                "postcode": "3731GA"
+            }],
+        "afwijkendebinnendekking": null,
+        "bijzonderheid": null,
+        "brandcompartiment": null,
+        "brandweervoorziening": null,
+        "verdiepingen": [{
+                "identificatie": 1398848270,
+                "bouwlaag": "BG",
+                "type": "hoofdobject"
+            }],
+        "contact": null,
+        "foto": null,
+        "gevaarlijkestof": null,
+        "hulplijn": null,
+        "pandgeometrie": [{
+                "bagId": "0310100000669934",
+                "bagStatus": null,
+                "geometry": {
+                    "type": "MultiPolygon",
+                    "crs": {
+                        "type": "name",
+                        "properties": {
+                            "name": "EPSG:28992"
+                        }
+                    },
+                    "coordinates": [[[[139894.8, 456893.7], [139873, 456838.8], [139891.7, 456831.4], [139903, 456859.9], [139905.6, 456846.2], [139922.3, 456846.2], [139927.4, 456859.2], [139931.9, 456857.4], [139935, 456865.1], [139933.5, 456865.8], [139941.5, 456885.8], [139938.5, 456887], [139947.2, 456908.8], [139985.4, 456892.6], [139983.1, 456887.2], [139999.5, 456880.1], [140021.5, 456931], [140019.7, 456931.8], [140022.7, 456939], [140017.4, 456941.3], [140014.3, 456934.1], [140008.1, 456936.7], [140009.4, 456939.8], [140003.3, 456942.4], [140014.2, 456968], [140005.3, 456971.8], [140005.5, 456972], [140004.8, 456972.2], [140002.6, 456974.8], [139999.5, 456976.2], [139996, 456976], [139995.4, 456976.2], [139995.3, 456976], [139986.4, 456979.8], [139982.7, 456971.1], [139949.4, 456958.4], [139948.9, 456959.5], [139920.8, 456948.7], [139922.5, 456944.5], [139916.5, 456937.7], [139913.7, 456938.8], [139914, 456939.4], [139913.2, 456939.7], [139901.1, 456909.5], [139899.4, 456905], [139896.5, 456906.1], [139892.1, 456894.8], [139894.8, 456893.7]]]]
+                }
+            }],
+        "tekstobject": null,
+        "toegangterrein": null
+    }
+}

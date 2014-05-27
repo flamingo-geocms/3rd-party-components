@@ -1,0 +1,169 @@
+{
+    "organisation": {
+        "gid": 1,
+        "id": "zeeland",
+        "logo": null,
+        "workspace": "dbk",
+        "title": "Zeeland",
+        "area": {
+            "geometry": {
+                "type": "Polygon",
+                "crs": {
+                    "type": "name",
+                    "properties": {
+                        "name": "EPSG:28992"
+                    }
+                },
+                "coordinates": [[[9686.56473944118, 358820.0255055], [11531.6167866597, 423478.950481169], [78565.4071192693, 422010.348564292], [77582.5899359003, 357338.412841884], [9686.56473944118, 358820.0255055]]]
+            }
+        },
+        "support": {
+            "mail": "milo@dogodigi.net",
+            "button": "Fout in de kaart melden?"
+        },
+        "modules": ["search", "measure", "print", "feature", "support"],
+        "wms": [{
+                "gid": 5,
+                "name": "Gemeentegrenzen",
+                "url": "/geoserver/falck/wms?",
+                "proxy": false,
+                "enabled": true,
+                "baselayer": false,
+                "params": {
+                    "layers": "Gemeente_region"
+                },
+                "options": {
+                    "transitionEffect": "resize",
+                    "singleTile": false,
+                    "buffer": 0,
+                    "visibility": true
+                },
+                "getcapabilities": false,
+                "parent": "#overlaypanel_b2",
+                "index": 16,
+                "pl": "l3"
+            }, {
+                "gid": 2,
+                "name": "Waterbedrijf",
+                "url": "/geoserver/water/wms?",
+                "proxy": null,
+                "enabled": true,
+                "baselayer": false,
+                "params": null,
+                "options": null,
+                "getcapabilities": true,
+                "parent": null,
+                "index": 8,
+                "pl": "wa"
+            }, {
+                "gid": 7,
+                "name": "Naburige DBK's",
+                "url": "/geoserver/dbk/wms?",
+                "proxy": null,
+                "enabled": true,
+                "baselayer": false,
+                "params": {
+                    "layers": "dbk"
+                },
+                "options": {
+                    "transitionEffect": "resize",
+                    "singleTile": false,
+                    "buffer": 0,
+                    "visibility": false
+                },
+                "getcapabilities": false,
+                "parent": "#overlaypanel_b1",
+                "index": 6,
+                "pl": "l4"
+            }, {
+                "gid": 8,
+                "name": "BAG Adres",
+                "url": "/geoserver/bag/wms?",
+                "proxy": null,
+                "enabled": true,
+                "baselayer": false,
+                "params": {
+                    "layers": "adres"
+                },
+                "options": {
+                    "transitionEffect": "resize",
+                    "singleTile": true,
+                    "buffer": 0,
+                    "visibility": true
+                },
+                "getcapabilities": false,
+                "parent": "#overlaypanel_b2",
+                "index": 4,
+                "pl": "l5"
+            }, {
+                "gid": 3,
+                "name": "Brandweer",
+                "url": "/geoserver/brandweer/wms?",
+                "proxy": null,
+                "enabled": true,
+                "baselayer": false,
+                "params": null,
+                "options": null,
+                "getcapabilities": true,
+                "parent": null,
+                "index": 3,
+                "pl": "bw"
+            }, {
+                "gid": 4,
+                "name": "GBKN",
+                "url": "/geoserver/gbkn/wms?",
+                "proxy": null,
+                "enabled": true,
+                "baselayer": false,
+                "params": null,
+                "options": null,
+                "getcapabilities": true,
+                "parent": "#overlaypanel_b2",
+                "index": 2,
+                "pl": "l2"
+            }, {
+                "gid": 1,
+                "name": "BAG",
+                "url": "/geoserver/bag/wms?",
+                "proxy": false,
+                "enabled": true,
+                "baselayer": false,
+                "params": {
+                    "layers": "pandactueelbestaand"
+                },
+                "options": {
+                    "transitionEffect": "resize",
+                    "singleTile": false,
+                    "buffer": 0,
+                    "visibility": true
+                },
+                "getcapabilities": false,
+                "parent": "#overlaypanel_b2",
+                "index": 1,
+                "pl": "l1"
+            }, {
+                "gid": 6,
+                "name": "Luchtfoto",
+                "url": "http://view.safetymaps.nl/map/mapserv?map=/home/mapserver/zeeland.map",
+                "proxy": false,
+                "enabled": true,
+                "baselayer": true,
+                "params": {
+                    "layers": "luchtfoto",
+                    "format": "image/png",
+                    "transparent": false
+                },
+                "options": {
+                    "transitionEffect": "resize",
+                    "singleTile": true,
+                    "buffer": 0,
+                    "visibility": false
+                },
+                "getcapabilities": false,
+                "parent": null,
+                "index": 0,
+                "pl": "b1"
+            }],
+        "care": null
+    }
+}
