@@ -148,7 +148,10 @@ Ext.define ("viewer.components.rotercera.RoComment",{
                         listeners: {
                             click:{
                                 scope: me,
-                                fn: me.save
+                                fn: function(){
+                                    Ext.getCmp(this.name + "saveButton").disable();
+                                    me.save();
+                                }
                             }
                         }
                     },
@@ -195,9 +198,17 @@ Ext.define ("viewer.components.rotercera.RoComment",{
      * @override
      */
     saveSucces  : function(fid){
+        Ext.getCmp(this.name + "saveButton").enable();
         this.component.roAllComment.reload();
         this.callParent(arguments);        
         Ext.getCmp(this.name + "deleteButton").show();
+    },
+    /**
+     * @override
+     */
+    saveFailed : function(fid){
+        Ext.getCmp(this.name + "saveButton").enable();
+        this.callParent(arguments); 
     },
     /**
      * @override
