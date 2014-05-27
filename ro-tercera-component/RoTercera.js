@@ -538,6 +538,10 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
      * Called when plan is clicked
      */
     onPlanClicked: function(plan){
+        if(this.highlightLayer !== null){
+            this.highlightLayer.destroy();
+            this.highlightLayer = null;
+        }
         this.setSelectedPlan(plan);
     },
     setSelectedPlan: function(plan){
@@ -631,8 +635,8 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                     ogcProps.query_layers=this.roonlineLayers.split(",");
                     options.layers= this.roonlineLayers.split(",");
                     this.sldUrl= Ext.create("viewer.SLD").createURL(options.layers,null,null,null,null,"app:plangebied='"+plan.identificatie+"'");
-                    if(this.viewerController.isDebug() && this.sldUrl.indexOf("http://192.168.1.18:8084/viewer/action/sld")===0){
-                        this.sldUrl=this.sldUrl.replace("http://192.168.1.18:8084","http://webkaart.b3p.nl")
+                    if(this.viewerController.isDebug() && this.sldUrl.indexOf("http://192.168.1.31:8084/viewer/action/sld")===0){
+                        this.sldUrl=this.sldUrl.replace("http://192.168.1.31:8084","http://webkaarttest.b3p.nl")
                     }
                     this.setLayer(this.roonlineServiceUrl,ogcProps,options);
                     
@@ -956,7 +960,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 .planinfo-table tbody tr td{padding-right: 5px;}\
                 .featureinfo-table tbody tr td{padding-right: 5px;}\
                 .planinfo-feature{border-bottom: 1px solid #D7D7D7;}\
-                .selected{background-color: #0066CC;color: #000000;}";
+                .selected{background-color: #F79481;color: #000000;}";
         Ext.util.CSS.createStyleSheet(css);
     },      
     
@@ -985,8 +989,8 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             }
             var url=this.wmsLayer.getUrl();                 
             var sldUrl = Ext.create("viewer.SLD").createURL(sldLayer,null,"fid='"+fid+"'",null,null,null,"#FF0000",useRuleFilter);
-            if(this.viewerController.isDebug() && sldUrl.indexOf("http://192.168.1.18:8084/viewer/action/sld")===0){
-                sldUrl=sldUrl.replace("http://192.168.1.18:8084","http://webkaart.b3p.nl")
+            if(this.viewerController.isDebug() && sldUrl.indexOf("http://192.168.1.31:8084/viewer/action/sld")===0){
+                sldUrl=sldUrl.replace("http://192.168.1.31:8084","http://webkaarttest.b3p.nl")
             }
             if (!this.highlightLayer){
                  var ogcProps={
