@@ -83,8 +83,6 @@ Ext.define ("viewer.components.Dbk",{
             // Load css file.
             me.loadCssFile(me.basePath+"/public/css/bootstrap.min.css");
             me.loadCssFile(me.basePath+"/public/css/dbk.css");
-            me.loadCssFile(me.basePath+"/public/css/dbk-zeeland.css");
-            //me.loadCssFile(me.basePath+"/public/css/font-awesome.min.css");            
             
             // Initialize.
             dbkjs.init();
@@ -110,9 +108,9 @@ Ext.define ("viewer.components.Dbk",{
         console.log("Dbk.createDialogs");
         
         this.detailsPanel = Ext.create("viewer.components.DbkDialog",
-            {id: "detailspanel", divId: "detailsTable"});
+            {id: "detailspanel", align: "bl-bl", divId: "detailsTable"});
         this.infoPanel = Ext.create("viewer.components.DbkDialog",
-            {id: "infopanel", x: 1200, y: 100, width: 490, height: 500,
+            {id: "infopanel", width: 490, height: 500,
              dbk: this});
     },
     getExtComponents: function() {

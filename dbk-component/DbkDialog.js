@@ -45,7 +45,8 @@ Ext.define("viewer.components.DbkDialog",{
         y: 100,
         width: 350,
         height: 300,
-        divId: null
+        divId: null,
+        align: "br-br"
     },
     constructor: function(config){
         console.log("DbkDialog.constructor");
@@ -68,8 +69,10 @@ Ext.define("viewer.components.DbkDialog",{
             title: "Informatie",
             width: windowWidth,
             height: windowHeight,
-            x: windowX,
-            y: windowY,
+//            x: windowX,
+//            y: windowY,
+            right: 0,
+            bottom: 0,
             resizable: false,
             closeAction: "hide",
             constrain: true,
@@ -114,6 +117,9 @@ Ext.define("viewer.components.DbkDialog",{
                    if (me.getId() === "infopanel") {
                        dbkjs.options.feature = null;
                    }
+               },
+               show: function() {
+                   me.dialog.alignTo(Ext.getBody(), me.align);
                }
            }
 //                   resize: function() {
@@ -132,6 +138,7 @@ Ext.define("viewer.components.DbkDialog",{
         });
         // Align dialog.
         //this.dialog.alignTo(Ext.getBody(),"r-r",[-75, 0]);
+        //this.dialog.alignTo(Ext.getBody(),"br-br");
     },
     getPanel: function() {
         var panelId;

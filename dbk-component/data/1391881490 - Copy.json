@@ -7,9 +7,9 @@
         "informeleNaam": "",
         "OMSnummer": null,
         "inzetprocedure": null,
-        "laagsteBouwlaag": 0,
-        "hoogsteBouwlaag": 1,
-        "bouwlaag": "1",
+        "laagsteBouwlaag": null,
+        "hoogsteBouwlaag": null,
+        "bouwlaag": "BG",
         "risicoklasse": "",
         "gebouwconstructie": null,
         "gebruikstype": "industriefunctie",
@@ -32,12 +32,8 @@
         "brandcompartiment": null,
         "brandweervoorziening": null,
         "verdiepingen": [{
-                "identificatie": 1391540505,
-                "bouwlaag": "BG",
-                "type": "hoofdobject"
-            },{
                 "identificatie": 1391881490,
-                "bouwlaag": "1",
+                "bouwlaag": "BG",
                 "type": "hoofdobject"
             }],
         "contact": null,
