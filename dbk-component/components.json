@@ -1,0 +1,77 @@
+/* JSON metadata describing components for viewer and viewer-admin webapps
+ * 
+ * Parameters:
+ * 
+ * className: The component's classname
+ * 
+ * name: The name as used in the layoutmanager
+ * 
+ * shortName: A short name which is used by the layoutmanager when adding the component to the topmenu
+ * 
+ * restrictions: Array with region-ids to which the component can be dragged
+ *   Possible restrictions: header,leftmargin_top,leftmargin_bottom,left_menu,top_menu,content,content_bottom
+ *   popupwindow,rightmargin_top,rightmargin_bottom,footer
+ * 
+ * singleton: Boolean whether the component can be added multiple times (false) or just once (true)
+ * 
+ * notInCombinationWith: Array with the classNames of other components. If a component from that array has
+ *                   already been added to a region, this component cannot be added to that region
+ * 
+ * showHelp: boolean value to show help configuration tab for component (default false)
+ *
+ * extPropertyGridConfigs: Some extra properties can be given here to configure extra things
+ *   
+ * extPropertyGridConfigs.source: Set the object that must be configurable with defaults 
+ * For example:
+ *   {name: "a name", tooltip: "a tool tip", happy: true}
+ *   
+ * extPropertyGridConfigs.propertyNames: here you can set the labels for the object configured
+ * in extPropertyGridConfigs.source *   l
+ * For example: 
+ *   {name: "The name", tooltip: "Tool tip", happy: "Are you happy"}
+ *
+ */
+[{
+    className: "viewer.components.Dbk",
+    name: "Dbk Component",
+    shortName: "Dbk",
+    sources: [
+        "public/js/libs/jquery-1.11.0/jquery-1.11.0.min.js",
+        "public/js/libs/bootstrap-3.1.0/js/bootstrap.min.js",
+        "public/js/libs/moment/moment.min.js",
+        "i18next/i18next.js",
+        "public/js/libs/jquery.daterangepicker.js",
+        "public/js/libs/jquery.drags.js",
+        "public/js/libs/jquery.pagination.js",
+        "public/js/libs/jquery.sortable.js",
+        "public/js/libs/jquery.typeahead.js",
+        "public/js/dbkjs/util.js",
+        "public/js/dbkjs/config/styles.js",
+        "public/js/dbkjs/prototype/Class.js",
+        "public/js/dbkjs/prototype/Layer.js",
+        "public/js/dbkjs/prototype/Capabilities.js",
+        "public/js/dbkjs/layout.js",
+        "public/js/dbkjs/modules/geolocate.js",
+        "public/js/dbkjs/protocol/jsonDBK.js",
+        "public/js/dbkjs/modules/search.js",
+        "public/js/dbkjs/modules/support.js",
+        "public/js/dbkjs/modules/print.js",
+        "public/js/dbkjs/modules/care.js",
+        "public/js/dbkjs/modules/filter.js",
+        "public/js/dbkjs/modules/bag.js",
+        "public/js/dbkjs/modules/feature.js",
+        "public/js/dbkjs/modules/measure.js",
+        "public/js/dbkjs/dbkjs.js",
+        "public/js/libs/moment/lang/nl.js",
+        "public/js/dbkjs/config/options-rd.js",
+        "Dbk_ol_overrides.js",
+        "Dbk.js",
+        "DbkDialog.js"
+    ],
+    configSource: ["ConfigObject.js","SelectionWindowConfig.js","Dbk-config.js"],
+    restrictions: ["content"],
+    closureCompilerSafe: true,
+    notInCombinationWith: ["viewer.mapcomponents.FlamingoMap"],
+    singleton: true,
+    showHelp: true
+}]

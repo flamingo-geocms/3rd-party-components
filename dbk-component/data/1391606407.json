@@ -1,0 +1,77 @@
+{
+    "DBKObject": {
+        "identificatie": 1391606407,
+        "BHVaanwezig": false,
+        "controleDatum": "2014-02-05 13:38:36.909",
+        "formeleNaam": "Zonnebaan 23, Utrecht",
+        "informeleNaam": "",
+        "OMSnummer": null,
+        "inzetprocedure": null,
+        "laagsteBouwlaag": null,
+        "hoogsteBouwlaag": null,
+        "bouwlaag": "BG",
+        "risicoklasse": "",
+        "gebouwconstructie": null,
+        "gebruikstype": "kantoorfunctie",
+        "verwerkt": null,
+        "verblijf": null,
+        "adres": [{
+                "bagId": 1391606447,
+                "openbareRuimteNaam": "Zonnebaan",
+                "huisnummer": 33,
+                "huisletter": "",
+                "woonplaatsNaam": "Utrecht",
+                "gemeenteNaam": "Utrecht",
+                "adresseerbaarObject": 344010000088895,
+                "typeAdresseerbaarObject": "",
+                "huisnummertoevoeging": "",
+                "postcode": "3542EB"
+            }],
+        "afwijkendebinnendekking": null,
+        "bijzonderheid": null,
+        "brandcompartiment": null,
+        "brandweervoorziening": null,
+        "verdiepingen": [{
+                "identificatie": 1391606407,
+                "bouwlaag": "BG",
+                "type": "hoofdobject"
+            }],
+        "contact": null,
+        "foto": null,
+        "gevaarlijkestof": [{
+                "naamStof": "",
+                "gevaarsindicatienummer": 0,
+                "UNnummer": 0,
+                "hoeveelheid": "100l",
+                "symboolCode": "EU-GHS07",
+                "aanvullendeInformatie": "Gasfles",
+                "geometry": {
+                    "type": "Point",
+                    "crs": {
+                        "type": "name",
+                        "properties": {
+                            "name": "EPSG:28992"
+                        }
+                    },
+                    "coordinates": [131018.4, 459017.3]
+                }
+            }],
+        "hulplijn": null,
+        "pandgeometrie": [{
+                "bagId": "0344100000077155",
+                "bagStatus": null,
+                "geometry": {
+                    "type": "MultiPolygon",
+                    "crs": {
+                        "type": "name",
+                        "properties": {
+                            "name": "EPSG:28992"
+                        }
+                    },
+                    "coordinates": [[[[130983.1, 458968.5], [130995.9, 458955.6], [130999.5, 458959.1], [131000, 458958.6], [131001.9, 458956.7], [131003.3, 458955.3], [131006, 458952.5], [131011.1, 458947.3], [131013.2, 458945.2], [131017.2, 458941.2], [131019.2, 458939.1], [131019.8, 458938.5], [131022.6, 458935.7], [131033.3, 458924.8], [131035.4, 458922.7], [131040.1, 458917.9], [131042.9, 458915], [131043.7, 458914.2], [131046.9, 458910.9], [131043.3, 458907.3], [131048, 458902.5], [131051.6, 458898.9], [131060.4, 458890], [131070.6, 458900], [131066.6, 458904], [131068.3, 458905.7], [131073.9, 458911.3], [131074.3, 458911.7], [131075, 458912.4], [131078.9, 458908.4], [131093.5, 458922.7], [131096.3, 458925.5], [131097, 458926.2], [131107.9, 458936.9], [131108.1, 458937.1], [131110.9, 458939.9], [131111.6, 458940.5], [131126, 458954.7], [131126, 458954.8], [131081.6, 459000], [131056.9, 459025.1], [131053.6, 459028.5], [131054.8, 459029.7], [131055, 459029.9], [131027.9, 459057.4], [131016.9, 459046.6], [131019, 459044.6], [131014, 459039.6], [131010.4, 459036.2], [131000, 459025.9], [130999.4, 459025.4], [130995.6, 459021.6], [130991.1, 459017.2], [130990.3, 459018], [130987.5, 459015.4], [130988.4, 459014.5], [130981.3, 459007.6], [130983.9, 459005], [130985.5, 459003.4], [130984.8, 459002.7], [130982, 459000], [130981.9, 458999.9], [130980.2, 458998.2], [130977.1, 458995.1], [130972.9, 458999.4], [130962.7, 458989.3], [130979.5, 458972.2], [130983.1, 458968.5]]]]
+                }
+            }],
+        "tekstobject": null,
+        "toegangterrein": null
+    }
+}
