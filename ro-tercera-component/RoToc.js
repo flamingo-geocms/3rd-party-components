@@ -42,6 +42,7 @@ Ext.define ("viewer.components.rotercera.RoToc",{
                  }},
                  { xtype: 'button', text: 'Ok',handler: function(){
                          legendController.refreshMap();
+                         me.window.close();
                  } }
             ],
             layout: 'fit',
