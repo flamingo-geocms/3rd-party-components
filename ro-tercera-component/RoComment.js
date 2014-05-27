@@ -108,7 +108,15 @@ Ext.define ("viewer.components.rotercera.RoComment",{
             title: "Ro-Commentaar",
             height: 350,
             width: 268,            
-            closeAction: 'hide',            
+            closeAction: 'hide',
+            listeners:{
+                hide:{
+                    scope:this,
+                    fn: function(){
+                        this.vectorLayer.stopDrawing();
+                    }
+                }
+            },
             resizable: false,
             layout: {
                 type: "vbox",
