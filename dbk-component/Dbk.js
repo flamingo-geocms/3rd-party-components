@@ -43,21 +43,23 @@ Ext.define ("viewer.components.Dbk",{
         //----------------------------------------------------------------------
         // OVERRIDE THE DEFAULT getProperties() METHODE.
         //----------------------------------------------------------------------
-        viewer.components.Print.prototype.getProperties = function(){
-            console.log("viewer.components.Print.prototype.getProperties");
-            var properties = this.getValuesFromContainer(this.panel);
-            properties.angle = this.rotateSlider.getValue();
-            properties.quality = this.qualitySlider.getValue();
-            properties.appId = this.viewerController.app.id;
-            var mapProperties=this.getMapValues();
-            Ext.apply(properties, mapProperties);
+        if (typeof viewer.components.Print !== "undefined") {
+            viewer.components.Print.prototype.getProperties = function(){
+                console.log("viewer.components.Print.prototype.getProperties");
+                var properties = this.getValuesFromContainer(this.panel);
+                properties.angle = this.rotateSlider.getValue();
+                properties.quality = this.qualitySlider.getValue();
+                properties.appId = this.viewerController.app.id;
+                var mapProperties=this.getMapValues();
+                Ext.apply(properties, mapProperties);
 
-            // Add the additional DBK properties.
-            var dbkProperties=me.getObjectProperties();
-            if (dbkProperties)
-                Ext.apply(properties,dbkProperties);
+                // Add the additional DBK properties.
+                var dbkProperties=me.getObjectProperties();
+                if (dbkProperties)
+                    Ext.apply(properties,dbkProperties);
 
-            return properties;
+                return properties;
+            };
         };
 
         // Start the application.
