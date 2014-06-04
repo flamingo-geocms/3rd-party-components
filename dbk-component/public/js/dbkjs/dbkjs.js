@@ -25,6 +25,10 @@ dbkjs.overlays = dbkjs.overlays || [];
 
 //@@ ARIS
 dbkjs.map = dbkjs.map || null;
+dbkjs.dataPath = dbkjs.dataPath || null;
+dbkjs.mediaPath = dbkjs.mediaPath || null;
+dbkjs.imageBasePath = dbkjs.imageBasePath || null;
+dbkjs.viewerController = dbkjs.viewerController || null;
 
 dbkjs.init = function() {
     

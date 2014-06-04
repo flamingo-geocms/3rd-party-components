@@ -166,7 +166,8 @@ dbkjs.modules.feature = {
                 _obj.search_dbk();
         }).fail(function( jqxhr, textStatus, error ) {
             dbkjs.options.feature = null;
-            dbkjs.util.alert('Fout', ' Features konden niet worden ingelezen', 'alert-danger');
+            //@@dbkjs.util.alert('Fout', ' Features konden niet worden ingelezen', 'alert-danger');
+            dbkjs.viewerController.logger.error('De DBK features konden niet worden ingelezen');
         });
     },
     featureInfohtml: function(feature) {
