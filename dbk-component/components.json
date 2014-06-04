@@ -66,7 +66,8 @@
         "public/js/dbkjs/config/options-rd.js",
         "Dbk_ol_overrides.js",
         "Dbk.js",
-        "DbkDialog.js"
+        "DbkDialog.js",
+        "xml2json.min.js"
     ],
     configSource: ["ConfigObject.js","SelectionWindowConfig.js","Dbk-config.js"],
     restrictions: ["content"],
