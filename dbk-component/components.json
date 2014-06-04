@@ -40,6 +40,7 @@
         "public/js/libs/bootstrap-3.1.0/js/bootstrap.min.js",
         "public/js/libs/moment/moment.min.js",
         "i18next/i18next.js",
+        "locales/nl/translation.json",
         "public/js/libs/jquery.daterangepicker.js",
         "public/js/libs/jquery.drags.js",
         "public/js/libs/jquery.pagination.js",
