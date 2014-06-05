@@ -1,5 +1,5 @@
 /* 
- * Copyright (C) 2012-2013 B3Partners B.V.
+ * Copyright (C) 2014 ARIS B.V.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,18 +15,44 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /**
- * Custom configuration object for HTML configuration
- * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
+ * Custom configuration object for DBK component configuration
+ * @author <a href="mailto:eddy.scheper@aris.nl">Eddy Scheper</a>
  */
+
+// Deels kopie van TOC.js
+
 Ext.define("viewer.components.CustomConfiguration",{
-    extend: "viewer.components.SelectionWindowConfig",
-    constructor: function (parentId,configObject){
-        if (configObject === null){
-            configObject = {};
+    extend: "viewer.components.ConfigObject",
+    form: null,
+    constructor: function (parentid,config){
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentid,config);
+        if(config == undefined || config == null){
+            config = new Object();
         }
-        configObject.showLabelconfig =true;
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId,configObject);        
-        this.createCheckBoxes(this.configObject.layers,{editable: true});
+        var me = this;
+        this.form = new Ext.form.FormPanel({
+            url: 'Home/SubmitForm',
+            frame: false,
+            title: 'Configureer dit component',
+            bodyPadding: me.formPadding,
+            defaults: {
+                anchor: '100%'
+            },
+            width: me.formWidth,
+            items: [{ 
+                xtype: 'textfield',
+                fieldLabel: 'Url van DBK data service:',
+                name: 'dataPath',
+                value: config.dataPath,
+                labelWidth: me.labelWidth
+            },{
+                xtype: 'textfield',
+                fieldLabel: 'Url van DBK media service:',
+                name: 'mediaPath',
+                value: config.mediaPath,
+                labelWidth: me.labelWidth
+            }],
+            renderTo: parentid
+        });      
     }
 });
-

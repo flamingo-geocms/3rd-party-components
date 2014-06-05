@@ -23,14 +23,21 @@
 
 Ext.define ("viewer.components.Dbk",{
     extend: "viewer.components.Component",
-    
     basePath: "",
-    dataPath: "",
-    mediaPath: "",
     imageBasePath: "",
     detailsPanel: null,
     infoPanel: null,
     
+    config: {
+        // The url to the features.json and <object>.json files.
+        // Example: /viewer/3rd-party-components/dbk-component/data
+        dataPath: "",
+        
+        // The url to the media files (png,docx,etc.) referenced to in the 
+        // <object>.json files.
+        // Example: /viewer/3rd-party-components/dbk-component/media
+        mediaPath: ""
+    },
     constructor: function(conf){
         var me = this;
         
@@ -39,6 +46,20 @@ Ext.define ("viewer.components.Dbk",{
         viewer.components.Dbk.superclass.constructor.call(this, conf);
         
         this.initConfig(conf);
+
+        // Create url to get base path/url of component.
+        // Uses an actionbean to generate the proper url.
+        //
+        // Caution: additional path should be appended without a leading '/'.
+        //
+        if (actionBeans && actionBeans["componentresource"]){
+            this.basePath=actionBeans["componentresource"];
+            this.basePath=Ext.String.urlAppend(this.basePath,"className="+Ext.getClass(me).getName());
+            this.basePath=Ext.String.urlAppend(this.basePath,"resource=");
+        };
+ 
+        // Set icon path for dbkjs.config.styles.dbkfeature.
+        this.imageBasePath = this.basePath + "public";
         
         //----------------------------------------------------------------------
         // OVERRIDE THE DEFAULT getProperties() METHODE.
@@ -72,18 +93,6 @@ Ext.define ("viewer.components.Dbk",{
         
         console.log("Dbk.initApp");
 
-        // Set the base path.
-        this.basePath = "/viewer/3rd-party-components/dbk-component";
-
-        // Set data path for feature and object info.
-        this.dataPath = this.basePath + "/data";
-            
-        // Set the media path for object media info.
-        this.mediaPath = this.dataPath + "/media";
-        
-        // Set icon path for dbkjs.config.styles.dbkfeature.
-        this.imageBasePath = this.basePath + "/public";
-        
         // Set the map.
         dbkjs.map = this.viewerController.mapComponent.getMap().getFrameworkMap();
 
@@ -91,11 +100,9 @@ Ext.define ("viewer.components.Dbk",{
         i18n.init({
             lng: "nl", 
             debug: false,
-            resGetPath: this.basePath + "/locales/__lng__/translation.json"
+            resGetPath: this.basePath + "locales/__lng__/translation.json"
         }, function() {
             
-            // @@ TODO: Dit nog anders. Hele dbk object in dbkjs zetten???
-            //          Of met dbkjs.gui werken.
             // Set paths of dbkjs.
             dbkjs.dataPath = me.dataPath;
             dbkjs.mediaPath = me.mediaPath;
@@ -105,8 +112,8 @@ Ext.define ("viewer.components.Dbk",{
             dbkjs.viewerController = me.viewerController;
 
             // Load css file.
-            me.loadCssFile(me.basePath+"/public/css/bootstrap.min.css");
-            me.loadCssFile(me.basePath+"/public/css/dbk.css");
+            me.loadCssFile(me.basePath+"public/css/bootstrap.min.css");
+            me.loadCssFile(me.basePath+"public/css/dbk.css");
             
             // Initialize.
             dbkjs.init();
