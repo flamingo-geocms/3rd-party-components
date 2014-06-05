@@ -126,13 +126,6 @@ Ext.define ("viewer.components.Dbk",{
         
             // Initialize jsonDBK.init and register modules.
             dbkjs.successAuth();
-            
-            // Zoom to zeeland.
-            //dbkjs.map.setCenter([45700,391000],8);
-            // Zoom to Utrecht.
-            //dbkjs.map.setCenter([134400,456000],8);
-            dbkjs.map.setCenter([134400,456000],6);
-             
        });
     },
     createDialogs: function(){
