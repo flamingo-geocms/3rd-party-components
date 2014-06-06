@@ -37,16 +37,16 @@
     
 Ext.define("viewer.components.DbkDialog",{
     dialog: null,
-    store: null,
+    deltaWidth: null,
+    deltaHeight: null,
     config:{
         id: "window",
         dbk: null,
-        x: 0,
-        y: 100,
         width: 350,
         height: 300,
         divId: null,
-        align: "br-br"
+        align: "br-br",
+        fitWindow: false
     },
     constructor: function(config){
         console.log("DbkDialog.constructor");
@@ -57,11 +57,9 @@ Ext.define("viewer.components.DbkDialog",{
     },
     createWindow: function(itemId) {
         var me = this;
-        var headerId = itemId+"Header";
         var panelId = itemId+"Panel";
         var footerId = itemId+"Footer";
-        var windowX = this.x;
-        var windowY = this.y;
+        var htmlId = itemId+"Html";
         var windowWidth = this.width;
         var windowHeight = this.height;
         this.dialog = Ext.create("Ext.window.Window", {
@@ -69,35 +67,20 @@ Ext.define("viewer.components.DbkDialog",{
             title: "Informatie",
             width: windowWidth,
             height: windowHeight,
-//            x: windowX,
-//            y: windowY,
             right: 0,
             bottom: 0,
             resizable: false,
             closeAction: "hide",
             constrain: true,
-            //header: false,
             layout: {
-                type: "vbox"//,
-                //align: "left"
+                type: "vbox"
             },
             items: [{
-                itemId: headerId,
-                width: "100%",
-                height: 50,
-                border: false,
-                hidden: true,
-                html: "header"
-            },{
-//                itemId: panelId,
                 id: panelId,
                 width: "100%",
-                //layout: "fit",
-                //width: "auto",
-                //autoWidth: true,
                 flex: 1,
                 border: false,
-                html: "panel"
+                html: "<div id='"+htmlId+"' style='width:100%;height:100%;'></div>"
             },{
                 itemId: footerId,
                 width: "100%",
@@ -105,11 +88,6 @@ Ext.define("viewer.components.DbkDialog",{
                 border: false,
                 hidden: true,
                 bodyStyle: "background-color: #F5F5F5; padding: 10px;",
-                //bodyStyle: "background-color:#F5F5F5;",
-//                bodyStyle: {
-//                    "background-color": "#F5F5F5",
-//                    "padding": "10px"
-//                },
                 html: "footer"
            }],
            listeners: {
@@ -122,23 +100,7 @@ Ext.define("viewer.components.DbkDialog",{
                    me.dialog.alignTo(Ext.getBody(), me.align);
                }
            }
-//                   resize: function() {
-//                       if (me.divId) {
-//                           var panel = me.getPanel();
-//                           if (panel) {
-//                               var child = Ext.get(me.divId);
-//                               if (child) {
-//                                   child.setWidth(panel.getWidth());
-//                                   child.setHeight(panel.getHeight());
-//                               }
-//                           }
-//                       }
-//                   }
-               //}
         });
-        // Align dialog.
-        //this.dialog.alignTo(Ext.getBody(),"r-r",[-75, 0]);
-        //this.dialog.alignTo(Ext.getBody(),"br-br");
     },
     getPanel: function() {
         var panelId;
@@ -158,10 +120,42 @@ Ext.define("viewer.components.DbkDialog",{
     hideFooterPanel: function() {
         this.getFooterPanel().hide();
     },
+    initDeltaWidthHeight: function() {
+        // Not yet set?
+        if (!this.deltaWidth) {
+            var htmlId = this.getId()+"Html";
+            // Force rendering.
+            this.dialog.show();
+            // Get default html div.
+            var div = Ext.get(htmlId);
+            if (div) {
+                this.deltaWidth = this.dialog.getWidth() - div.dom.clientWidth;
+                this.deltaHeight = this.dialog.getHeight()- div.dom.clientHeight;
+            }
+        }
+    },
+    resizeWindow: function() {
+        if (!this.deltaWidth)
+            return;
+        var panel = this.getPanel();
+        if (!panel)
+            return;
+        var panelBody = panel.el.down("div");
+        if (!panelBody)
+            return;
+        // Get first div of html content.
+        var htmlDiv = panelBody.down("div");
+        if (!htmlDiv)
+            return;
+        // Resize window to content.
+        var width = htmlDiv.dom.clientWidth;
+        var height = htmlDiv.dom.clientHeight;
+        this.dialog.setWidth(width+this.deltaWidth);
+        this.dialog.setHeight(height+this.deltaHeight);
+    },
     show: function() {
         if (this.dialog) {
             this.dialog.show();
-            //this.dialog.alignTo(Ext.getBody(),"r-r",[-75, 0]);
         }
     },
     showFooterPanel: function() {
@@ -177,10 +171,25 @@ Ext.define("viewer.components.DbkDialog",{
         this.getFooterPanel().update(html);
     },
     updateHtml: function(html) {
+        console.log("DbkDialog.updateHtml");
+        
+        // Need to grow or shrink window later?
+        if (this.fitWindow) {
+            // Get delta width and height.
+            this.initDeltaWidthHeight();
+        };
+        
+        // Update content.
         this.getPanel().update(html);
+        
+        // Need to grow or shrink window?
+        if (this.fitWindow) {
+            // Need grow or shrink window.
+            this.resizeWindow();
+        }
     },
     /* 
-     * Wordt aangeroepen in feature.getfeatureinfo().
+     * Is being called in feature.getfeatureinfo().
      */
     updateTitle: function(title) {
       this.dialog.setTitle(title);

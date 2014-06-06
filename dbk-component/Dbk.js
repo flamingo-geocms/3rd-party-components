@@ -35,7 +35,7 @@ Ext.define ("viewer.components.Dbk",{
         
         // The url to the media files (png,docx,etc.) referenced to in the 
         // <object>.json files.
-        // Example: /viewer/3rd-party-components/dbk-component/media
+        // Example: /viewer/3rd-party-components/dbk-component/data/media
         mediaPath: ""
     },
     constructor: function(conf){
@@ -57,6 +57,9 @@ Ext.define ("viewer.components.Dbk",{
             this.basePath=Ext.String.urlAppend(this.basePath,"className="+Ext.getClass(me).getName());
             this.basePath=Ext.String.urlAppend(this.basePath,"resource=");
         };
+ 
+        // DEBUG!!!
+        //this.basePath = "/viewer/3rd-party-components/dbk-component/";
  
         // Set icon path for dbkjs.config.styles.dbkfeature.
         this.imageBasePath = this.basePath + "public";
@@ -130,9 +133,10 @@ Ext.define ("viewer.components.Dbk",{
     },
     createDialogs: function(){
         console.log("Dbk.createDialogs");
-        
+
         this.detailsPanel = Ext.create("viewer.components.DbkDialog",
-            {id: "detailspanel", align: "bl-bl", divId: "detailsTable"});
+            {id: "detailspanel", align: "bl-bl", divId: "detailsTable",
+             fitWindow: true});
         this.infoPanel = Ext.create("viewer.components.DbkDialog",
             {id: "infopanel", width: 490, height: 500,
              dbk: this});
@@ -706,5 +710,5 @@ Ext.define ("viewer.components.Dbk",{
                 }]
         };
         return dbkObject;
-    },
+    }
 });
