@@ -114,34 +114,34 @@ dbkjs.protocol.jsonDBK = {
     getfeatureinfo: function(e){
         console.log("jsonDBK.getfeatureinfo");
         
-        
 //@@        $('#vectorclickpanel_h').html('<span class="h4"><i class="icon-info-sign">&nbsp;' + e.feature.layer.name + '</span>');
         
         var dbkComp = dbkjs.viewerController.getComponentsByClassName("viewer.components.Dbk")[0];
         dbkComp.detailsPanel.updateTitle('<span class="h4"><i class="icon-info-sign"></i> &nbsp;' + e.feature.layer.name + '</span>');
 //        html = '<div class="table-responsive">';
         var divId = dbkComp.detailsPanel.divId;
+        var html;
         if (divId) {
             html = '<div id="' + divId + '" style:"width: 100%" class="table-responsive">';
         }
         else {
             html = '<div style:"width: 100%" class="table-responsive">';
         }
-            html += '<table class="table table-hover">';
-            for (var j in e.feature.attributes) {
-                //if ($.inArray(j, ['Omschrijving', 'GEVIcode', 'UNnr', 'Hoeveelheid', 'NaamStof']) > -1) {
-                    if (!dbkjs.util.isJsonNull(e.feature.attributes[j])) {
-                        html += '<tr><td><span>' + j + "</span>: </td><td>" + e.feature.attributes[j] + "</td></tr>";
-                    }
-                //}
+        html += '<table class="table table-hover">';
+        for (var j in e.feature.attributes) {
+            //if ($.inArray(j, ['Omschrijving', 'GEVIcode', 'UNnr', 'Hoeveelheid', 'NaamStof']) > -1) {
+            if (!dbkjs.util.isJsonNull(e.feature.attributes[j])) {
+                html += '<tr><td><span>' + j + "</span>: </td><td>" + e.feature.attributes[j] + "</td></tr>";
             }
-            html += "</table>";
+            //}
+        }
+        html += "</table>";
         html += '</div>';
         //dbkjs.util.appendTab(dbkjs.wms_panel.attr("id"),'Brandcompartiment',html, true, 'br_comp_tab');
         
         dbkComp.detailsPanel.updateHtml(html);
         dbkComp.detailsPanel.show();
-        
+
 //@@        $('#vectorclickpanel_b').html(html);
 //@@        $('#vectorclickpanel').show();
         
@@ -295,6 +295,7 @@ dbkjs.protocol.jsonDBK = {
         // Hoogste altijd positief (zegt Dennis, ik sla hem kort als het niet zo is)
         // Laagste; minnetje er voor, bij 0 niet tonen.
         // Verdiepingen berekenen. Bij hoogste; 1 = BG/0, 2 = 1 etc.
+        var bouwlaag;
         var laagstebouwlaag;
         var hoogstebouwlaag;
         if(!dbkjs.util.isJsonNull(DBKObject.bouwlaag)){
@@ -561,7 +562,7 @@ dbkjs.protocol.jsonDBK = {
                 var myrow;
                 var sterretje = '';
                 if (waarde.type === 'hoofdobject'){
-                 sterretje = ' (' + i18n.t('dbk.mainobject') + ')';   
+                    sterretje = ' (' + i18n.t('dbk.mainobject') + ')';   
                 }
 //@@                if(waarde.identificatie !== dbkjs.options.feature.identificatie){
                 if(waarde.identificatie !== feature.identificatie){
