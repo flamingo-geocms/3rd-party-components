@@ -12,12 +12,11 @@ REMARKS
 - Printen zit er niet in (aparte branch).
 - Het geselecteerde object kan (voor bijv. printen) worden opgevraagd met de functie dbk.getSelectedDBKObject.
 - Objectinformatie m.b.t. afwijkendebinnendekking wordt niet getoond.
-- Dialogen zijn fixed size.
 - De applicatie is getest onder FF en Chrome.
 
 KNOWN ISSUE
 ----------
-- In FF worden er geen ikonen in de dialogen getoond. In Chrome wel.
+- geen
 
 TODO
 ----
@@ -25,7 +24,6 @@ TODO
 - README.md nog afmaken/stroomlijnen.
 - README_milo.md nog (deels) toevoegen.
 - Verder opschonen?
-- Dbk component configuratie?
 - Wat als je heel veel gevaarlijke stoffen hebt? Krijg je dan een scrollbare lijst?
 - Interfacing voor de Zoeker zit er nog niet in.
 
