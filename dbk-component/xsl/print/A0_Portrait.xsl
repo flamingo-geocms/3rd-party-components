@@ -2,7 +2,7 @@
 <xsl:stylesheet version="1.1" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" xmlns:svg="http://www.w3.org/2000/svg" exclude-result-prefixes="fo">
   <!-- Title Block.-->
   <xsl:template name="dbk_titleBk">
-    <xsl:for-each select="extra/info[@componentname='dbk1']">
+    <xsl:for-each select="extra/info[@classname='viewer.components.Dbk']/root">
       <fo:block-container width="40.74999999999999cm" height="38.313cm" top="0cm" left="0cm" xsl:use-attribute-sets="column-block-border">
         <fo:block margin-top="0.1cm" margin-left="0.2cm" xsl:use-attribute-sets="title-font">Digitale bereikbaarheidskaart Utrecht</fo:block>
         <fo:block margin-top="0.2cm" margin-left="0.2cm" xsl:use-attribute-sets="default-font">
@@ -106,7 +106,7 @@
   </xsl:template>
   <!-- Special Block.-->
   <xsl:template name="dbk_specialBk">
-    <xsl:for-each select="extra/info[@componentname='dbk1']">
+    <xsl:for-each select="extra/info[@classname='viewer.components.Dbk']/root">
       <fo:block-container width="40.749cm" height="38.313cm" top="0cm" left="40.949cm" xsl:use-attribute-sets="column-block-border">
         <!-- Bijzonderheden.-->
         <fo:block margin-top="0.1cm" margin-left="0.2cm" xsl:use-attribute-sets="title-font">Bijzonderheden</fo:block>
@@ -241,7 +241,7 @@
   </xsl:template>
   <!-- Photo1 Block.-->
   <xsl:template name="dbk_photo1Bk">
-    <xsl:for-each select="extra/info[@componentname='dbk1']">
+    <xsl:for-each select="extra/info[@classname='viewer.components.Dbk']/root">
       <xsl:for-each select="foto">
         <xsl:if test="position()=1">
           <fo:block-container width="40.749cm" height="38.313cm" top="38.513cm" left="0cm" xsl:use-attribute-sets="column-block-border">
@@ -256,7 +256,7 @@
   </xsl:template>
   <!-- Photo2 Block.-->
   <xsl:template name="dbk_photo2Bk">
-    <xsl:for-each select="extra/info[@componentname='dbk1']">
+    <xsl:for-each select="extra/info[@classname='viewer.components.Dbk']/root">
       <xsl:for-each select="foto">
         <xsl:if test="position()=2">
           <fo:block-container width="40.749cm" height="38.313cm" top="38.513cm" left="40.949cm" xsl:use-attribute-sets="column-block-border">
@@ -271,7 +271,7 @@
   </xsl:template>
   <!-- Dangerous substances Block.-->
   <xsl:template name="dbk_dangerousSubstBk">
-    <xsl:for-each select="extra/info[@componentname='dbk1']">
+    <xsl:for-each select="extra/info[@classname='viewer.components.Dbk']/root">
       <fo:block-container width="81.699cm" height="38.313cm" top="77.026cm" left="0cm" xsl:use-attribute-sets="column-block-border">
         <fo:block margin-top="0.1cm" margin-left="0.2cm" xsl:use-attribute-sets="title-font">Gevaarlijke stoffen</fo:block>
         <fo:block margin-top="0.2cm" margin-left="0.2cm" xsl:use-attribute-sets="default-font">
@@ -454,23 +454,23 @@
             <fo:inline font-family="Helvetica" font-weight="bold">Digitale bereikbaarheidskaart Utrecht</fo:inline>
           </fo:block>
           <fo:block margin-top="0.15cm" margin-left="0.2cm" xsl:use-attribute-sets="mapinfo-font">
-            <xsl:value-of select="extra/info[@componentname='dbk1']/identificatie"></xsl:value-of>
+            <xsl:value-of select="extra/info[@classname='viewer.components.Dbk']/root/identificatie"></xsl:value-of>
           </fo:block>
         </fo:block-container>
         <fo:block-container width="5.005cm" height="0.544cm" top="0.923cm" left="0cm" background-color="white" xsl:use-attribute-sets="column-block">
           <fo:block margin-top="0.15cm" margin-left="0.2cm" xsl:use-attribute-sets="mapinfo-font">
-            <xsl:value-of select="extra/info[@componentname='dbk1']/verdiepingen/bouwlaag"></xsl:value-of>
+            <xsl:value-of select="extra/info[@classname='viewer.components.Dbk']/root/verdiepingen/bouwlaag"></xsl:value-of>
           </fo:block>
         </fo:block-container>
         <fo:block-container width="5.005cm" height="0.544cm" top="1.568cm" left="0cm" background-color="white" xsl:use-attribute-sets="column-block">
           <fo:block margin-top="0.15cm" margin-left="0.2cm" xsl:use-attribute-sets="mapinfo-font">
-            <xsl:value-of select="extra/info[@componentname='dbk1']/formeleNaam"></xsl:value-of>
+            <xsl:value-of select="extra/info[@classname='viewer.components.Dbk']/root/formeleNaam"></xsl:value-of>
           </fo:block>
         </fo:block-container>
         <fo:block-container width="5.005cm" height="0.544cm" top="2.212cm" left="0cm" background-color="white" xsl:use-attribute-sets="column-block">
           <fo:block margin-top="0.15cm" margin-left="0.2cm" xsl:use-attribute-sets="mapinfo-font">
             <fo:inline font-style="oblique">
-              <xsl:value-of select="extra/info[@componentname='dbk1']/informeleNaam"></xsl:value-of>
+              <xsl:value-of select="extra/info[@classname='viewer.components.Dbk']/root/informeleNaam"></xsl:value-of>
             </fo:inline>
           </fo:block>
         </fo:block-container>
