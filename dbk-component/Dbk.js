@@ -64,27 +64,11 @@ Ext.define ("viewer.components.Dbk",{
         // Set icon path for dbkjs.config.styles.dbkfeature.
         this.imageBasePath = this.basePath + "public";
         
-        //----------------------------------------------------------------------
-        // OVERRIDE THE DEFAULT getProperties() METHODE.
-        //----------------------------------------------------------------------
-        if (typeof viewer.components.Print !== "undefined") {
-            viewer.components.Print.prototype.getProperties = function(){
-                console.log("viewer.components.Print.prototype.getProperties");
-                var properties = this.getValuesFromContainer(this.panel);
-                properties.angle = this.rotateSlider.getValue();
-                properties.quality = this.qualitySlider.getValue();
-                properties.appId = this.viewerController.app.id;
-                var mapProperties=this.getMapValues();
-                Ext.apply(properties, mapProperties);
-
-                // Add the additional DBK properties.
-                var dbkProperties=me.getObjectProperties();
-                if (dbkProperties)
-                    Ext.apply(properties,dbkProperties);
-
-                return properties;
-            };
-        };
+        // Install an event listener to register the Dbk component for printing.
+        this.viewerController.addListener(
+                viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,
+                this.registerPrintHandler,
+                this);
 
         // Start the application.
         this.initApp();
@@ -144,20 +128,41 @@ Ext.define ("viewer.components.Dbk",{
     getExtComponents: function() {
         return [];
     },
+    /* Returns the object info for use in the prints. The print component
+     * converts the json info to xml.
+     * 
+     * {
+     *    aap:"noot",
+     *   K: 12,
+     *   test:{
+     *        kliko : "gft"
+     *       }
+     *   };
+     * }
+     * Gives:
+     * <extra>
+     *     <info className="viewer.components.AttributeList" componentName="attributeList1">
+     *          <root>
+     *               <aap>noot</aap>
+     *               <test>
+     *                   <kliko>gft</kliko>
+     *               </test>
+     *               <K>12</K>
+     *          </root>
+     *     </info>
+     * </extra>
+     */
     getObjectProperties: function() {
-       var currentDbkObject;
-       var newDbkObject;
-       var newDbkObjectXml;
-       var propNames;
-       var propName;
-       var verblijf;
-       var printExtra;
-       var x2js;
-       var len;
-       var i;
+        var currentDbkObject;
+        var newDbkObject;
+        var propNames;
+        var propName;
+        var verblijf;
+        var len;
+        var i;
 
-        // Get the current dbk-object.
-        currentDbkObject = this.getCurrentObject();
+        // Get the selected dbk-object.
+        currentDbkObject = this.getSelectedDBKObject();
 
         // No dbk-object selected?
         if (!currentDbkObject) {
@@ -173,20 +178,26 @@ Ext.define ("viewer.components.Dbk",{
 
         // Remove not relevant properties, and geometries too.
         for (propName in newDbkObject) {
+            //console.log(propName);
             if (newDbkObject.hasOwnProperty(propName)) {
                 if (propNames.indexOf(propName)<0) {
                     // Remove property.
                     delete newDbkObject[propName];
                 } else {
-                    // Geometry property exists?
-                    if (typeof newDbkObject[propName]["geometry"] !== "undefined") {
-                        delete newDbkObject[propName]["geometry"];
-                    } else {
-                        // Array?
-                        if ((newDbkObject[propName].length) && (newDbkObject[propName].length>0)) {
-                            for (i=0,len=newDbkObject[propName].length;i<len;i++) {
-                                if (typeof newDbkObject[propName][i]["geometry"] !== "undefined")
-                                    delete newDbkObject[propName][i]["geometry"];
+                    // Valid property value?
+                    if (newDbkObject[propName]) {
+                        // Geometry property exists?
+                        //if (typeof newDbkObject[propName]["geometry"] !== "undefined") {
+                        if (newDbkObject[propName].hasOwnProperty("geometry")) {
+                            delete newDbkObject[propName]["geometry"];
+                        } else {
+                            // Array?
+                            if ((newDbkObject[propName].length) && (newDbkObject[propName].length>0)) {
+                                for (i=0,len=newDbkObject[propName].length;i<len;i++) {
+                                    //if (typeof newDbkObject[propName][i]["geometry"] !== "undefined")
+                                    if (newDbkObject[propName][i].hasOwnProperty("geometry"))
+                                        delete newDbkObject[propName][i]["geometry"];
+                                }
                             }
                         }
                     }
@@ -207,30 +218,14 @@ Ext.define ("viewer.components.Dbk",{
             }
         }
 
-        // Create the JSON structure for the Print API.
-        //
-        // Create this structure:
-        //   "extra": [{
-        //     "info": ["<info class="..." componentname="dbk1">...[xmlany]...</info>"]
-        //   }],
-
-        // Convert the object JSON to XML.
-       x2js = new X2JS();
-       newDbkObjectXml = x2js.json2xml_str(newDbkObject);
-
-        // Add <info class="..." componentname="dbk1">.
-        newDbkObjectXml = '<info class="'+this.dbkComponentName+
-                           '" componentname="'+this.dbkComponentName+'">'+
-                           newDbkObjectXml + '</info>';
-
-        // Create the "extra" property.
-        var printExtra = {"extra": {
-            "info": [newDbkObjectXml]
-        }};
-
-        // Return this.
-        return printExtra;
+        // DEBUG
+        //newDbkObject = this.getCurrentObject();
+        //console.log(newDbkObject);
+        
+        // Return the dbk object info.
+        return newDbkObject;
     },
+    /* Returns the property names which will be used for printing. */
     getPrintPropertyNames: function() {
         var propNames = [
              "identificatie",
@@ -258,25 +253,10 @@ Ext.define ("viewer.components.Dbk",{
             "logo": null,
             "workspace": "dbk",
             "title": "Zeeland",
-            "area": {
-                "geometry": {
-                    "type": "Polygon",
-                    "crs": {
-                        "type": "name",
-                        "properties": {
-                            "name": "EPSG:28992"
-                        }
-                    },
-                    "coordinates": [[[9686.56473944118, 358820.0255055], [11531.6167866597, 423478.950481169], [78565.4071192693, 422010.348564292], [77582.5899359003, 357338.412841884], [9686.56473944118, 358820.0255055]]]
-                }
-            },
-            "support": {
-                "mail": "milo@dogodigi.net",
-                "button": "Fout in de kaart melden?"
-            },
-            //"modules": ["search", "measure", "print", "feature", "support"],
+            "area": null,
+            "support": null,
             "modules": ["feature"],
-            "wms": [],
+            "wms": null,
             "care": null
         };
     },
@@ -286,6 +266,26 @@ Ext.define ("viewer.components.Dbk",{
         fileref.setAttribute("type","text/css");
         fileref.setAttribute("href",filename);
         document.getElementsByTagName("head")[0].appendChild(fileref);
+    },
+    /* Register this component for printing. */
+    registerPrintHandler: function(){
+        var printComponents = this.viewerController.getComponentsByClassName("viewer.components.Print");
+        var me = this;
+        // Register to all print components.
+        for (var i = 0; i < printComponents.length; i++){
+            // Register with callback.
+            printComponents[i].registerExtraInfo(this,function() {
+                return me.getObjectProperties();
+            });
+        }
+    },
+    /* Unregister this component for printing. */
+    unregisterPrintHandler: function(){
+        // Unregister from all print components.
+        var printComponents = this.viewerController.getComponentsByClassName("viewer.components.Print");
+        for (var i = 0; i < printComponents.length; i++){
+            printComponents[i].unregisterExtraInfo(this);
+        }
     },
     /* Returns from the string "HH:MM:SS" only "HH:MM". */
     stripSeconds: function(s) {

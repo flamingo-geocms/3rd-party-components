@@ -309,7 +309,6 @@ dbkjs.finishMap = function(){
     //get dbk!
 };
 
-//@@ Onderstaande functie was door Eddy in commentaar gezet. 
 /*@@
 $(document).ready(function() {
     // Make sure i18n is initialized
