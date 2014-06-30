@@ -964,7 +964,7 @@ dbkjs.protocol.jsonDBK = {
             fid = feature;
         }
         //@@ $.getJSON('api/object/' + fid + '.json', params).done(function(data) {
-        $.getJSON(dbkjs.dataPath + '/' + fid + '.json', params).done(function(data) {
+        $.getJSON(dbkjs.dataPath + '/object/' + fid + '.json', params).done(function(data) {
             //@@
             dbkjs.protocol.jsonDBK.info(data);
         }).fail(function( jqxhr, textStatus, error ) {
