@@ -26,7 +26,7 @@ Ext.define("viewer.components.CustomConfiguration",{
     form: null,
     constructor: function (parentid,config){
         viewer.components.CustomConfiguration.superclass.constructor.call(this, parentid,config);
-        if(config == undefined || config == null){
+        if(config === undefined || config === null){
             config = new Object();
         }
         var me = this;
@@ -44,12 +44,6 @@ Ext.define("viewer.components.CustomConfiguration",{
                 fieldLabel: 'Url van DBK data service:',
                 name: 'dataPath',
                 value: config.dataPath,
-                labelWidth: me.labelWidth
-            },{
-                xtype: 'textfield',
-                fieldLabel: 'Url van DBK media service:',
-                name: 'mediaPath',
-                value: config.mediaPath,
                 labelWidth: me.labelWidth
             }],
             renderTo: parentid

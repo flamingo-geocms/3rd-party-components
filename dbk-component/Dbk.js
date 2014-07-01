@@ -24,19 +24,14 @@
 Ext.define ("viewer.components.Dbk",{
     extend: "viewer.components.Component",
     basePath: "",
+    mediaPath: "",
     imageBasePath: "",
     detailsPanel: null,
     infoPanel: null,
-    
     config: {
-        // The url to the features.json and <object>.json files.
+        // The url to the features.json, <object>.json and object media files.
         // Example: /viewer/3rd-party-components/dbk-component/data
-        dataPath: "",
-        
-        // The url to the media files (png,docx,etc.) referenced to in the 
-        // <object>.json files.
-        // Example: /viewer/3rd-party-components/dbk-component/data/media
-        mediaPath: ""
+        dataPath: ""
     },
     constructor: function(conf){
         var me = this;
@@ -92,7 +87,7 @@ Ext.define ("viewer.components.Dbk",{
             
             // Set paths of dbkjs.
             dbkjs.dataPath = me.dataPath;
-            dbkjs.mediaPath = me.mediaPath;
+            dbkjs.mediaPath = me.dataPath + "/media";
             dbkjs.imageBasePath = me.imageBasePath;
 
             // Set the viewcontroller.
