@@ -84,10 +84,13 @@ Ext.define ("viewer.components.Dbk",{
             debug: false,
             resGetPath: this.basePath + "locales/__lng__/translation.json"
         }, function() {
-            
+
+            // Set media path.
+            me.mediaPath = me.dataPath + "/media";
+
             // Set paths of dbkjs.
             dbkjs.dataPath = me.dataPath;
-            dbkjs.mediaPath = me.dataPath + "/media";
+            dbkjs.mediaPath = me.mediaPath;
             dbkjs.imageBasePath = me.imageBasePath;
 
             // Set the viewcontroller.
@@ -153,12 +156,14 @@ Ext.define ("viewer.components.Dbk",{
         var propNames;
         var propName;
         var verblijf;
+        var media;
+        var mediaPath;
         var len;
         var i;
 
         // Get the selected dbk-object.
         currentDbkObject = this.getSelectedDBKObject();
-
+        
         // No dbk-object selected?
         if (!currentDbkObject) {
             return {};
@@ -182,14 +187,12 @@ Ext.define ("viewer.components.Dbk",{
                     // Valid property value?
                     if (newDbkObject[propName]) {
                         // Geometry property exists?
-                        //if (typeof newDbkObject[propName]["geometry"] !== "undefined") {
                         if (newDbkObject[propName].hasOwnProperty("geometry")) {
                             delete newDbkObject[propName]["geometry"];
                         } else {
                             // Array?
                             if ((newDbkObject[propName].length) && (newDbkObject[propName].length>0)) {
                                 for (i=0,len=newDbkObject[propName].length;i<len;i++) {
-                                    //if (typeof newDbkObject[propName][i]["geometry"] !== "undefined")
                                     if (newDbkObject[propName][i].hasOwnProperty("geometry"))
                                         delete newDbkObject[propName][i]["geometry"];
                                 }
@@ -213,6 +216,28 @@ Ext.define ("viewer.components.Dbk",{
             }
         }
 
+        // Add full path to media files.
+        mediaPath = this.mediaPath;
+        // Add slash.
+        if (mediaPath.slice(-1)!=="/")
+            mediaPath += "/";
+        if ((newDbkObject.foto) && (newDbkObject.foto.length)) {
+            for (i=0,len=newDbkObject.foto.length;i<len;i++) {
+                media = newDbkObject.foto[i];
+                // Only images are used in the print.
+                if (media.filetype==="afbeelding") {
+                    // Has url?
+                    if (media.URL) {
+                        // No path yet?
+                        if (media.URL.slice(0,4)!=="http") {
+                            // Add path.
+                            media.URL = mediaPath + media.URL;
+                        }
+                    }
+                }
+            }
+        }
+        
         // DEBUG
         //newDbkObject = this.getCurrentObject();
         //console.log(newDbkObject);
@@ -293,7 +318,7 @@ Ext.define ("viewer.components.Dbk",{
         else
             return s;
     },
-    /* Create static object info for testing. */
+    /* Returns static object info for TESTING. */
     getCurrentObject: function() {
         var dbkObject;
         dbkObject = {
@@ -541,6 +566,10 @@ Ext.define ("viewer.components.Dbk",{
             "foto": [{
                     "naam": "1398855326_A.jpg",
                     "URL": "1398855326_A.jpg",
+                    "filetype": "afbeelding"
+                }, {
+                    "naam": "1398855326_A.jpg",
+                    "URL": "http://dbk-test/1398855326_A.jpg",
                     "filetype": "afbeelding"
                 }, {
                     "naam": "FO versnelling Care.docx",
