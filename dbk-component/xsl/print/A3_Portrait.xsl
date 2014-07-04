@@ -6,26 +6,56 @@
       <fo:block-container width="13.55cm" height="12.936cm" top="0cm" left="0cm" xsl:use-attribute-sets="column-block-border">
         <fo:block margin-top="0.1cm" margin-left="0.2cm" xsl:use-attribute-sets="title-font">Digitale bereikbaarheidskaart Utrecht</fo:block>
         <fo:block margin-top="0.2cm" margin-left="0.2cm" xsl:use-attribute-sets="default-font">
-          <xsl:value-of select="identificatie"></xsl:value-of>
+          <xsl:choose>
+            <xsl:when test="identificatie='null'">-</xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="identificatie"></xsl:value-of>
+            </xsl:otherwise>
+          </xsl:choose>
         </fo:block>
         <fo:block margin-top="0.2cm" margin-left="0.2cm" xsl:use-attribute-sets="default-font">Datum afdruk:
-          <xsl:value-of select="date"></xsl:value-of>
+          <xsl:choose>
+            <xsl:when test="date='null'">-</xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="date"></xsl:value-of>
+            </xsl:otherwise>
+          </xsl:choose>
         </fo:block>
         <fo:block margin-top="0.2cm" margin-left="0.2cm" xsl:use-attribute-sets="default-font">
-          <xsl:value-of select="formeleNaam"></xsl:value-of>
+          <xsl:choose>
+            <xsl:when test="formeleNaam='null'">-</xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="formeleNaam"></xsl:value-of>
+            </xsl:otherwise>
+          </xsl:choose>
         </fo:block>
         <fo:block margin-top="0.2cm" margin-left="0.2cm" xsl:use-attribute-sets="default-font">
           <fo:inline font-style="oblique">
-            <xsl:value-of select="informeleNaam"></xsl:value-of>
+            <xsl:choose>
+              <xsl:when test="informeleNaam='null'">-</xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="informeleNaam"></xsl:value-of>
+              </xsl:otherwise>
+            </xsl:choose>
           </fo:inline>
         </fo:block>
         <!-- Gebouwinformatie.-->
         <fo:block margin-top="0.2cm" margin-left="0.2cm" xsl:use-attribute-sets="title-font">Gebouwinformatie</fo:block>
         <fo:block margin-top="0cm" margin-left="0.2cm" xsl:use-attribute-sets="default-font">Bouwlaag:
-          <xsl:value-of select="verdiepingen/bouwlaag"></xsl:value-of>
+          <xsl:choose>
+            <xsl:when test="verdiepingen/bouwlaag='null'">-</xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="verdiepingen/bouwlaag"></xsl:value-of>
+            </xsl:otherwise>
+          </xsl:choose>
         </fo:block>
         <fo:block margin-top="0cm" margin-left="0.2cm" xsl:use-attribute-sets="default-font">Hoogste bouwlaag:
-          <xsl:value-of select="hoogsteBouwlaag"></xsl:value-of>
+          <xsl:choose>
+            <xsl:when test="hoogsteBouwlaag='null'">-</xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="hoogsteBouwlaag"></xsl:value-of>
+            </xsl:otherwise>
+          </xsl:choose>
         </fo:block>
         <!-- Adres.-->
         <fo:block margin-top="0.2cm" margin-left="0.2cm" xsl:use-attribute-sets="title-font">Adres</fo:block>
@@ -68,17 +98,32 @@
                     <fo:table-row border-width="thin" border-top-style="solid">
                       <fo:table-cell margin-left="0.05cm">
                         <fo:block>
-                          <xsl:value-of select="functie"></xsl:value-of>
+                          <xsl:choose>
+                            <xsl:when test="functie='null'">-</xsl:when>
+                            <xsl:otherwise>
+                              <xsl:value-of select="functie"></xsl:value-of>
+                            </xsl:otherwise>
+                          </xsl:choose>
                         </fo:block>
                       </fo:table-cell>
                       <fo:table-cell margin-left="0.05cm">
                         <fo:block>
-                          <xsl:value-of select="naam"></xsl:value-of>
+                          <xsl:choose>
+                            <xsl:when test="naam='null'">-</xsl:when>
+                            <xsl:otherwise>
+                              <xsl:value-of select="naam"></xsl:value-of>
+                            </xsl:otherwise>
+                          </xsl:choose>
                         </fo:block>
                       </fo:table-cell>
                       <fo:table-cell margin-left="0.05cm">
                         <fo:block>
-                          <xsl:value-of select="telefoonnummer"></xsl:value-of>
+                          <xsl:choose>
+                            <xsl:when test="telefoonnummer='null'">-</xsl:when>
+                            <xsl:otherwise>
+                              <xsl:value-of select="telefoonnummer"></xsl:value-of>
+                            </xsl:otherwise>
+                          </xsl:choose>
                         </fo:block>
                       </fo:table-cell>
                     </fo:table-row>
@@ -129,12 +174,22 @@
                     <fo:table-row border-width="thin" border-top-style="solid">
                       <fo:table-cell margin-left="0.05cm">
                         <fo:block>
-                          <xsl:value-of select="soort"></xsl:value-of>
+                          <xsl:choose>
+                            <xsl:when test="soort='null'">-</xsl:when>
+                            <xsl:otherwise>
+                              <xsl:value-of select="soort"></xsl:value-of>
+                            </xsl:otherwise>
+                          </xsl:choose>
                         </fo:block>
                       </fo:table-cell>
                       <fo:table-cell margin-left="0.05cm">
                         <fo:block>
-                          <xsl:value-of select="tekst"></xsl:value-of>
+                          <xsl:choose>
+                            <xsl:when test="tekst='null'">-</xsl:when>
+                            <xsl:otherwise>
+                              <xsl:value-of select="tekst"></xsl:value-of>
+                            </xsl:otherwise>
+                          </xsl:choose>
                         </fo:block>
                       </fo:table-cell>
                     </fo:table-row>
@@ -187,27 +242,52 @@
                     <fo:table-row border-width="thin" border-top-style="solid">
                       <fo:table-cell margin-left="0.05cm">
                         <fo:block>
-                          <xsl:value-of select="typeAanwezigheidsgroep"></xsl:value-of>
+                          <xsl:choose>
+                            <xsl:when test="typeAanwezigheidsgroep='null'">-</xsl:when>
+                            <xsl:otherwise>
+                              <xsl:value-of select="typeAanwezigheidsgroep"></xsl:value-of>
+                            </xsl:otherwise>
+                          </xsl:choose>
                         </fo:block>
                       </fo:table-cell>
                       <fo:table-cell margin-left="0.05cm" text-align="center">
                         <fo:block>
-                          <xsl:value-of select="aantal"></xsl:value-of>
+                          <xsl:choose>
+                            <xsl:when test="aantal='null'">-</xsl:when>
+                            <xsl:otherwise>
+                              <xsl:value-of select="aantal"></xsl:value-of>
+                            </xsl:otherwise>
+                          </xsl:choose>
                         </fo:block>
                       </fo:table-cell>
                       <fo:table-cell margin-left="0.05cm" text-align="center">
                         <fo:block>
-                          <xsl:value-of select="tijdvakBegintijd"></xsl:value-of>
+                          <xsl:choose>
+                            <xsl:when test="tijdvakBegintijd='null'">-</xsl:when>
+                            <xsl:otherwise>
+                              <xsl:value-of select="tijdvakBegintijd"></xsl:value-of>
+                            </xsl:otherwise>
+                          </xsl:choose>
                         </fo:block>
                       </fo:table-cell>
                       <fo:table-cell margin-left="0.05cm" text-align="center">
                         <fo:block>
-                          <xsl:value-of select="tijdvakEindtijd"></xsl:value-of>
+                          <xsl:choose>
+                            <xsl:when test="tijdvakEindtijd='null'">-</xsl:when>
+                            <xsl:otherwise>
+                              <xsl:value-of select="tijdvakEindtijd"></xsl:value-of>
+                            </xsl:otherwise>
+                          </xsl:choose>
                         </fo:block>
                       </fo:table-cell>
                       <fo:table-cell margin-left="0.05cm" text-align="center">
                         <fo:block>
-                          <xsl:value-of select="aantalNietZelfredzaam"></xsl:value-of>
+                          <xsl:choose>
+                            <xsl:when test="aantalNietZelfredzaam='null'">-</xsl:when>
+                            <xsl:otherwise>
+                              <xsl:value-of select="aantalNietZelfredzaam"></xsl:value-of>
+                            </xsl:otherwise>
+                          </xsl:choose>
                         </fo:block>
                       </fo:table-cell>
                     </fo:table-row>
@@ -244,12 +324,14 @@
     <xsl:for-each select="extra/info[@classname='viewer.components.Dbk']/root">
       <xsl:for-each select="foto">
         <xsl:if test="position()=1">
-          <fo:block-container width="13.55cm" height="12.936cm" top="13.136cm" left="0cm" xsl:use-attribute-sets="column-block-border">
-            <fo:block margin="0.05cm">
-              <xsl:variable name="photoUrl" select="URL"></xsl:variable>
-              <fo:external-graphic src="{$photoUrl}" width="100%" height="100%" content-width="scale-to-fit"></fo:external-graphic>
-            </fo:block>
-          </fo:block-container>
+          <xsl:if test=".!='null'">
+            <fo:block-container width="13.55cm" height="12.936cm" top="13.136cm" left="0cm" xsl:use-attribute-sets="column-block-border">
+              <fo:block margin="0.05cm">
+                <xsl:variable name="photoUrl" select="URL"></xsl:variable>
+                <fo:external-graphic src="{$photoUrl}" width="100%" height="100%" content-width="scale-to-fit"></fo:external-graphic>
+              </fo:block>
+            </fo:block-container>
+          </xsl:if>
         </xsl:if>
       </xsl:for-each>
     </xsl:for-each>
@@ -259,12 +341,14 @@
     <xsl:for-each select="extra/info[@classname='viewer.components.Dbk']/root">
       <xsl:for-each select="foto">
         <xsl:if test="position()=2">
-          <fo:block-container width="13.55cm" height="12.936cm" top="13.136cm" left="13.75cm" xsl:use-attribute-sets="column-block-border">
-            <fo:block margin="0.05cm">
-              <xsl:variable name="photoUrl" select="URL"></xsl:variable>
-              <fo:external-graphic src="{$photoUrl}" width="100%" height="100%" content-width="scale-to-fit"></fo:external-graphic>
-            </fo:block>
-          </fo:block-container>
+          <xsl:if test=".!='null'">
+            <fo:block-container width="13.55cm" height="12.936cm" top="13.136cm" left="13.75cm" xsl:use-attribute-sets="column-block-border">
+              <fo:block margin="0.05cm">
+                <xsl:variable name="photoUrl" select="URL"></xsl:variable>
+                <fo:external-graphic src="{$photoUrl}" width="100%" height="100%" content-width="scale-to-fit"></fo:external-graphic>
+              </fo:block>
+            </fo:block-container>
+          </xsl:if>
         </xsl:if>
       </xsl:for-each>
     </xsl:for-each>
@@ -311,32 +395,62 @@
                     <fo:table-row border-width="thin" border-top-style="solid">
                       <fo:table-cell margin-left="0.05cm">
                         <fo:block>
-                          <xsl:value-of select="naamStof"></xsl:value-of>
+                          <xsl:choose>
+                            <xsl:when test="naamStof='null'">-</xsl:when>
+                            <xsl:otherwise>
+                              <xsl:value-of select="naamStof"></xsl:value-of>
+                            </xsl:otherwise>
+                          </xsl:choose>
                         </fo:block>
                       </fo:table-cell>
                       <fo:table-cell margin-left="0.05cm" text-align="center">
                         <fo:block>
-                          <xsl:value-of select="gevaarsindicatienummer"></xsl:value-of>
+                          <xsl:choose>
+                            <xsl:when test="gevaarsindicatienummer='null'">-</xsl:when>
+                            <xsl:otherwise>
+                              <xsl:value-of select="gevaarsindicatienummer"></xsl:value-of>
+                            </xsl:otherwise>
+                          </xsl:choose>
                         </fo:block>
                       </fo:table-cell>
                       <fo:table-cell margin-left="0.05cm" text-align="center">
                         <fo:block>
-                          <xsl:value-of select="UNnummer"></xsl:value-of>
+                          <xsl:choose>
+                            <xsl:when test="UNnummer='null'">-</xsl:when>
+                            <xsl:otherwise>
+                              <xsl:value-of select="UNnummer"></xsl:value-of>
+                            </xsl:otherwise>
+                          </xsl:choose>
                         </fo:block>
                       </fo:table-cell>
                       <fo:table-cell margin-left="0.05cm" text-align="center">
                         <fo:block>
-                          <xsl:value-of select="hoeveelheid"></xsl:value-of>
+                          <xsl:choose>
+                            <xsl:when test="hoeveelheid='null'">-</xsl:when>
+                            <xsl:otherwise>
+                              <xsl:value-of select="hoeveelheid"></xsl:value-of>
+                            </xsl:otherwise>
+                          </xsl:choose>
                         </fo:block>
                       </fo:table-cell>
                       <fo:table-cell margin-left="0.05cm" text-align="center">
                         <fo:block>
-                          <xsl:value-of select="symboolCode"></xsl:value-of>
+                          <xsl:choose>
+                            <xsl:when test="symboolCode='null'">-</xsl:when>
+                            <xsl:otherwise>
+                              <xsl:value-of select="symboolCode"></xsl:value-of>
+                            </xsl:otherwise>
+                          </xsl:choose>
                         </fo:block>
                       </fo:table-cell>
                       <fo:table-cell margin-left="0.05cm">
                         <fo:block>
-                          <xsl:value-of select="aanvullendeInformatie"></xsl:value-of>
+                          <xsl:choose>
+                            <xsl:when test="aanvullendeInformatie='null'">-</xsl:when>
+                            <xsl:otherwise>
+                              <xsl:value-of select="aanvullendeInformatie"></xsl:value-of>
+                            </xsl:otherwise>
+                          </xsl:choose>
                         </fo:block>
                       </fo:table-cell>
                     </fo:table-row>
@@ -454,29 +568,53 @@
             <fo:inline font-family="Helvetica" font-weight="bold">Digitale bereikbaarheidskaart Utrecht</fo:inline>
           </fo:block>
           <fo:block margin-top="0.15cm" margin-left="0.2cm" xsl:use-attribute-sets="mapinfo-font">
-            <xsl:value-of select="extra/info[@classname='viewer.components.Dbk']/root/identificatie"></xsl:value-of>
+            <xsl:choose>
+              <xsl:when test="extra/info[@classname='viewer.components.Dbk']/root/identificatie='null'">-</xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="extra/info[@classname='viewer.components.Dbk']/root/identificatie"></xsl:value-of>
+              </xsl:otherwise>
+            </xsl:choose>
           </fo:block>
         </fo:block-container>
         <fo:block-container width="5.005cm" height="0.544cm" top="0.923cm" left="0cm" background-color="white" xsl:use-attribute-sets="column-block">
           <fo:block margin-top="0.15cm" margin-left="0.2cm" xsl:use-attribute-sets="mapinfo-font">
-            <xsl:value-of select="extra/info[@classname='viewer.components.Dbk']/root/verdiepingen/bouwlaag"></xsl:value-of>
+            <xsl:choose>
+              <xsl:when test="extra/info[@classname='viewer.components.Dbk']/root/verdiepingen/bouwlaag='null'">-</xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="extra/info[@classname='viewer.components.Dbk']/root/verdiepingen/bouwlaag"></xsl:value-of>
+              </xsl:otherwise>
+            </xsl:choose>
           </fo:block>
         </fo:block-container>
         <fo:block-container width="5.005cm" height="0.544cm" top="1.568cm" left="0cm" background-color="white" xsl:use-attribute-sets="column-block">
           <fo:block margin-top="0.15cm" margin-left="0.2cm" xsl:use-attribute-sets="mapinfo-font">
-            <xsl:value-of select="extra/info[@classname='viewer.components.Dbk']/root/formeleNaam"></xsl:value-of>
+            <xsl:choose>
+              <xsl:when test="extra/info[@classname='viewer.components.Dbk']/root/formeleNaam='null'">-</xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="extra/info[@classname='viewer.components.Dbk']/root/formeleNaam"></xsl:value-of>
+              </xsl:otherwise>
+            </xsl:choose>
           </fo:block>
         </fo:block-container>
         <fo:block-container width="5.005cm" height="0.544cm" top="2.212cm" left="0cm" background-color="white" xsl:use-attribute-sets="column-block">
           <fo:block margin-top="0.15cm" margin-left="0.2cm" xsl:use-attribute-sets="mapinfo-font">
-            <fo:inline font-style="oblique">
-              <xsl:value-of select="extra/info[@classname='viewer.components.Dbk']/root/informeleNaam"></xsl:value-of>
-            </fo:inline>
+            <fo:inline font-style="oblique"></fo:inline>
+            <xsl:choose>
+              <xsl:when test="extra/info[@classname='viewer.components.Dbk']/root/informeleNaam='null'">-</xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="extra/info[@classname='viewer.components.Dbk']/root/informeleNaam"></xsl:value-of>
+              </xsl:otherwise>
+            </xsl:choose>
           </fo:block>
         </fo:block-container>
         <fo:block-container width="5.005cm" height="0.544cm" top="2.856cm" left="0cm" background-color="white" xsl:use-attribute-sets="column-block">
           <fo:block margin-top="0.15cm" margin-left="0.2cm" xsl:use-attribute-sets="mapinfo-font">Datum afdruk:
-            <xsl:value-of select="date"></xsl:value-of>
+            <xsl:choose>
+              <xsl:when test="extra/info[@classname='viewer.components.Dbk']/root/date='null'">-</xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="extra/info[@classname='viewer.components.Dbk']/root/date"></xsl:value-of>
+              </xsl:otherwise>
+            </xsl:choose>
           </fo:block>
         </fo:block-container>
       </fo:block-container>
