@@ -31,7 +31,20 @@ Ext.define ("viewer.components.Dbk",{
     config: {
         // The url to the features.json, <object>.json and object media files.
         // Example: /viewer/3rd-party-components/dbk-component/data
-        dataPath: ""
+        dataPath: "",
+        // The url to the wms service with layers for printing.
+        printWMSPath: "",
+        // The names of the layers of the wms service with layers for printing.
+        // The names should be separated by ";".
+        printLayerNames: "",
+        // The format of the wms service with layers for printing.
+        printFormat: "image/png",
+        // The srs of the wms service with layers for printing.
+        printSRS: "EPSG%3A28992",
+        // The transparent flag of the wms service with layers for printing.
+        printTransparent: true,
+        // The alpha of the wms service with layers for printing.
+        printAlpha: 100
     },
     constructor: function(conf){
         var me = this;
@@ -62,7 +75,7 @@ Ext.define ("viewer.components.Dbk",{
         // Install an event listener to register the Dbk component for printing.
         this.viewerController.addListener(
                 viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,
-                this.registerPrintHandler,
+                this.registerExtraHandlers,
                 this);
 
         // Start the application.
@@ -125,6 +138,17 @@ Ext.define ("viewer.components.Dbk",{
     },
     getExtComponents: function() {
         return [];
+    },
+    getExtraLayers: function() {
+        var result = [{
+            url: this.printWMSPath,
+            layers: this.printLayerNames,
+            format: this.printFormat,
+            transparent: this.printTransparent,
+            srs: this.printSRS,
+            alpha: this.printAlpha
+        }];
+        return result;
     },
     /* Returns the object info for use in the prints. The print component
      * converts the json info to xml.
@@ -287,24 +311,29 @@ Ext.define ("viewer.components.Dbk",{
         fileref.setAttribute("href",filename);
         document.getElementsByTagName("head")[0].appendChild(fileref);
     },
-    /* Register this component for printing. */
-    registerPrintHandler: function(){
+    /* Register this component. */
+    registerExtraHandlers: function(){
         var printComponents = this.viewerController.getComponentsByClassName("viewer.components.Print");
         var me = this;
         // Register to all print components.
         for (var i = 0; i < printComponents.length; i++){
-            // Register with callback.
+            // Register extra info handler with callback.
             printComponents[i].registerExtraInfo(this,function() {
                 return me.getObjectProperties();
             });
+            // Register extra layers handler with callback.
+            printComponents[i].registerExtraLayers(this,function() {
+                return me.getExtraLayers();
+            });
         }
     },
-    /* Unregister this component for printing. */
-    unregisterPrintHandler: function(){
+    /* Unregister this component. */
+    unregisterExtraHandlers: function(){
         // Unregister from all print components.
         var printComponents = this.viewerController.getComponentsByClassName("viewer.components.Print");
         for (var i = 0; i < printComponents.length; i++){
             printComponents[i].unregisterExtraInfo(this);
+            printComponents[i].unregisterExtraLayers(this);
         }
     },
     /* Returns from the string "HH:MM:SS" only "HH:MM". */

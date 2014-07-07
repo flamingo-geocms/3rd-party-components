@@ -19,8 +19,6 @@
  * @author <a href="mailto:eddy.scheper@aris.nl">Eddy Scheper</a>
  */
 
-// Deels kopie van TOC.js
-
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.ConfigObject",
     form: null,
@@ -30,21 +28,76 @@ Ext.define("viewer.components.CustomConfiguration",{
             config = new Object();
         }
         var me = this;
+        
+        me.labelWidth = 150;
+        
         this.form = new Ext.form.FormPanel({
             url: 'Home/SubmitForm',
             frame: false,
             title: 'Configureer dit component',
-            bodyPadding: me.formPadding,
-            defaults: {
-                anchor: '100%'
-            },
             width: me.formWidth,
-            items: [{ 
-                xtype: 'textfield',
-                fieldLabel: 'Url van DBK data service:',
-                name: 'dataPath',
-                value: config.dataPath,
+            bodyPadding: me.formPadding,
+            defaultType: 'textfield',
+            defaults: {
+                anchor: '100%',
                 labelWidth: me.labelWidth
+            },
+            items: [{
+                    xtype: 'label',
+                    text: 'Data',
+                    style: 'font-weight:bold;'
+                },{
+                    name: 'dataPath',
+                    fieldLabel: 'Url van DBK data service:',
+                    value: config.dataPath || ''
+                },{
+                    xtype: 'label',
+                    text: 'WMS service met lagen voor het printen',
+                    style: 'font-weight:bold;'
+                },{
+                    name: 'printWMSPath',
+                    fieldLabel: 'Url van de service',
+                    value: config.printWMSPath || ''
+                },{
+                    name: 'printLayerNames',
+                    fieldLabel: 'Namen van de lagen',
+                    value: config.printLayerNames || ''
+                },{
+                    xtype: 'combo',
+                    name: 'printFormat',
+                    fieldLabel: 'Formaat',
+                    anchor: '50%',
+                    value: config.printFormat || 'image/png',
+                    fields: ['value','text'],
+                    store: [
+                        ['image/png','image/png'],
+                        ['image/png8','image/png8'],
+                        ['image/jpeg','image/jpeg']
+                    ]
+                },{
+                    xtype: 'combo',
+                    name: 'printSRS',
+                    fieldLabel: 'SRS',
+                    anchor: '50%',
+                    value: config.printSRS || 'EPSG%3A28992',
+                    fields: ['value','text'],
+                    store: [
+                        ['EPSG%3A28992','EPSG:28992'],
+                        ['EPSG%3A4326','EPSG:4326']
+                    ]
+                },{
+                    xtype: 'checkbox',
+                    name: 'printTransparent',
+                    fieldLabel: 'Transparant',
+                    checked: typeof config.printTransparent !== "undefined" ? config.printTransparent : true
+                },{
+                    xtype: 'numberfield',
+                    name: 'printAlpha',
+                    fieldLabel: 'Transparantie %',
+                    anchor: '35%',
+                    minValue: 0,
+                    maxValue: 100,
+                    value: config.printAlpha || 100
             }],
             renderTo: parentid
         });      
