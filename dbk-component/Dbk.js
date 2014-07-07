@@ -262,10 +262,6 @@ Ext.define ("viewer.components.Dbk",{
             }
         }
         
-        // DEBUG
-        //newDbkObject = this.getCurrentObject();
-        //console.log(newDbkObject);
-        
         // Return the dbk object info.
         return newDbkObject;
     },
@@ -285,6 +281,111 @@ Ext.define ("viewer.components.Dbk",{
              "foto",
              "gevaarlijkestof"];
          return propNames;
+    },
+    /* If field values match the queryId, then add feature data to array. 
+     * Only supports features with a point geometry. */
+    getSearchFeatureData: function(searchResult,
+                                   queryFields,queryFieldTypes,
+                                   queryId,feature,buffer) {
+        var queryField;
+        var label;
+        var data;
+        var len;
+        var i;
+        // Loop query fiels.
+        for (i=0,len=queryFields.length;i!==len;i++) {
+            queryField = queryFields[i];
+            // Check feature attributes.
+            if (feature.attributes[queryField]) {
+                if (feature.attributes[queryField].toString()===queryId) {
+                    // Collect feature data.
+                    if (feature.attributes['formeleNaam'])
+                        label = feature.attributes['formeleNaam'];
+                    else
+                        label = "onbekend";
+                    data = {
+                        type: queryFieldTypes[i],
+                        label: label,
+                        location: {
+                            minx: feature.geometry.x - buffer,
+                            miny: feature.geometry.y - buffer,
+                            maxx: feature.geometry.x + buffer,
+                            maxy: feature.geometry.y + buffer
+                        }
+                    };
+                    // Add to result.
+                    searchResult.push(data);
+                }
+            }
+        }
+    },
+    /* Search features for values of specified fields which match the
+     * queryId.
+     * Returns a result object with an array of found features,
+     */
+    getSearchResult: function(queryId,searchRequestId) {
+        var features;
+        var feature;
+        var clusterFeature;
+        var buffer;
+        var queryFields;
+        var queryFieldTypes;
+        var i,j;
+        var len1,len2;
+        var searchResult = [];
+        var result;
+        var err;
+
+        // Get features.
+        if (!dbkjs.modules.feature.layer)
+          return [];
+        if (!dbkjs.modules.feature.layer.features)
+          return [];
+        features = dbkjs.modules.feature.layer.features;
+
+        // Set bufeer for geometry.
+        buffer = 300;
+        
+        // Specify query fields.
+        queryFields = ['identificatie','OMSNummer'];
+
+        // Specify the query fields types/labels.
+        queryFieldTypes = ['Objectnummer','OMS-nummer'];
+ 
+        try {
+            // Loop features.
+            for (i=0,len1=features.length;i!==len1;i++) {
+                feature = features[i];
+                if (feature.cluster) {
+                    for (j=0,len2=feature.cluster.length;j!==len2;j++) {
+                      clusterFeature = feature.cluster[j];
+                      this.getSearchFeatureData(searchResult,
+                                                queryFields,queryFieldTypes,
+                                                queryId,clusterFeature,buffer);
+                    } 
+                } else {
+                    this.getSearchFeatureData(searchResult,
+                                              queryFields,queryFieldTypes,
+                                              queryId,feature,buffer);
+                }
+            };
+            result = {
+                success: true,
+                errorMessage: "",
+                results: searchResult,
+                searchRequestId: searchRequestId
+            };
+        }
+        catch(err) {
+            result = {
+                success: false,
+                errorMessage: err.message,
+                results: [],
+                searchRequestId: searchRequestId
+            };
+        };
+            
+        return result;
     },
     getSelectedDBKObject: function () {
         return dbkjs.options.feature;
@@ -313,8 +414,8 @@ Ext.define ("viewer.components.Dbk",{
     },
     /* Register this component. */
     registerExtraHandlers: function(){
-        var printComponents = this.viewerController.getComponentsByClassName("viewer.components.Print");
         var me = this;
+        var printComponents = this.viewerController.getComponentsByClassName("viewer.components.Print");
         // Register to all print components.
         for (var i = 0; i < printComponents.length; i++){
             // Register extra info handler with callback.
@@ -325,16 +426,15 @@ Ext.define ("viewer.components.Dbk",{
             printComponents[i].registerExtraLayers(this,function() {
                 return me.getExtraLayers();
             });
-        }
-    },
-    /* Unregister this component. */
-    unregisterExtraHandlers: function(){
-        // Unregister from all print components.
-        var printComponents = this.viewerController.getComponentsByClassName("viewer.components.Print");
-        for (var i = 0; i < printComponents.length; i++){
-            printComponents[i].unregisterExtraInfo(this);
-            printComponents[i].unregisterExtraLayers(this);
-        }
+        };
+        var searchComponents = this.viewerController.getComponentsByClassName("viewer.components.Search");
+        // Register to all search components.
+        for (var i = 0; i < searchComponents.length; i++){
+            // Register extra info handler with callback.
+            searchComponents[i].addDynamicSearchEntry(this,function(queryId,searchRequestId) {
+                return me.getSearchResult(queryId,searchRequestId);
+            });
+        };
     },
     /* Returns from the string "HH:MM:SS" only "HH:MM". */
     stripSeconds: function(s) {
@@ -347,8 +447,27 @@ Ext.define ("viewer.components.Dbk",{
         else
             return s;
     },
+    /* Unregister this component. */
+    unregisterExtraHandlers: function(){
+        // Unregister from all print components.
+        var printComponents = this.viewerController.getComponentsByClassName("viewer.components.Print");
+        for (var i = 0; i < printComponents.length; i++){
+            printComponents[i].unregisterExtraInfo(this);
+            printComponents[i].unregisterExtraLayers(this);
+        }
+    },
+    /* For TESTING. */
+    __test: function() {
+        var id;
+        var result;
+        id = "1397481847";  // Archinmedes
+        id = "1398855326";  // Bizon 332
+        id = "34324";       // Bizon 332, via oms
+        result = this.getSearchResult(id,"testing");
+        console.log(result);
+    },
     /* Returns static object info for TESTING. */
-    getCurrentObject: function() {
+    __testGetObject: function() {
         var dbkObject;
         dbkObject = {
             "identificatie": 1398855326,
