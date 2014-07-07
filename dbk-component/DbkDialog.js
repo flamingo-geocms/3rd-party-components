@@ -22,19 +22,6 @@
  * @author <a href="mailto:anke.keuren@aris.nl">Anke Keuren</a>
  */
 
-    
-//Ext.define("viewer.components.DbkDialog",{
-//    // DUMMY CODE
-//    extend: "Ext.window.Window",
-//    title: "Window",
-//    layout: "fit",
-//    items: [],
-//    constructor : function (config){
-//        console.log("viewer.components.DbkDialog.constructor");
-//        viewer.components.DbkDialog.superclass.constructor.call(this, config);
-//    }
-//});
-    
 Ext.define("viewer.components.DbkDialog",{
     dialog: null,
     deltaWidth: null,
@@ -126,6 +113,8 @@ Ext.define("viewer.components.DbkDialog",{
             var htmlId = this.getId()+"Html";
             // Force rendering.
             this.dialog.show();
+            // Immediately hide the dialog.
+            this.dialog.hide();
             // Get default html div.
             var div = Ext.get(htmlId);
             if (div) {
@@ -192,6 +181,6 @@ Ext.define("viewer.components.DbkDialog",{
      * Is being called in feature.getfeatureinfo().
      */
     updateTitle: function(title) {
-      this.dialog.setTitle(title);
+        this.dialog.setTitle(title);
     }
 });
