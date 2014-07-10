@@ -337,14 +337,15 @@ Ext.define("viewer.components.rotercera.IdentifyParser",{
                 simpleFeatureName = obj[featureName][0].objecttype;
             }
             if (newObj[simpleFeatureName]==undefined){
-                newObj[simpleFeatureName] = new Object();
+                newObj[simpleFeatureName] = new Array();
             }
             for (var featureIndex in obj[featureName]){
-                newObj[simpleFeatureName][featureIndex]= new Object();
+                var feature = new Object();
                 for (var attributeName in obj[featureName][featureIndex]){
                     var simpleAttributeName=this.makeSimpleName(attributeName);
-                    newObj[simpleFeatureName][featureIndex][simpleAttributeName]= obj[featureName][featureIndex][attributeName];
+                    feature[simpleAttributeName]= obj[featureName][featureIndex][attributeName];
                 }
+                newObj[simpleFeatureName].push(feature);
             }
         }
         return newObj;
