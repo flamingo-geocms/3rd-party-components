@@ -1,24 +1,14 @@
-Dbk component
+Dbk Component
 =============
 
 REMARKS
 -------
-- In de Dbk-Api data zitten meerdere features met hetzelfde adres!
-- Het geselecteerde object kan (voor bijv. printen) worden opgevraagd met de functie dbk.getSelectedDBKObject.
 - Objectinformatie m.b.t. afwijkendebinnendekking wordt niet getoond.
 - De applicatie is getest onder FF en Chrome.
 
-KNOWN ISSUE
-----------
+KNOWN ISSUES
+------------
 - geen
-
-TODO
-----
-- Console.log weghalen.
-- Andere licentie, terugkoppelen met Milo.
-- README.md nog afmaken/stroomlijnen.
-- README_milo.md nog (deels) toevoegen.
-- Wat als je heel veel gevaarlijke stoffen hebt? Krijg je dan een scrollbare lijst?
 
 TESTING
 -------
