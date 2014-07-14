@@ -32,8 +32,6 @@ dbkjs.viewerController = dbkjs.viewerController || null;
 
 dbkjs.init = function() {
     
-    //console.log("dbkjs.init");
-    
     //@@dbkjs.map = new OpenLayers.Map(dbkjs.options.map.options);
     if (!dbkjs.map) {
         dbkjs.map = new OpenLayers.Map(dbkjs.options.map.options);

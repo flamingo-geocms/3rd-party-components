@@ -89,8 +89,6 @@ dbkjs.modules.feature = {
         }
     },
     register: function(options) {
-        //console.log("feature.register");
-        
         var _obj = dbkjs.modules.feature;
         
         /*@@
@@ -139,8 +137,6 @@ dbkjs.modules.feature = {
         _obj.get();
     },
     get: function() {
-        //console.log("feature.get");
-        
         var _obj = dbkjs.modules.feature;
         if(_obj.layer){
             _obj.layer.destroyFeatures();
@@ -154,14 +150,6 @@ dbkjs.modules.feature = {
         $.getJSON(dbkjs.dataPath + '/features.json', params).done(function(data) {
             var geojson_format = new OpenLayers.Format.GeoJSON();
                 _obj.features = geojson_format.read(data);
-//                var test = data.features.where( "( el, i, res, param ) => el.properties.gevaarlijkestof !== null");
-//                console.log(test.length + ' DBK Features met gevaarlijke stoffen');
-//                var test = data.features.where( "( el, i, res, param ) => el.properties.OMSNummer !== null");
-//                console.log(test.length + ' DBK Features met OMS nummer');
-//                var test = data.features.where( "( el, i, res, param ) => el.properties.typeFeature === 'Object'");
-//                console.log(test.length + ' DBK objecten');
-//                var test = data.features.where( "( el, i, res, param ) => el.properties.typeFeature === 'Gebied'");
-//                console.log(test.length + ' DBK gebieden');
                 _obj.layer.addFeatures(_obj.features);
                 _obj.search_dbk();
         }).fail(function( jqxhr, textStatus, error ) {
@@ -171,8 +159,6 @@ dbkjs.modules.feature = {
         });
     },
     featureInfohtml: function(feature) {
-        //console.log("feature.featureInfohtml");
-        
         var _obj = dbkjs.modules.feature;
         var ret_title = $('<li></li>');
         //@@ret_title.append('<a href="#">' + feature.attributes.formeleNaam + '</a>');
@@ -188,8 +174,6 @@ dbkjs.modules.feature = {
         return ret_title;
     },
     search_dbk: function() {
-        //console.log("feature.search_dbk");
-
         var _obj = dbkjs.modules.feature;
         //Voeg de DBK objecten toe aan de typeahead set..
         var dbk_naam_array = [];
@@ -249,8 +233,6 @@ dbkjs.modules.feature = {
         });
     },
     zoomToFeature: function(feature) {
-        //console.log("feature.zoomToFeature");
-        
         dbkjs.options.dbk = feature.attributes.identificatie;
         dbkjs.modules.updateFilter(feature.attributes.identificatie);
         if (dbkjs.map.zoom < dbkjs.options.zoom) {
@@ -264,7 +246,6 @@ dbkjs.modules.feature = {
         var _obj = dbkjs.modules.feature;
         
         //@@
-        //console.log("feature.getfeatureinfo");
         var dbkComp = dbkjs.viewerController.getComponentsByClassName("viewer.components.Dbk")[0];
         var infoPanel = dbkComp.infoPanel;
         //@@

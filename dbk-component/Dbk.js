@@ -49,8 +49,6 @@ Ext.define ("viewer.components.Dbk",{
     constructor: function(conf){
         var me = this;
         
-        //console.log("Dbk.constructor");
-
         viewer.components.Dbk.superclass.constructor.call(this, conf);
         
         this.initConfig(conf);
@@ -86,8 +84,6 @@ Ext.define ("viewer.components.Dbk",{
     initApp: function(){
         var me = this;
         
-        //console.log("Dbk.initApp");
-
         // Set the map.
         dbkjs.map = this.viewerController.mapComponent.getMap().getFrameworkMap();
 
@@ -127,8 +123,6 @@ Ext.define ("viewer.components.Dbk",{
        });
     },
     createDialogs: function(){
-        //console.log("Dbk.createDialogs");
-
         this.detailsPanel = Ext.create("viewer.components.DbkDialog",
             {id: "detailspanel", align: "bl-bl", divId: "detailsTable",
              fitWindow: true});
@@ -202,7 +196,6 @@ Ext.define ("viewer.components.Dbk",{
 
         // Remove not relevant properties, and geometries too.
         for (propName in newDbkObject) {
-            //console.log(propName);
             if (newDbkObject.hasOwnProperty(propName)) {
                 if (propNames.indexOf(propName)<0) {
                     // Remove property.
@@ -464,7 +457,6 @@ Ext.define ("viewer.components.Dbk",{
         id = "1398855326";  // Bizon 332
         id = "34324";       // Bizon 332, via oms
         result = this.getSearchResult(id,"testing");
-        //console.log(result);
     },
     /* Returns static object info for TESTING. */
     __testGetObject: function() {
