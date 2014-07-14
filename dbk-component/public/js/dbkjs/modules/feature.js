@@ -89,7 +89,7 @@ dbkjs.modules.feature = {
         }
     },
     register: function(options) {
-        console.log("feature.register");
+        //console.log("feature.register");
         
         var _obj = dbkjs.modules.feature;
         
@@ -139,7 +139,7 @@ dbkjs.modules.feature = {
         _obj.get();
     },
     get: function() {
-        console.log("feature.get");
+        //console.log("feature.get");
         
         var _obj = dbkjs.modules.feature;
         if(_obj.layer){
@@ -171,7 +171,7 @@ dbkjs.modules.feature = {
         });
     },
     featureInfohtml: function(feature) {
-        console.log("feature.featureInfohtml");
+        //console.log("feature.featureInfohtml");
         
         var _obj = dbkjs.modules.feature;
         var ret_title = $('<li></li>');
@@ -188,7 +188,7 @@ dbkjs.modules.feature = {
         return ret_title;
     },
     search_dbk: function() {
-        console.log("feature.search_dbk");
+        //console.log("feature.search_dbk");
 
         var _obj = dbkjs.modules.feature;
         //Voeg de DBK objecten toe aan de typeahead set..
@@ -249,7 +249,7 @@ dbkjs.modules.feature = {
         });
     },
     zoomToFeature: function(feature) {
-        console.log("feature.zoomToFeature");
+        //console.log("feature.zoomToFeature");
         
         dbkjs.options.dbk = feature.attributes.identificatie;
         dbkjs.modules.updateFilter(feature.attributes.identificatie);
@@ -264,7 +264,7 @@ dbkjs.modules.feature = {
         var _obj = dbkjs.modules.feature;
         
         //@@
-        console.log("feature.getfeatureinfo");
+        //console.log("feature.getfeatureinfo");
         var dbkComp = dbkjs.viewerController.getComponentsByClassName("viewer.components.Dbk")[0];
         var infoPanel = dbkComp.infoPanel;
         //@@

@@ -36,7 +36,7 @@ Ext.define("viewer.components.DbkDialog",{
         fitWindow: false
     },
     constructor: function(config){
-        console.log("DbkDialog.constructor");
+        //console.log("DbkDialog.constructor");
 
         this.initConfig(config);
         
@@ -160,7 +160,7 @@ Ext.define("viewer.components.DbkDialog",{
         this.getFooterPanel().update(html);
     },
     updateHtml: function(html) {
-        console.log("DbkDialog.updateHtml");
+        //console.log("DbkDialog.updateHtml");
         
         // Need to grow or shrink window later?
         if (this.fitWindow) {

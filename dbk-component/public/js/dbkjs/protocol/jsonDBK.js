@@ -30,7 +30,7 @@ dbkjs.protocol.jsonDBK = {
     panel_algemeen: null,
     active_tab:'algemeen',
     init: function() {
-        console.log("jsonDBK.init");
+        //console.log("jsonDBK.init");
         
         var _obj = dbkjs.protocol.jsonDBK;
         _obj.layerPandgeometrie = new OpenLayers.Layer.Vector("Pandgeometrie",{
@@ -39,11 +39,11 @@ dbkjs.protocol.jsonDBK = {
          dbkjs.map.events.register("moveend", null, function() {
             if (dbkjs.map.zoom < 12){
                 //@@
-                console.log("dbkjs.protocol.jsonDBK - hideLayers");
+                //console.log("dbkjs.protocol.jsonDBK - hideLayers");
                 _obj.hideLayers();
             } else {
                 //@@
-                console.log("dbkjs.protocol.jsonDBK - showLayers");
+                //console.log("dbkjs.protocol.jsonDBK - showLayers");
                 _obj.showLayers();
             }
         });
@@ -112,7 +112,7 @@ dbkjs.protocol.jsonDBK = {
         });
     },
     getfeatureinfo: function(e){
-        console.log("jsonDBK.getfeatureinfo");
+        //console.log("jsonDBK.getfeatureinfo");
         
 //@@        $('#vectorclickpanel_h').html('<span class="h4"><i class="icon-info-sign">&nbsp;' + e.feature.layer.name + '</span>');
         
@@ -147,7 +147,7 @@ dbkjs.protocol.jsonDBK = {
         
     },
     process: function(feature) {
-        console.log("jsonDBK.process");
+        //console.log("jsonDBK.process");
         
         //@@
         var dbkComp = dbkjs.viewerController.getComponentsByClassName("viewer.components.Dbk")[0];
@@ -184,7 +184,7 @@ dbkjs.protocol.jsonDBK = {
         }
     },
     activateSelect: function(layer){
-        console.log("jsonDBK.activateSelect");
+        //console.log("jsonDBK.activateSelect");
         
         var _obj = dbkjs.protocol.jsonDBK;
         layer.events.on({
@@ -199,7 +199,7 @@ dbkjs.protocol.jsonDBK = {
         });
     },
     info: function(data) {
-        console.log("jsonDBK.info");
+        //console.log("jsonDBK.info");
 
         var dbkComp = dbkjs.viewerController.getComponentsByClassName("viewer.components.Dbk")[0];
         var infoPanel = dbkComp.infoPanel;
@@ -413,7 +413,7 @@ dbkjs.protocol.jsonDBK = {
     //@@ constructBrandweervoorziening: function(brandweervoorziening){
     constructBrandweervoorziening: function(feature){
         
-        console.log("jsonDBK.constructBrandweervoorziening");
+        //console.log("jsonDBK.constructBrandweervoorziening");
         
         var _obj = dbkjs.protocol.jsonDBK;
         if(feature.brandweervoorziening){
@@ -942,7 +942,7 @@ dbkjs.protocol.jsonDBK = {
      * Feature is feature or fid.
      */
     getObject: function(feature, activetab) {
-        console.log("jsonDBK.getObject");
+        //console.log("jsonDBK.getObject");
         
         var _obj = dbkjs.protocol.jsonDBK;
         if(activetab){
@@ -973,7 +973,7 @@ dbkjs.protocol.jsonDBK = {
         });
     },
     getGebied: function(feature, activetab) {
-        console.log("jsonDBK.getObject");
+        //console.log("jsonDBK.getObject");
         
         var _obj = dbkjs.protocol.jsonDBK;
         if(activetab){

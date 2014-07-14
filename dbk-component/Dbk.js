@@ -49,7 +49,7 @@ Ext.define ("viewer.components.Dbk",{
     constructor: function(conf){
         var me = this;
         
-        console.log("Dbk.constructor");
+        //console.log("Dbk.constructor");
 
         viewer.components.Dbk.superclass.constructor.call(this, conf);
         
@@ -86,7 +86,7 @@ Ext.define ("viewer.components.Dbk",{
     initApp: function(){
         var me = this;
         
-        console.log("Dbk.initApp");
+        //console.log("Dbk.initApp");
 
         // Set the map.
         dbkjs.map = this.viewerController.mapComponent.getMap().getFrameworkMap();
@@ -127,7 +127,7 @@ Ext.define ("viewer.components.Dbk",{
        });
     },
     createDialogs: function(){
-        console.log("Dbk.createDialogs");
+        //console.log("Dbk.createDialogs");
 
         this.detailsPanel = Ext.create("viewer.components.DbkDialog",
             {id: "detailspanel", align: "bl-bl", divId: "detailsTable",
@@ -464,7 +464,7 @@ Ext.define ("viewer.components.Dbk",{
         id = "1398855326";  // Bizon 332
         id = "34324";       // Bizon 332, via oms
         result = this.getSearchResult(id,"testing");
-        console.log(result);
+        //console.log(result);
     },
     /* Returns static object info for TESTING. */
     __testGetObject: function() {
