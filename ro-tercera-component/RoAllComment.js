@@ -72,11 +72,11 @@ Ext.define ("viewer.components.rotercera.RoAllComment",{
         }
     },
     createCommentElement: function(feature){
-        var tekst= feature.tekst? feature.tekst : "";
-        var thema= feature.thema? feature.thema : "";
-        var eigenaar= feature.eigenaar? feature.eigenaar : "";
-        var openbaar= feature.openbaar? feature.openbaar : false;
-        var compleetplan= feature.compleetplan? feature.compleetplan : false;
+        var tekst= feature.TEKST? feature.TEKST : "";
+        var thema= feature.THEMA? feature.THEMA : "";
+        var eigenaar= feature.EIGENAAR? feature.EIGENAAR : "";
+        var openbaar= feature.OPENBAAR? feature.OPENBAAR : false;
+        var compleetplan= feature.COMPLEETPLAN? feature.COMPLEETPLAN : false;
         
         var me = this;
         
