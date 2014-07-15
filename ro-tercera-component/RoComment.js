@@ -24,9 +24,9 @@ Ext.define ("viewer.components.rotercera.RoComment",{
     window: null,
     planId: null,
     config: {
-        planIdAttributeName : "bestemmingsplangebiedid",
-        publicAttributeName:  "openbaar",
-        ownerAttributeName: "eigenaar",
+        planIdAttributeName : "BESTEMMINGSPLANGEBIEDID",
+        publicAttributeName:  "OPENBAAR",
+        ownerAttributeName: "EIGENAAR",
         component: null
     },
     constructor: function(conf,component){
@@ -199,7 +199,7 @@ Ext.define ("viewer.components.rotercera.RoComment",{
         }
         feature[this.planIdAttributeName]=this.planId;
         //add user
-        feature.eigenaar=user.name;
+        feature[this.ownerAttributeName] = user.name;
         return feature;
     },
     /**

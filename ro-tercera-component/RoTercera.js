@@ -403,14 +403,14 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         }else if (mapLayer.id == this.layers[0]){
             this.commentMapLayer = mapLayer;
             
-            var cql = "("+this.roComment.publicAttributeName+"=true"
+            var cql = "("+this.roComment.publicAttributeName+"='Y'"
             if (user){
                 cql+= " OR "+this.roComment.ownerAttributeName+ "='"+user.name+"'";
             }
             cql+=")"
             this.publicCommentfilter = Ext.create("viewer.components.CQLFilterWrapper",{
                 id: "publicFilter_"+this.getName(),
-                cql: cql,
+                cql: cql.toLowerCase(),
                 operator : "AND",
                 type: "ATTRIBUTE"
             });
@@ -693,7 +693,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         }else if (planId !=null){            
             this.planCommentFilter = Ext.create("viewer.components.CQLFilterWrapper",{
                 id: "planFilter_"+this.getName(),
-                cql: this.roComment.planIdAttributeName+"='"+planId+"'",
+                cql: this.roComment.planIdAttributeName.toLowerCase()+"='"+planId+"'",
                 operator : "AND",
                 type: "ATTRIBUTE"
             });
