@@ -403,14 +403,14 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         }else if (mapLayer.id == this.layers[0]){
             this.commentMapLayer = mapLayer;
             
-            var cql = "("+this.roComment.publicAttributeName+"='Y'"
+            var cql = "("+this.roComment.publicAttributeName.toLowerCase()+"='Y'"
             if (user){
-                cql+= " OR "+this.roComment.ownerAttributeName+ "='"+user.name+"'";
+                cql+= " OR "+this.roComment.ownerAttributeName.toLowerCase()+ "='"+user.name+"'";
             }
             cql+=")"
             this.publicCommentfilter = Ext.create("viewer.components.CQLFilterWrapper",{
                 id: "publicFilter_"+this.getName(),
-                cql: cql.toLowerCase(),
+                cql: cql,
                 operator : "AND",
                 type: "ATTRIBUTE"
             });
@@ -418,7 +418,26 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 this.setPlanCommentFilter(this.selectedPlan.identificatie);
             }
             this.viewerController.setFilter(this.publicCommentfilter, this.commentAppLayer);
+            
             this.commentMapLayer.setVisible(true);
+            //ugly fix: DB has attributes in uppercase, WMS in lowercase. To avoid this filter to override the filter set as a SLD, register a handler. This handler
+            // is executed AFTER the filter (with lowerceesing) is set on the WMS layer. This filter is used for queries to the featureSource (Oracle Db in this cees)
+            var setDBAttributesHandler = function(){
+                this.viewerController.removeListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, setDBAttributesHandler ,this);
+                var cql2 = "("+this.roComment.publicAttributeName+"='Y'"
+                if (user){
+                    cql2+= " OR "+this.roComment.ownerAttributeName+ "='"+user.name+"'";
+                }
+                cql2+=")"
+                var ar = Ext.create("viewer.components.CQLFilterWrapper",{
+                    id: "publicFilter_"+this.getName(),
+                    cql: cql2,
+                    operator : "AND",
+                    type: "ATTRIBUTE"
+                });
+                this.commentAppLayer.filter.addOrReplace(ar);
+            };
+            this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, setDBAttributesHandler ,this);
 
         }
     },
@@ -699,6 +718,21 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             });
             this.viewerController.setFilter(this.planCommentFilter,this.getCommentAppLayer());
             this.commentMapLayer.setVisible(true);
+            
+            //ugly fix: DB has attributes in uppercase, WMS in lowercase. To avoid this filter to override the filter set as a SLD, register a handler. This handler
+            // is executed AFTER the filter (with lowerceesing) is set on the WMS layer. This filter is used for queries to the featureSource (Oracle Db in this cees)
+            var setDBAttributesHandler = function(){
+                this.viewerController.removeListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, setDBAttributesHandler ,this);
+                
+                this.planCommentFilter = Ext.create("viewer.components.CQLFilterWrapper",{
+                    id: "planFilter_"+this.getName(),
+                    cql: this.roComment.planIdAttributeName+"='"+planId+"'",
+                    operator : "AND",
+                    type: "ATTRIBUTE"
+                });
+                this.getCommentAppLayer().filter.addOrReplace(this.planCommentFilter);
+            };
+            this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, setDBAttributesHandler ,this);
         }
     },
     getCommentAppLayer: function(){
