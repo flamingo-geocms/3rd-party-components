@@ -1,0 +1,78 @@
+{
+    "DBKObject":
+            {
+                "identificatie": 1398867731,
+                "BHVaanwezig": false,
+                "controleDatum": "2014-04-30 15:26:48.592",
+                "formeleNaam": "Bisonspoor 282 Maarssen",
+                "informeleNaam": "",
+                "OMSnummer": null,
+                "inzetprocedure": null,
+                "laagsteBouwlaag": null,
+                "hoogsteBouwlaag": 0,
+                "bouwlaag": "BG",
+                "risicoklasse": "",
+                "gebouwconstructie": null,
+                "gebruikstype": "woonfunctie",
+                "verwerkt": null,
+                "verblijf": null,
+                "adres": [{
+                        "bagId": 1398867732,
+                        "openbareRuimteNaam": "Bisonspoor",
+                        "huisnummer": 282,
+                        "huisletter": "",
+                        "woonplaatsNaam": "Maarssen",
+                        "gemeenteNaam": "Stichtse Vecht",
+                        "adresseerbaarObject": 333010000003623,
+                        "typeAdresseerbaarObject": "",
+                        "huisnummertoevoeging": "",
+                        "postcode": "3605JP"
+                    }],
+                "afwijkendebinnendekking": null,
+                "bijzonderheid": null,
+                "brandcompartiment": null,
+                "brandweervoorziening": [{
+                        "typeVoorziening": "Tb1.001",
+                        "naamVoorziening": "Brandweeringang",
+                        "namespace": "nen1414",
+                        "aanvullendeInformatie": "",
+                        "hoek": 46,
+                        "radius": 12,
+                        "geometry": {
+                            "type": "Point",
+                            "crs": {
+                                "type": "name",
+                                "properties": {
+                                    "name": "EPSG:28992"
+                                }
+                            },
+                            "coordinates": [130407.9, 460754]
+                        }
+                    }],
+                "verdiepingen": [{
+                        "identificatie": 1398867731,
+                        "bouwlaag": "BG",
+                        "type": "hoofdobject"
+                    }],
+                "contact": null,
+                "foto": null,
+                "gevaarlijkestof": null,
+                "hulplijn": null,
+                "pandgeometrie": [{
+                        "bagId": "0333100000018963",
+                        "bagStatus": null,
+                        "geometry": {
+                            "type": "MultiPolygon",
+                            "crs": {
+                                "type": "name",
+                                "properties": {
+                                    "name": "EPSG:28992"
+                                }
+                            },
+                            "coordinates": [[[[130396.9, 460768.1], [130406.1, 460759.2], [130409.6, 460755.8], [130415.5, 460750], [130428.1, 460737.8], [130439.8, 460750], [130442.4, 460752.6], [130411, 460783.1], [130402.4, 460774.2], [130399.6, 460771.3], [130396.7, 460768.3], [130396.9, 460768.1]]]]
+                        }
+                    }],
+                "tekstobject": null,
+                "toegangterrein": null
+            }
+}

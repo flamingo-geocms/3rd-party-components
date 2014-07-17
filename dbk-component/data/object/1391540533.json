@@ -1,0 +1,60 @@
+{
+    "DBKObject": {
+        "identificatie": 1391540533,
+        "BHVaanwezig": false,
+        "controleDatum": "2014-04-30 14:36:35.998",
+        "formeleNaam": "Bisonspoor 335, Maarssen",
+        "informeleNaam": "",
+        "OMSnummer": null,
+        "inzetprocedure": null,
+        "laagsteBouwlaag": null,
+        "hoogsteBouwlaag": null,
+        "bouwlaag": "BG",
+        "risicoklasse": "",
+        "gebouwconstructie": null,
+        "gebruikstype": "kantoorfunctie",
+        "verwerkt": null,
+        "verblijf": null,
+        "adres": [{
+                "bagId": 1391540536,
+                "openbareRuimteNaam": "Bisonspoor",
+                "huisnummer": 335,
+                "huisletter": "",
+                "woonplaatsNaam": "Maarssen",
+                "gemeenteNaam": "Stichtse Vecht",
+                "adresseerbaarObject": 333010000000207,
+                "typeAdresseerbaarObject": "",
+                "huisnummertoevoeging": "",
+                "postcode": "3605JW"
+            }],
+        "afwijkendebinnendekking": null,
+        "bijzonderheid": null,
+        "brandcompartiment": null,
+        "brandweervoorziening": null,
+        "verdiepingen": [{
+                "identificatie": 1391540533,
+                "bouwlaag": "BG",
+                "type": "hoofdobject"
+            }],
+        "contact": null,
+        "foto": null,
+        "gevaarlijkestof": null,
+        "hulplijn": null,
+        "pandgeometrie": [{
+                "bagId": "0333100000013985",
+                "bagStatus": null,
+                "geometry": {
+                    "type": "MultiPolygon",
+                    "crs": {
+                        "type": "name",
+                        "properties": {
+                            "name": "EPSG:28992"
+                        }
+                    },
+                    "coordinates": [[[[130679.1, 460833.6], [130609.7, 460761.9], [130608.1, 460763.5], [130604.7, 460760], [130606.3, 460758.5], [130585, 460736.5], [130587.5, 460734], [130585.1, 460731.6], [130584.9, 460731.7], [130584.4, 460731.1], [130580.2, 460731], [130580.2, 460726.9], [130579.6, 460726.3], [130579.8, 460726.1], [130577.4, 460723.6], [130574.9, 460726.1], [130559.2, 460709.9], [130592.9, 460677.4], [130707.8, 460795.9], [130704.4, 460799.2], [130705.8, 460801.4], [130706.4, 460803.5], [130706.4, 460805.2], [130705.3, 460807.8], [130704.2, 460809.4], [130679.1, 460833.6]]]]
+                }
+            }],
+        "tekstobject": null,
+        "toegangterrein": null
+    }
+}

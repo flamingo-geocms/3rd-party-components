@@ -1,0 +1,60 @@
+{
+    "DBKObject": {
+        "identificatie": 1391607998,
+        "BHVaanwezig": false,
+        "controleDatum": "2014-02-05 16:24:37.83",
+        "formeleNaam": "Kromme Nieuwegracht 49, Utrecht",
+        "informeleNaam": "",
+        "OMSnummer": null,
+        "inzetprocedure": null,
+        "laagsteBouwlaag": null,
+        "hoogsteBouwlaag": null,
+        "bouwlaag": "BG",
+        "risicoklasse": "",
+        "gebouwconstructie": null,
+        "gebruikstype": "kantoorfunctie",
+        "verwerkt": null,
+        "verblijf": null,
+        "adres": [{
+                "bagId": 1391608009,
+                "openbareRuimteNaam": "Kromme Nieuwegracht",
+                "huisnummer": 49,
+                "huisletter": "",
+                "woonplaatsNaam": "Utrecht",
+                "gemeenteNaam": "Utrecht",
+                "adresseerbaarObject": 344010000030854,
+                "typeAdresseerbaarObject": "",
+                "huisnummertoevoeging": "",
+                "postcode": "3512HE"
+            }],
+        "afwijkendebinnendekking": null,
+        "bijzonderheid": null,
+        "brandcompartiment": null,
+        "brandweervoorziening": null,
+        "verdiepingen": [{
+                "identificatie": 1391607998,
+                "bouwlaag": "BG",
+                "type": "hoofdobject"
+            }],
+        "contact": null,
+        "foto": null,
+        "gevaarlijkestof": null,
+        "hulplijn": null,
+        "pandgeometrie": [{
+                "bagId": "0344100000031458",
+                "bagStatus": null,
+                "geometry": {
+                    "type": "MultiPolygon",
+                    "crs": {
+                        "type": "name",
+                        "properties": {
+                            "name": "EPSG:28992"
+                        }
+                    },
+                    "coordinates": [[[[136959.9, 455839.5], [136960.4, 455837.6], [136964.7, 455822.6], [136966.1, 455817.4], [136968.2, 455810], [136968.2, 455809.9], [136969, 455810.1], [136982.2, 455813.9], [136982.6, 455814], [136983.6, 455814.3], [136986.1, 455815], [136987.2, 455815.4], [136987.5, 455815.4], [136994.5, 455817.5], [136995.8, 455818.2], [136996.5, 455817.8], [136998.2, 455818.7], [136998.3, 455819.4], [136999.5, 455820.1], [136999.5, 455820.3], [136997.2, 455828.5], [136992.3, 455825.9], [136986.1, 455824.2], [136985.3, 455821.8], [136985.4, 455821.5], [136984.4, 455821.2], [136981.9, 455820.5], [136981.2, 455820.3], [136980.6, 455822.3], [136981, 455822.4], [136977.2, 455835.4], [136983.4, 455837.5], [136977.6, 455854.3], [136971.3, 455852], [136971.7, 455850.4], [136972.3, 455848.8], [136970.3, 455848.1], [136971.8, 455843.5], [136959.9, 455839.5]]]]
+                }
+            }],
+        "tekstobject": null,
+        "toegangterrein": null
+    }
+}
