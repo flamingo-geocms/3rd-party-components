@@ -256,7 +256,8 @@ Ext.define("viewer.components.rotercera.IdentifyParser",{
     },
             
     createSLDButton : function (id,layer){
-        if (this.component.selectedPlan.origin !== "Tercera" &&
+        var origin = this.component.selectedPlan ? this.component.selectedPlan.origin : this.component.previouslySelectedPlan.origin;
+        if (origin !== "Tercera" &&
                 this.wfsToWmsLayer[layer]!==undefined){
             layer= this.wfsToWmsLayer[layer];
         }

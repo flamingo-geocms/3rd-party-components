@@ -43,6 +43,8 @@ Ext.define ("viewer.components.RoTercera",{
     
     currentPlans:null,    
     selectedPlan:null,
+    previouslySelectedPlan:null,
+    
     wmsLayer: null,
     highlightLayer: null,
     sldUrl: null,
@@ -568,6 +570,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         if (this.selectedPlan !==null){
             Ext.get(this.selectedPlan.identificatie).removeCls("selected");
         }        
+        this.previouslySelectedPlan = this.selectedPlan;
         this.selectedPlan = plan;
         
         this.highlight(null,null);
@@ -971,8 +974,8 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         });
     },
     createInfoHtmlElements: function (data){
-        var origin = this.selectedPlan.origin;
-        var planId = this.selectedPlan.identificatie;
+        var origin = this.selectedPlan ? this.selectedPlan.origin : this.previouslySelectedPlan.origin;
+        var planId = this.selectedPlan ? this.selectedPlan.identificatie : this.previouslySelectedPlan.identificatie;
         this.parser.resetData();
         var info=this.parser.parse(data,origin,planId);
         var el = null;
