@@ -290,7 +290,7 @@ Ext.define ("viewer.components.Dbk",{
             queryField = queryFields[i];
             // Check feature attributes.
             if (feature.attributes[queryField]) {
-                if (feature.attributes[queryField].toString().indexOf(queryId) !== -1) {
+                if (feature.attributes[queryField].toString().toLowerCase().indexOf(queryId) !== -1) {
                     // Collect feature data.
                     if (feature.attributes['formeleNaam'])
                         label = feature.attributes['formeleNaam'];
