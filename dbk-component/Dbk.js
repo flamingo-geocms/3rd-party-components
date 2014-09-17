@@ -290,7 +290,7 @@ Ext.define ("viewer.components.Dbk",{
             queryField = queryFields[i];
             // Check feature attributes.
             if (feature.attributes[queryField]) {
-                if (feature.attributes[queryField].toString()===queryId) {
+                if (feature.attributes[queryField].toString().indexOf(queryId) !== -1) {
                     // Collect feature data.
                     if (feature.attributes['formeleNaam'])
                         label = feature.attributes['formeleNaam'];
@@ -340,10 +340,10 @@ Ext.define ("viewer.components.Dbk",{
         buffer = 300;
         
         // Specify query fields.
-        queryFields = ['identificatie','OMSNummer'];
+        queryFields = ['identificatie','OMSNummer', "informeleNaam", "formeleNaam"];
 
         // Specify the query fields types/labels.
-        queryFieldTypes = ['Objectnummer','OMS-nummer'];
+        queryFieldTypes = ['Objectnummer','OMS-nummer', 'Informele naam', 'Formele naam'];
  
         try {
             // Loop features.
