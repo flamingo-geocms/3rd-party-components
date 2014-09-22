@@ -262,6 +262,8 @@ dbkjs.protocol.jsonDBK = {
         //@@dbkjs.util.changeDialogTitle('<i class="icon-building"></i> ' + DBKObject.formeleNaam);
         var controledatum = dbkjs.util.isJsonNull(DBKObject.controleDatum) ? '<span class="label label-warning">'+ 
                 i18n.t('dbk.unknown')+ '</span>' : DBKObject.controleDatum;
+        var status = dbkjs.util.isJsonNull(DBKObject.status) ? '<span class="label label-warning">'+ 
+                i18n.t('dbk.unknown')+ '</span>' : DBKObject.status;
         var bhvaanwezig = '<span class="label label-warning">'+ 
                 i18n.t('dbk.noEmergencyResponse') +'</span>';
         if(!dbkjs.util.isJsonNull(DBKObject.BHVaanwezig)) {
@@ -317,6 +319,7 @@ dbkjs.protocol.jsonDBK = {
         if(dbktype === "object"){
             algemeen_table.append(_obj.constructRow(informelenaam, i18n.t('dbk.alternativeName')));
             algemeen_table.append(_obj.constructRow(controledatum, i18n.t('dbk.dateChecked')));
+            algemeen_table.append(_obj.constructRow(status, i18n.t('dbk.status')));
             algemeen_table.append(_obj.constructRow(bhvaanwezig, i18n.t('dbk.emergencyResponse')));
             algemeen_table.append(_obj.constructRow(inzetprocedure, i18n.t('dbk.procedure')));
             algemeen_table.append(_obj.constructRow(gebouwconstructie, 'Gebouwconstructie'));
