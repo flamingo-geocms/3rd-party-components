@@ -23,6 +23,9 @@
         "refresh": "app.refresh",
         "contrast": "app.contrast",
         "selectContrast": "app.selectContrast",
+        "scaleStyle": "app.scaleStyle",
+        "styleSizeAdjust": "app.styleSizeAdjust",
+        "alwaysShowInformationLabels": "app.alwaysShowInformationLabels",
         "next": "app.next",
         "map": "app.map",
         "correctBuildings": "app.correctBuildings",
@@ -88,7 +91,11 @@
         "prio1": "care.prio1",
         "prio2": "care.prio2",
         "prio3": "care.prio3",
-        "combinedWithCoverage": "care.combinedWithCoverage"
+        "combinedWithCoverage": "care.combinedWithCoverage",
+        "class1": "care.class1",
+        "class2": "care.class2",
+        "class3": "care.class3",
+        "all": "care.all"
     },
     "dbk": {
         "alternativeName": "dbk.alternativeName",
@@ -117,7 +124,8 @@
         "media": "dbk.media",
         "prevention": "dbk.prevention",
         "chemicals": "dbk.chemicals",
-        "risk": "dbk.risk"
+        "risk": "dbk.risk",
+        "omsdetail": "dbk.omsdetail"
     },
     "chemicals": {
         "type": "chemicals.type",
@@ -131,6 +139,11 @@
         "type": "prevention.type",
         "name": "prevention.name",
         "comment": "prevention.comment"
+    },
+    "omsdetail":{
+      "name":"omsdetail.name",  
+      "mobile":"omsdetail.mobile",
+      "telephone":"omsdetail.telephone"
     },
     "contact": {
         "role": "contact.role",

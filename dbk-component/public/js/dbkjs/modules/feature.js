@@ -1,8 +1,8 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
- * 
+ *
  *  This file is part of safetymapDBK
- *  
+ *
  *  safetymapDBK is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -48,6 +48,7 @@ dbkjs.modules.feature = {
 //            zIndexing: true
 //        }
 //    }),
+    caches: {},
     getActive: function() {
         var _obj = dbkjs.modules.feature;
         var feature;
@@ -90,16 +91,8 @@ dbkjs.modules.feature = {
     },
     register: function(options) {
         var _obj = dbkjs.modules.feature;
-        
-        /*@@
-        $('#btngrp_navigation').append(
-            '<a id="btn_refresh" class="btn btn-default navbar-btn" href="#" title="'+
-            i18n.t('app.refresh') + '"><i class="icon-refresh"></i></a>'
-        );
-        $('#btn_refresh').click(function() {
-            _obj.get();
-        });
-        */
+
+        dbkjs.gui.createRefreshButton(_obj);
         _obj.namespace = options.namespace || _obj.namespace;
         _obj.url = options.url || _obj.url;
         _obj.visibility = options.visible || _obj.visibility;
@@ -113,7 +106,6 @@ dbkjs.modules.feature = {
                     threshold: 2
                 })
             ],
-            minResolution: 1,
             styleMap: dbkjs.config.styles.dbkfeature
         });
         _obj.layer.setZIndex(2006);
@@ -121,19 +113,15 @@ dbkjs.modules.feature = {
         _obj.layer.displayInLayerSwitcher = false;
         //_obj.sketch.displayInLayerSwitcher = false;
         dbkjs.map.addLayer(_obj.layer);
-        
         //Add the layer to the selectControl
         dbkjs.selectControl.setLayer((dbkjs.selectControl.layers || dbkjs.selectControl.layer).concat(_obj.layer));
         dbkjs.selectControl.activate();
         _obj.layer.events.on({
             "featureselected": _obj.getfeatureinfo,
-            "featuresadded": function() {
-            },
-            "featureunselected": function(e) {
-               // $('#infopanel').hide();
-            }
+            "featuresadded": function() {},
+            "featureunselected": function(e) {}
         });
-        
+
         _obj.get();
     },
     get: function() {
@@ -145,39 +133,60 @@ dbkjs.modules.feature = {
             srid: dbkjs.options.projection.srid,
             timestamp: new Date().getTime()
         };
-        //@@$.getJSON('api/features.json', params).done(function(data) {
-        //$.getJSON('/viewer/viewer-html/components/dbk-component/dbk/data/features.json', params).done(function(data) {
-        $.getJSON(dbkjs.dataPath + '/features.json', params).done(function(data) {
+        $.getJSON(dbkjs.dataPath + 'features.json', params).done(function(data) {
             var geojson_format = new OpenLayers.Format.GeoJSON();
                 _obj.features = geojson_format.read(data);
+//                var test = data.features.where( "( el, i, res, param ) => el.properties.gevaarlijkestof !== null");
+//                console.log(test.length + ' DBK Features met gevaarlijke stoffen');
+//                var test = data.features.where( "( el, i, res, param ) => el.properties.OMSNummer !== null");
+//                console.log(test.length + ' DBK Features met OMS nummer');
+//                var test = data.features.where( "( el, i, res, param ) => el.properties.typeFeature === 'Object'");
+//                console.log(test.length + ' DBK objecten');
+//                var test = data.features.where( "( el, i, res, param ) => el.properties.typeFeature === 'Gebied'");
+//                console.log(test.length + ' DBK gebieden');
+            if(dbkjs.modules.filter && dbkjs.modules.filter.selectie.length > 0 ) {
+                var selfeat = [];
+                $.each(_obj.features, function(fix,feat){
+                    if($.inArray(feat.attributes.identificatie, dbkjs.modules.filter.selectie) !== -1){
+                        //create a subselection from the features
+                        selfeat.push(feat);
+                    }
+                });
+                _obj.layer.addFeatures(selfeat);
+            } else {
                 _obj.layer.addFeatures(_obj.features);
+            }
+            $('#btn_refresh > i').removeClass('fa-spin');
                 _obj.search_dbk();
         }).fail(function( jqxhr, textStatus, error ) {
+            $('#btn_refresh > i').removeClass('fa-spin');
             dbkjs.options.feature = null;
-            //@@dbkjs.util.alert('Fout', ' Features konden niet worden ingelezen', 'alert-danger');
-            dbkjs.viewerController.logger.error('De DBK features konden niet worden ingelezen');
+            dbkjs.gui.showError('Features konden niet worden ingelezen');
         });
     },
     featureInfohtml: function(feature) {
-        var _obj = dbkjs.modules.feature;
         var ret_title = $('<li></li>');
-        //@@ret_title.append('<a href="#">' + feature.attributes.formeleNaam + '</a>');
         ret_title.append('<a id="' + feature.attributes.identificatie + '" href="#">' + feature.attributes.formeleNaam + '</a>');
-
-/*@@        $(ret_title).click(function() {
-            //dbkjs.options.dbk = feature.attributes.identificatie;
-            dbkjs.modules.updateFilter(feature.attributes.identificatie);
-            dbkjs.protocol.jsonDBK.process(feature);
-            _obj.zoomToFeature(feature);
-            return false;
-        }); */
         return ret_title;
     },
     search_dbk: function() {
         var _obj = dbkjs.modules.feature;
-        //Voeg de DBK objecten toe aan de typeahead set..
-        var dbk_naam_array = [];
+        var dbk_naam_array = _obj.getDbkSearchValues();
 
+        dbkjs.gui.updateSearchInput(_obj, dbk_naam_array);
+    },
+    search_oms: function() {
+        var _obj = dbkjs.modules.feature;
+        var dbk_naam_array = _obj.getOmsSearchValues();
+
+        dbkjs.gui.updateSearchInput(_obj, dbk_naam_array);
+    },
+    getDbkSearchValues: function() {
+        var _obj = dbkjs.modules.feature;
+        var dbk_naam_array = [];
+        if(_obj.caches.hasOwnProperty('dbk')) {
+            return _obj.caches.dbk;
+        }
         $.each(_obj.features, function(key, value) {
             dbk_naam_array.push({
                 value: value.attributes.formeleNaam + ' ' + value.attributes.informeleNaam,
@@ -186,131 +195,136 @@ dbkjs.modules.feature = {
                 attributes: value.attributes
             });
         });
-        
-        /*@@
-        $('#search_input').typeahead('destroy');
-        $('#search_input').val('');
-        $('#search_input').typeahead({
-            name: 'dbk',
-            local: dbk_naam_array,
-            limit: 10
-        });
-        $('#search_input').bind('typeahead:selected', function(obj, datum) {
-            //dbkjs.options.dbk = datum.id;
-            dbkjs.modules.updateFilter(datum.id);
-            //@todo select the feature based on the datum
-            dbkjs.protocol.jsonDBK.process(datum);
-            _obj.zoomToFeature(datum);
-        });
-        */
+        _obj.caches.dbk = dbk_naam_array;
+        return _obj.caches.dbk;
     },
-    search_oms: function() {
-        var _obj = dbkjs.modules.feature;
-        var dbk_naam_array = [];
-
-        $.each(_obj.features, function(key, value) {
-            //alert(value.properties.formeleNaam + ' (' + value.properties.identificatie_id + ')');
-            if (!dbkjs.util.isJsonNull(value.attributes.OMSNummer)) {
-                dbk_naam_array.push({
-                    value: value.attributes.OMSNummer + ' - ' + value.attributes.formeleNaam,
-                    geometry: value.geometry,
-                    attributes: value.attributes,
-                    id: value.attributes.identificatie
-                });
+    getOmsSearchValues: function() {
+        var _obj = dbkjs.modules.feature,
+            dbk_naam_array = [];
+        if(_obj.caches.hasOwnProperty('oms')) {
+            return _obj.caches.oms;
+        }
+        $.each(_obj.features, function(key, feature) {
+            if (!dbkjs.util.isJsonNull(feature.attributes.OMSNummer)) {
+                // Extend feature object with value and id for searching
+                feature.value = feature.attributes.OMSNummer + ' ' + feature.attributes.formeleNaam;
+                feature.id = feature.attributes.identificatie;
+                dbk_naam_array.push(feature);
             }
         });
-        $('#search_input').typeahead('destroy');
-        $('#search_input').val('');
-        $('#search_input').typeahead({
-            name: 'oms',
-            local: dbk_naam_array,
-            limit: 10
-        });
-        $('#search_input').bind('typeahead:selected', function(obj, datum) {
-            dbkjs.modules.updateFilter(datum.id);
-            dbkjs.protocol.jsonDBK.process(datum);
-            _obj.zoomToFeature(datum);
-        });
+        _obj.caches.oms = dbk_naam_array;
+        return _obj.caches.oms;
+    },
+    handleDbkOmsSearch: function(object) {
+        var _obj = dbkjs.modules.feature;
+        dbkjs.modules.updateFilter(object.id);
+        dbkjs.protocol.jsonDBK.process(object);
+        _obj.zoomToFeature(object);
     },
     zoomToFeature: function(feature) {
-        dbkjs.options.dbk = feature.attributes.identificatie;
-        dbkjs.modules.updateFilter(feature.attributes.identificatie);
-        if (dbkjs.map.zoom < dbkjs.options.zoom) {
-            dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat(), dbkjs.options.zoom);
+        if(feature.attributes && feature.attributes.identificatie){
+            dbkjs.options.dbk = feature.attributes.identificatie;
         } else {
-            dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat());
+            //Geen DBK (meer) geselecteerd, bijv. bij zoeken op adres.
+            dbkjs.options.dbk = 0;
+        }
+        dbkjs.modules.updateFilter(dbkjs.options.dbk);
+        if(!dbkjs.options.zoomToPandgeometrie) {
+            if (dbkjs.map.zoom < dbkjs.options.zoom) {
+                dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat(), dbkjs.options.zoom);
+            } else {
+                dbkjs.map.setCenter(feature.geometry.getBounds().getCenterLonLat());
+            }
+        } else {
+            this.zoomToPandgeometrie();
+        }
+        // getActive() changed, hide it
+        this.layer.redraw();
+    },
+    zoomToPandgeometrie: function() {
+        // Pandgeometrie layer must be loaded
+
+        var bounds = dbkjs.protocol.jsonDBK.layerPandgeometrie.getDataExtent();
+        if(bounds) {
+            var margin = dbkjs.options.zoomToPandgeometrieMargin || 50;
+            var boundCoords = bounds.toArray();
+            var extendedBounds = OpenLayers.Bounds.fromArray([
+                boundCoords[0] - margin,
+                boundCoords[1] - margin,
+                boundCoords[2] + margin,
+                boundCoords[3] + margin]);
+            dbkjs.map.zoomToExtent(extendedBounds);
         }
     },
-    //@@ Wordt aangeroepen bij klikken op een feature cluster.
     getfeatureinfo: function(e) {
         var _obj = dbkjs.modules.feature;
-        
-        //@@
-        var dbkComp = dbkjs.viewerController.getComponentsByClassName("viewer.components.Dbk")[0];
-        var infoPanel = dbkComp.infoPanel;
-        //@@
-        dbkjs.options.feature = null;
-        
         if (typeof(e.feature) !== "undefined") {
-            
-            //@@ $('#infopanel_b').html('');
-            infoPanel.updateHtml("");
-            
+            dbkjs.gui.infoPanelUpdateHtml('');
             if (e.feature.cluster) {
                 if (e.feature.cluster.length === 1) {
                     _obj.zoomToFeature(e.feature.cluster[0]);
                 } else {
-                    //@@
-                    //@@ $('#infopanel_f').append('<ul id="Pagination" class="pagination"></ul>');
-                    //@@ $('#infopanel_f').show();
-                    infoPanel.updateTitle('<span class="h4"><i class="icon-info-sign"></i> &nbsp;Informatie</span>');
-                    infoPanel.updateFooterHtml('<ul id="Pagination" class="pagination"></ul>');
-                    //Show the panel, otherwise the Pagination callback function won't work!
-                    infoPanel.show();
-                    _obj.currentCluster = e.feature.cluster;
-                    $("#Pagination").pagination(e.feature.cluster.length, {
-                        items_per_page: 10,
-                        callback: function(page_index, jq) {
-                            var items_per_page = 10;
-                            var max_elem = Math.min((page_index + 1) * items_per_page, _obj.currentCluster.length);
-                            var feature = _obj.currentCluster[i];
-                            //var item_ul = $('<ul class="nav nav-pills nav-stacked"></ul>');
-                            var item_ul = $('<ul id="dbklist" class="nav nav-pills nav-stacked"></ul>');
-
-                            //@@ $('#infopanel_b').html('');
-                            infoPanel.updateHtml("");
-
-                            for (var i = page_index * items_per_page; i < max_elem; i++) {
-                                item_ul.append(_obj.featureInfohtml(_obj.currentCluster[i]));
-                            }
-                            //@@ $('#infopanel_b').append(item_ul);
-                            var s = dbkjs.util.outerHtml(item_ul);
-                            infoPanel.updateHtml(s);
-
-                            //@@ Add a click-event to the list, for each anchor-tag
-                            //@@ in the list.
-                            $("#dbklist").on("click", "a", function(event) {
-                                event.preventDefault();
-                                dbkjs.options.dbk = $ (this).attr("id");
-                                var feature = _obj.getActive();
-                                dbkjs.protocol.jsonDBK.process(feature);
-                                _obj.zoomToFeature(feature);
-                                return false;
-                            });
-                        }
+                    _obj.currentCluster = e.feature.cluster.slice();
+                    _obj.currentCluster.sort(function(lhs, rhs) {
+                        return lhs.attributes.formeleNaam.localeCompare(rhs.attributes.formeleNaam);
                     });
-                    //@@ $('#infopanel').show(true);
-                    infoPanel.show();
+                    if(dbkjs.viewmode === 'fullscreen') {
+                        var item_ul = $('<ul id="dbklist" class="nav nav-pills nav-stacked"></ul>');
+                        for(var i = 0; i < _obj.currentCluster.length; i++) {
+                            item_ul.append(_obj.featureInfohtml(_obj.currentCluster[i]));
+                        }
+                        dbkjs.gui.infoPanelAddItems(item_ul);
+                        dbkjs.util.getModalPopup('infopanel').setHideCallback(function() {
+                            if(_obj.layer.selectedFeatures.length === 0) {
+                                return;
+                            }
+                            for(var i = 0; i < _obj.layer.features.length; i++) {
+                                dbkjs.selectControl.unselect(_obj.layer.features[i]);
+                            }
+                        });
+                        $("#dbklist").on("click", "a", _obj.handleFeatureTitleClick);
+                        dbkjs.util.getModalPopup('infopanel').show();
+                    } else {
+                        dbkjs.gui.infoPanelUpdateTitle('<i class="fa fa-info-circle"></i> &nbsp;Informatie');
+                        dbkjs.gui.infoPanelAddPagination();
+                        dbkjs.gui.infoPanelShowFooter();
+
+                        $("#Pagination").pagination(e.feature.cluster.length, {
+                            items_per_page: 10,
+                            callback: function(page_index, jq) {
+                                var items_per_page = 10;
+                                var max_elem = Math.min((page_index + 1) * items_per_page, _obj.currentCluster.length);
+                                var item_ul = $('<ul id="dbklist" class="nav nav-pills nav-stacked"></ul>');
+                                dbkjs.gui.infoPanelUpdateHtml('');
+                                for (var i = page_index * items_per_page; i < max_elem; i++) {
+                                    item_ul.append(_obj.featureInfohtml(_obj.currentCluster[i]));
+                                }
+                                dbkjs.gui.infoPanelAddItems(item_ul);
+                                $("#dbklist").on("click", "a", _obj.handleFeatureTitleClick);
+                            }
+                        });
+                        dbkjs.gui.infoPanelShow();
+                    }
                 }
             } else {
-                //@@ Clicked on 1 DBK.
                 _obj.currentCluster = [];
-                //@@
                 dbkjs.protocol.jsonDBK.process(e.feature);
                 _obj.zoomToFeature(e.feature);
-                //@@ $('#infopanel').hide();
-                infoPanel.hide();
+                if(dbkjs.viewmode === 'fullscreen') {
+                    dbkjs.util.getModalPopup('infopanel').hide();
+                } else {
+                    dbkjs.gui.infoPanelHide();
+                }
             }
         }
+    },
+    handleFeatureTitleClick: function(e) {
+        var _obj = dbkjs.modules.feature;
+        e.preventDefault();
+        dbkjs.options.dbk = $ (this).attr("id");
+        var feature = _obj.getActive();
+        dbkjs.protocol.jsonDBK.process(feature);
+        _obj.zoomToFeature(feature);
+        return false;
     }
 };
