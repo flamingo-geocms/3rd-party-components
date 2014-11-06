@@ -1,0 +1,46 @@
+/* JSON metadata describing components for viewer and viewer-admin webapps
+ * 
+ * Parameters:
+ * 
+ * className: The component's classname
+ * 
+ * name: The name as used in the layoutmanager
+ * 
+ * shortName: A short name which is used by the layoutmanager when adding the component to the topmenu
+ * 
+ * restrictions: Array with region-ids to which the component can be dragged
+ *   Possible restrictions: header,leftmargin_top,leftmargin_bottom,left_menu,top_menu,content,content_bottom
+ *   popupwindow,rightmargin_top,rightmargin_bottom,footer
+ * 
+ * singleton: Boolean whether the component can be added multiple times (false) or just once (true)
+ * 
+ * notInCombinationWith: Array with the classNames of other components. If a component from that array has
+ *                   already been added to a region, this component cannot be added to that region
+ * 
+ * showHelp: boolean value to show help configuration tab for component (default false)
+ *
+ * extPropertyGridConfigs: Some extra properties can be given here to configure extra things
+ *   
+ * extPropertyGridConfigs.source: Set the object that must be configurable with defaults 
+ * For example:
+ *   {name: "a name", tooltip: "a tool tip", happy: true}
+ *   
+ * extPropertyGridConfigs.propertyNames: here you can set the labels for the object configured
+ * in extPropertyGridConfigs.source *   l
+ * For example: 
+ *   {name: "The name", tooltip: "Tool tip", happy: "Are you happy"}
+ *
+ */
+[
+    {
+        className: "viewer.components.RoTercera",
+        name: "RO-online - Tercera component",
+        shortName: "Terc",
+        restrictions: ["left_menu"],
+        singleton: true,
+        sources: ["RoTercera.js","IdentifyParser.js","RoToc.js","RoAllComment.js","Edit.js","RoComment.js"],        
+        type: "popup",
+        showHelp: true,
+        configSource: ["ConfigObject.js","SelectionWindowConfig.js","RoTerceraConfig.js"]
+    }
+]
