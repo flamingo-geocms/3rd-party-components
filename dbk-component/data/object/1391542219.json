@@ -1,0 +1,64 @@
+{
+    "DBKObject": {
+        "identificatie": 1391542219,
+        "BHVaanwezig": true,
+        "controleDatum": "2014-02-04 19:34:17.572",
+        "formeleNaam": "Zonnebaan 12, Utrecht",
+        "informeleNaam": "B3 Partners",
+        "OMSnummer": "testnummer",
+        "inzetprocedure": null,
+        "laagsteBouwlaag": 1,
+        "hoogsteBouwlaag": 3,
+        "bouwlaag": "BG",
+        "risicoklasse": "",
+        "gebouwconstructie": "Betonbouw",
+        "gebruikstype": "kantoorfunctie",
+        "verwerkt": null,
+        "verblijf": null,
+        "adres": [{
+                "bagId": 1391542235,
+                "openbareRuimteNaam": "Zonnebaan",
+                "huisnummer": 12,
+                "huisletter": "",
+                "woonplaatsNaam": "Utrecht",
+                "gemeenteNaam": "Utrecht",
+                "adresseerbaarObject": null,
+                "typeAdresseerbaarObject": "",
+                "huisnummertoevoeging": "",
+                "postcode": "3542EC"
+            }],
+        "afwijkendebinnendekking": null,
+        "bijzonderheid": [{
+                "seq": 1,
+                "soort": "Algemeen",
+                "tekst": "B3Partners ontwikkelt geavanceerde webapplicaties"
+            }],
+        "brandcompartiment": null,
+        "brandweervoorziening": null,
+        "verdiepingen": [{
+                "identificatie": 1391542219,
+                "bouwlaag": "BG",
+                "type": "hoofdobject"
+            }],
+        "contact": null,
+        "foto": null,
+        "gevaarlijkestof": null,
+        "hulplijn": null,
+        "pandgeometrie": [{
+                "bagId": "0344100000010561",
+                "bagStatus": null,
+                "geometry": {
+                    "type": "MultiPolygon",
+                    "crs": {
+                        "type": "name",
+                        "properties": {
+                            "name": "EPSG:28992"
+                        }
+                    },
+                    "coordinates": [[[[131419.1, 459007], [131419.2, 459006.9], [131425.5, 459013.2], [131428.8, 459016.5], [131429.9, 459015.5], [131431.4, 459015.6], [131431.9, 459016.1], [131431.9, 459017.6], [131430.7, 459018.7], [131430, 459019.4], [131431.3, 459020.7], [131437.8, 459027.2], [131427.8, 459037.2], [131425.9, 459039.1], [131416.3, 459029.4], [131415.3, 459030.4], [131413.7, 459030.4], [131413.2, 459029.9], [131413.3, 459028.4], [131413.6, 459028.1], [131412.2, 459026.7], [131413, 459025.9], [131413.1, 459025.8], [131413.7, 459025.2], [131407.4, 459018.9], [131407.3, 459018.7], [131409.8, 459016.2], [131419.1, 459007]]]]
+                }
+            }],
+        "tekstobject": null,
+        "toegangterrein": null
+    }
+}

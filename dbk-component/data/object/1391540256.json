@@ -1,0 +1,60 @@
+{
+    "DBKObject": {
+        "identificatie": 1391540256,
+        "BHVaanwezig": false,
+        "controleDatum": "2014-02-08 17:44:49.932",
+        "formeleNaam": "MAR'CS",
+        "informeleNaam": "",
+        "OMSnummer": null,
+        "inzetprocedure": null,
+        "laagsteBouwlaag": null,
+        "hoogsteBouwlaag": null,
+        "bouwlaag": "BG",
+        "risicoklasse": "",
+        "gebouwconstructie": null,
+        "gebruikstype": null,
+        "verwerkt": null,
+        "verblijf": null,
+        "adres": [{
+                "bagId": 1391540298,
+                "openbareRuimteNaam": "",
+                "huisnummer": 203,
+                "huisletter": "",
+                "woonplaatsNaam": "",
+                "gemeenteNaam": "",
+                "adresseerbaarObject": null,
+                "typeAdresseerbaarObject": "",
+                "huisnummertoevoeging": "",
+                "postcode": "3605MD"
+            }],
+        "afwijkendebinnendekking": null,
+        "bijzonderheid": null,
+        "brandcompartiment": null,
+        "brandweervoorziening": null,
+        "verdiepingen": [{
+                "identificatie": 1391540256,
+                "bouwlaag": "BG",
+                "type": "hoofdobject"
+            }],
+        "contact": null,
+        "foto": null,
+        "gevaarlijkestof": null,
+        "hulplijn": null,
+        "pandgeometrie": [{
+                "bagId": "1904100000038453",
+                "bagStatus": null,
+                "geometry": {
+                    "type": "MultiPolygon",
+                    "crs": {
+                        "type": "name",
+                        "properties": {
+                            "name": "EPSG:28992"
+                        }
+                    },
+                    "coordinates": [[[[130705.2, 460798.4], [130716.6, 460787.6], [130737.9, 460809.9], [130726.1, 460821.1], [130724.8, 460819.8], [130685.6, 460857.2], [130695, 460867.1], [130696.8, 460865.4], [130705, 460874], [130659.7, 460917.3], [130635, 460892.1], [130676.4, 460850.8], [130677.5, 460835.3], [130705.3, 460807.8], [130706, 460806.5], [130706.4, 460804.5], [130706, 460802.1], [130704.4, 460799.2], [130705.2, 460798.4]]]]
+                }
+            }],
+        "tekstobject": null,
+        "toegangterrein": null
+    }
+}

@@ -1,0 +1,74 @@
+{
+    "DBKObject": {
+        "identificatie": 1391588698,
+        "BHVaanwezig": false,
+        "controleDatum": "2014-02-05 08:32:20.441",
+        "formeleNaam": "Zonnebaan 20A, Utrecht",
+        "informeleNaam": "Autoglasservice Utrecht",
+        "OMSnummer": null,
+        "inzetprocedure": null,
+        "laagsteBouwlaag": null,
+        "hoogsteBouwlaag": null,
+        "bouwlaag": "BG",
+        "risicoklasse": "",
+        "gebouwconstructie": null,
+        "gebruikstype": "industriefunctie",
+        "verwerkt": null,
+        "verblijf": null,
+        "adres": [{
+                "bagId": 1391588748,
+                "openbareRuimteNaam": "Zonnebaan",
+                "huisnummer": 20,
+                "huisletter": "",
+                "woonplaatsNaam": "Utrecht",
+                "gemeenteNaam": "Utrecht",
+                "adresseerbaarObject": 344010000159636,
+                "typeAdresseerbaarObject": "",
+                "huisnummertoevoeging": "",
+                "postcode": "3542EE"
+            }],
+        "afwijkendebinnendekking": null,
+        "bijzonderheid": null,
+        "brandcompartiment": null,
+        "brandweervoorziening": null,
+        "verdiepingen": [{
+                "identificatie": 1391588698,
+                "bouwlaag": "BG",
+                "type": "hoofdobject"
+            }],
+        "contact": null,
+        "foto": null,
+        "gevaarlijkestof": null,
+        "hulplijn": null,
+        "pandgeometrie": [{
+                "bagId": "0344100000135441",
+                "bagStatus": null,
+                "geometry": {
+                    "type": "MultiPolygon",
+                    "crs": {
+                        "type": "name",
+                        "properties": {
+                            "name": "EPSG:28992"
+                        }
+                    },
+                    "coordinates": [[[[131288.2, 459088.9], [131300.7, 459076.3], [131302.6, 459074.4], [131305, 459071.9], [131309.8, 459076.7], [131313.4, 459080.2], [131319.2, 459086], [131321.8, 459088.6], [131322, 459088.7], [131322, 459088.9], [131322.7, 459096.3], [131322.7, 459096.5], [131322.7, 459096.7], [131322.6, 459096.8], [131322.5, 459096.9], [131315.4, 459104.1], [131309.6, 459110], [131304.8, 459114.8], [131302, 459117.7], [131299.6, 459120.1], [131297.6, 459122.1], [131294.8, 459124.9], [131291.2, 459128.6], [131289.6, 459130.2], [131287, 459132.8], [131284.2, 459135.6], [131280, 459139.9], [131279.6, 459140.2], [131258.3, 459119.2], [131268.3, 459109.1], [131278.3, 459099], [131288.2, 459088.9]]]]
+                }
+            }],
+        "tekstobject": null,
+        "toegangterrein": [{
+                "primair": true,
+                "naamRoute": "Route eerste TS (Primair)",
+                "aanvullendeInformatie": "",
+                "geometry": {
+                    "type": "MultiLineString",
+                    "crs": {
+                        "type": "name",
+                        "properties": {
+                            "name": "EPSG:28992"
+                        }
+                    },
+                    "coordinates": [[[131216.5, 459235.3], [131314, 459140.8], [131307.6, 459134.1]]]
+                }
+            }]
+    }
+}
