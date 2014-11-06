@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2014 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
  */
 Ext.define ("viewer.components.rotercera.RoComment",{
     extend: "viewer.components.Edit",
-    
+
     window: null,
     planId: null,
     config: {
@@ -33,16 +33,16 @@ Ext.define ("viewer.components.rotercera.RoComment",{
         conf.isPopup=true;
         conf.component=component;
         this.initConfig(conf);
-        viewer.components.Edit.superclass.constructor.call(this, conf);        
-        var div = this.getContentDiv();        
+        viewer.components.Edit.superclass.constructor.call(this, conf);
+        var div = this.getContentDiv();
         this.loadWindow();
     },
-    
+
     createLayerSelector: function(){
         var me = this;
         //dummy layer selector
         this.layerSelector= {
-            initLayers: function(){                
+            initLayers: function(){
             },getValue: function(){
                 if (me.layers){
                     return me.viewerController.getAppLayerById(me.layers[0]);
@@ -63,7 +63,7 @@ Ext.define ("viewer.components.rotercera.RoComment",{
     newComment: function (planId){
         this.startComment(planId,this.createNew);
         Ext.getCmp(this.name + "deleteButton").hide();
-    },            
+    },
     editComment: function(planId,feature){
         this.startComment(planId,function(){
             //if scope ommited: the scope is the component
@@ -71,13 +71,12 @@ Ext.define ("viewer.components.rotercera.RoComment",{
             this.mode = "edit";
             this.handleFeature(feature);
             Ext.getCmp(this.name + "deleteButton").show();
-        });    
+        });
     },
     startComment: function(planId,afterLoadAttributes){
         this.planId=planId;
         if (this.vectorLayer==null){
             this.createVectorLayer();
-            this.viewerController.mapComponent.getMap().addLayer(this.vectorLayer);
         }
         if (this.window==null){
             this.createInputWindow();
@@ -85,7 +84,7 @@ Ext.define ("viewer.components.rotercera.RoComment",{
         this.layerChanged(this.layerSelector.getValue(),afterLoadAttributes);
         this.window.show();
     },
-        
+
     createNew : function(){
         this.vectorLayer.removeAllFeatures();
         this.viewerController.mapComponent.getMap().removeMarker("edit");
@@ -95,19 +94,19 @@ Ext.define ("viewer.components.rotercera.RoComment",{
         }
         Ext.getCmp(this.name + "deleteButton").hide();
     },
-    
+
     createInputWindow: function(){
         var me = this;
-        this.inputContainer = Ext.create("Ext.form.Panel",{             
+        this.inputContainer = Ext.create("Ext.form.Panel",{
             id: this.name + 'InputPanel',
             border: 0,
             autoScroll: true,
-            flex: 1            
+            flex: 1
         });
         this.window = Ext.create("Ext.window.Window",{
             title: "Ro-Commentaar",
             height: 350,
-            width: 268,            
+            width: 268,
             closeAction: 'hide',
             listeners:{
                 hide:{
@@ -176,13 +175,13 @@ Ext.define ("viewer.components.rotercera.RoComment",{
                     }
                     ]
                 }
-            ] 
+            ]
         });
     },
-        
+
     /**
      * @override
-     */ 
+     */
     cancel: function (){
         this.callParent(arguments);
         if (this.window){
@@ -208,7 +207,7 @@ Ext.define ("viewer.components.rotercera.RoComment",{
     saveSucces  : function(fid){
         Ext.getCmp(this.name + "saveButton").enable();
         this.component.roAllComment.reload();
-        this.callParent(arguments);        
+        this.callParent(arguments);
         Ext.getCmp(this.name + "deleteButton").show();
     },
     /**
@@ -216,7 +215,7 @@ Ext.define ("viewer.components.rotercera.RoComment",{
      */
     saveFailed : function(fid){
         Ext.getCmp(this.name + "saveButton").enable();
-        this.callParent(arguments); 
+        this.callParent(arguments);
     },
     /**
      * @override
@@ -235,5 +234,5 @@ Ext.define ("viewer.components.rotercera.RoComment",{
             return true;
         }
     }
-         
+
 });

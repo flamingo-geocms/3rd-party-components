@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012-2014 B3Partners B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,11 +19,11 @@
  * @author <a href="mailto:roybraam@b3partners.nl">Roy Braam</a>
  */
 Ext.define ("viewer.components.RoTercera",{
-    extend: "viewer.components.Component",  
+    extend: "viewer.components.Component",
     panel: null,
     minWidth: 280,
-    minHeight: 580,        
-    comboWidth: 200,    
+    minHeight: 580,
+    comboWidth: 200,
     resourceUrl: null,
     //stores
     ownerStore: null,
@@ -33,34 +33,34 @@ Ext.define ("viewer.components.RoTercera",{
     ownerCombo: null,
     typeCombo: null,
     statusCombo: null,
-    
+
     docContainer: null,
     planContainer: null,
-    legendaButton: null, 
+    legendaButton: null,
     drawCommentButton: null,
     showAllCommentButton: null,
     selectedPlanContainer: null,
-    
-    currentPlans:null,    
+
+    currentPlans:null,
     selectedPlan:null,
     previouslySelectedPlan:null,
-    
+
     wmsLayer: null,
     highlightLayer: null,
     sldUrl: null,
-    
+
     roToc: null,
     roComment: null,
-    
+
     roLegendUrl: null,
-    
+
     publicCommentfilter: null,
     planCommentFilter: null,
-    
+
     commentAppLayer: null,
     commentMapLayer: null,
     commentLayerIndex: null,
-    
+
     customInfoEnabled: false,
     previousSLDFid: null,
     wmsLayerId: "ulRooTercera",
@@ -71,8 +71,8 @@ Ext.define ("viewer.components.RoTercera",{
         tooltip : "",
         label: "",
         //TODO: make configurable
-        roServiceUrl: "",        
-        terceraRequestPage: "https://tercera.provincie-utrecht.nl/RequestPage.aspx",        
+        roServiceUrl: "",
+        terceraRequestPage: "https://tercera.provincie-utrecht.nl/RequestPage.aspx",
         roonlineLayers: null,
         roonlineServiceUrl: null,
         layers: null
@@ -81,20 +81,20 @@ Ext.define ("viewer.components.RoTercera",{
      * @constructor
      * creating a Ro tercera component
      */
-    constructor: function (conf){  
+    constructor: function (conf){
         conf=this.setDefaults(conf);
         this.resourceUrl = "";
         if (actionBeans && actionBeans["componentresource"]){
             this.resourceUrl=actionBeans["componentresource"];
         }
         this.resourceUrl=Ext.String.urlAppend(this.resourceUrl,"className=viewer.components.RoTercera")
-        
+
         conf.iconUrl=Ext.String.urlAppend(this.resourceUrl,"resource=resources/images/icon16_gray.png");
         this.roLegendUrl = Ext.String.urlAppend(this.resourceUrl,"resource=resources/images/roLegend.png");
         viewer.components.RoTercera.superclass.constructor.call(this, conf);
         this.initConfig(conf);
         var me = this;
-        
+
         if(this.hasButton == null || this.hasButton){
             this.renderButton({
                 handler: function(){
@@ -110,20 +110,20 @@ Ext.define ("viewer.components.RoTercera",{
         this.roComment = Ext.create("viewer.components.rotercera.RoComment",conf,this);
         this.roAllComment = Ext.create("viewer.components.rotercera.RoAllComment",conf,this);
         this.parser = Ext.create("viewer.components.rotercera.IdentifyParser",{},this);
-        var me = this;        
-        
+        var me = this;
+
         this.addStyleSheet();
-        
+
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
-        
+
         return this;
     },
     setDefaults: function(conf){
         //set minWidth:
-        if(conf.details.width < this.minWidth || !Ext.isDefined(conf.details.width)) conf.details.width = this.minWidth; 
+        if(conf.details.width < this.minWidth || !Ext.isDefined(conf.details.width)) conf.details.width = this.minWidth;
         //set minHeight:
-        if(conf.details.height < this.minHeight || !Ext.isDefined(conf.details.height)) conf.details.height = this.minHeight; 
-        
+        if(conf.details.height < this.minHeight || !Ext.isDefined(conf.details.height)) conf.details.height = this.minHeight;
+
         if (Ext.isEmpty(conf.roonlineServiceUrl)){
             conf.roonlineServiceUrl="http://afnemers.ruimtelijkeplannen.nl/afnemers/services";
         }if (Ext.isEmpty(conf.roonlineLayers)){
@@ -137,7 +137,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         }
         return conf;
     },
-            
+
     /**
      * Called when the button is clicked. Opens the print window (if not already opened) and creates a form.
      * If the window was invisible the preview will be redrawn
@@ -147,10 +147,10 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             this.popup.show();
         }
         if (this.panel==null){
-            this.createPanel();        
+            this.createPanel();
         }
     },
-            
+
     createPanel: function (){
         var me = this;
         //creates stores:
@@ -189,13 +189,13 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 {name: "Woudenberg", code: "0351"},
                 {name: "Zeist", code: "0355"}
             ]
-        });        
+        });
         this.typeStore = Ext.create('Ext.data.Store',{
             fields: ['key','value']
         });
         this.statusStore = Ext.create('Ext.data.Store',{
             fields: ['key','value']
-        });        
+        });
         this.docStore;
         //create comboboxes
         this.ownerCombo = Ext.create('viewer.components.FlamingoCombobox', {
@@ -244,9 +244,9 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                     fn: this.statusChanged
                 }
             }
-        });                
+        });
         var pContainer = Ext.create('Ext.panel.Panel',{
-            layout: { 
+            layout: {
                 type: 'vbox'
             },
             height: 190,
@@ -255,13 +255,13 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 xtype: 'container',
                 name: 'planContainerValues',
                 id: "planContainerValues",
-                autoScroll: true,                
+                autoScroll: true,
                 height: 190,
                 width: '100%'
             }]
         });
         var docContainer = Ext.create('Ext.panel.Panel',{
-            layout: { 
+            layout: {
                 type: 'vbox'
             },
             height: 100,
@@ -270,12 +270,12 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 xtype: 'container',
                 name: 'docContainerValues',
                 id: "docContainerValues",
-                autoScroll: true,                
+                autoScroll: true,
                 height: 100,
                 width: '100%'
             }]
         });
-        
+
         this.legendaButton = Ext.create('Ext.button.Button',{
             html: "Bestemmingen aan/uit",
             listeners:{
@@ -286,7 +286,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 }
             }
         });
-        
+
         this.drawCommentButton = Ext.create('Ext.button.Button',{
             html: "Teken commentaar",
             listeners:{
@@ -309,10 +309,10 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             },
             hidden: true
         });
-        
+
         this.selectedPlanContainer = Ext.create('Ext.container.Container',{
             xtype: "container",
-            html: "Geen plan geselecteerd"            
+            html: "Geen plan geselecteerd"
         });
         this.uploadPlanButton = Ext.create('Ext.button.Button',{
             html: "Planregister",
@@ -321,12 +321,12 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 scope: this,
                 click: function(){
                     if (user){
-                        var link = document.getElementById("linkForVerwerk");  
-                        link.target = "_blank";  
+                        var link = document.getElementById("linkForVerwerk");
+                        link.target = "_blank";
                         var url= this.terceraRequestPage;
                         url+= url.indexOf("?")>0 ? "&" : "?";
                         url+= "user="+user.name;
-                        link.href = url;  
+                        link.href = url;
                         link.click();
                     }
                 }
@@ -335,7 +335,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         });
         //create panel
         this.panel = Ext.create('Ext.panel.Panel', {
-            layout: { 
+            layout: {
                 type: 'vbox',
                 align: 'stretch'
             },
@@ -371,7 +371,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                     }
                 }
             ]
-            
+
         });
         //make sure the info html elements function is created.
         this.setCreateInfoHtmlElements();
@@ -382,18 +382,18 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             return;
         if (mapLayer.id==this.wmsLayerId){
             this.wmsLayer = mapLayer;
-            
+
             if (this.sldUrl){
                 this.wmsLayer.setOGCParams({
                     "SLD" : this.sldUrl
                 });
             }
-            
+
             this.roToc.reset({
                 type: this.selectedPlan.origin,
                 planId: this.selectedPlan.identificatie,
                 wmsLayer: this.wmsLayer
-            });          
+            });
             if (this.commentMapLayer) {
                 var index = this.viewerController.mapComponent.getMap().getLayerIndex(this.wmsLayer);
                 if (index >= 0) {
@@ -404,12 +404,12 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             }
         }else if (mapLayer.id == this.layers[0]){
             this.commentMapLayer = mapLayer;
-            
-            var cql = "("+this.roComment.publicAttributeName.toLowerCase()+"='Y'"
+
+            var cql = "("+this.roComment.publicAttributeName.toLowerCase()+"='Y'";
             if (user){
                 cql+= " OR "+this.roComment.ownerAttributeName.toLowerCase()+ "='"+user.name+"'";
             }
-            cql+=")"
+            cql+=")";
             this.publicCommentfilter = Ext.create("viewer.components.CQLFilterWrapper",{
                 id: "publicFilter_"+this.getName(),
                 cql: cql,
@@ -420,17 +420,17 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 this.setPlanCommentFilter(this.selectedPlan.identificatie);
             }
             this.viewerController.setFilter(this.publicCommentfilter, this.commentAppLayer);
-            
+
             this.commentMapLayer.setVisible(true);
             //ugly fix: DB has attributes in uppercase, WMS in lowercase. To avoid this filter to override the filter set as a SLD, register a handler. This handler
             // is executed AFTER the filter (with lowerceesing) is set on the WMS layer. This filter is used for queries to the featureSource (Oracle Db in this cees)
             var setDBAttributesHandler = function(){
                 this.viewerController.removeListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, setDBAttributesHandler ,this);
-                var cql2 = "("+this.roComment.publicAttributeName+"='Y'"
+                var cql2 = "("+this.roComment.publicAttributeName+"='Y'";
                 if (user){
                     cql2+= " OR "+this.roComment.ownerAttributeName+ "='"+user.name+"'";
                 }
-                cql2+=")"
+                cql2+=")";
                 var ar = Ext.create("viewer.components.CQLFilterWrapper",{
                     id: "publicFilter_"+this.getName(),
                     cql: cql2,
@@ -445,18 +445,18 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
     },
     /**
      * Changed functions:
-     */     
+     */
     ownerChanged: function(obj,value){
         this.setSelectedPlan(null);
         this.panel.setLoading("Bezig met laden plannen");
-        Ext.Ajax.request({ 
+        Ext.Ajax.request({
             url: this.roServiceUrl,
             timeout: 240000,
             scope:this,
-            params: { 
+            params: {
                 overheidsCode: value
-            }, 
-            success: function ( result, request ) { 
+            },
+            success: function ( result, request ) {
                 var res = Ext.JSON.decode(result.responseText);
                 if(res.success){
                     this.setPlans(res.results);
@@ -464,38 +464,38 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                     Ext.MessageBox.alert('Foutmelding', "Fout bij laden plannen" + res.error);
                 }
                 this.panel.setLoading(false);
-            }, 
+            },
             failure: function ( result, request) {
                 Ext.MessageBox.alert('Foutmelding', "Fout bij ophalen plannen" + result.responseText);
                 this.panel.setLoading(false);
-            } 
+            }
         });
     },
     typeChanged: function(obj,value){
         this.setSelectedPlan(null);
-        var plans= this.filterCurrentPlans(value);        
-        var uniqueStatus = this.getUniqueStatus(plans);        
+        var plans= this.filterCurrentPlans(value);
+        var uniqueStatus = this.getUniqueStatus(plans);
         this.setStatus(uniqueStatus);
         this.updatePlansContainer(plans);
     },
     statusChanged: function(obj,value){
         this.setSelectedPlan(null);
         var typeValue= this.typeCombo.getValue();
-        var plans= this.filterCurrentPlans(typeValue,value);        
+        var plans= this.filterCurrentPlans(typeValue,value);
         this.updatePlansContainer(plans);
     },
-    
+
     /**
      * Set the loaded plans.
      * @param {object} plans a object array with plans.
      */
     setPlans: function (plans){
         this.currentPlans = plans;
-        this.updatePlansContainer(plans);        
+        this.updatePlansContainer(plans);
         var uniqueTypes = this.getUniqueType(this.currentPlans);
-        var uniqueStatus = this.getUniqueStatus(this.currentPlans);        
+        var uniqueStatus = this.getUniqueStatus(this.currentPlans);
         this.setTypes(uniqueTypes);
-        this.setStatus(uniqueStatus);        
+        this.setStatus(uniqueStatus);
     },
     /**
      * Update the container with the list of plans.
@@ -517,11 +517,11 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
      * Get a unique list of values of a property
      * @param {object} plans a object of the plans
      * @param {String} a string that represents the name of the property
-     */        
+     */
     getUniqueValues: function (plans,property){
         var uniqueStatus=[];
         for (var i=0; i < plans.length; i++){
-            var plan = plans[i];            
+            var plan = plans[i];
             if (plan[property] &&
                 !Ext.Array.contains(uniqueStatus,plan[property])){
                 uniqueStatus.push(plan[property]);
@@ -553,8 +553,8 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             values.push({key: status[i],value : status[i]})
         }
         this.statusStore.loadData(values,false);
-    },    
-    
+    },
+
     /**
      * Called when plan is clicked
      */
@@ -569,10 +569,10 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         this.sldUrl=null;
         if (this.selectedPlan !==null){
             Ext.get(this.selectedPlan.identificatie).removeCls("selected");
-        }        
+        }
         this.previouslySelectedPlan = this.selectedPlan;
         this.selectedPlan = plan;
-        
+
         this.highlight(null,null);
         if (this.selectedPlan==null){
             this.clearLayer();
@@ -607,9 +607,9 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                             if (username){
                                 url+="&user="+username;
                             }
-                            var link = document.getElementById("linkForVerwerk");  
-                            link.target = "_parent";  
-                            link.href = url;  
+                            var link = document.getElementById("linkForVerwerk");
+                            link.target = "_parent";
+                            link.href = url;
                             link.click();
                         }
                     }
@@ -619,7 +619,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 var ogcProps={
                     exceptions: "application/vnd.ogc.se_inimage",
                     srs: "EPSG:28992",
-                    version: "1.1.1",                
+                    version: "1.1.1",
                     styles: "",
                     format: "image/png",
                     transparent: true,
@@ -628,15 +628,15 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 var options={id: "RoTerceraLayer"};
                 if (plan.origin == 'Tercera'){
                     prePlanText = "(L0K) ";
-                    Ext.Ajax.request({ 
+                    Ext.Ajax.request({
                         url: this.roServiceUrl,
                         timeout: 240000,
                         scope:this,
-                        params: { 
+                        params: {
                             wmsUrl: plan.wms,
                             getTerceraWMSLayers: 'b'
-                        }, 
-                        success: function ( result, request ) { 
+                        },
+                        success: function ( result, request ) {
                             var res = Ext.JSON.decode(result.responseText);
                             if(res.success){
                                 ogcProps.layers=res.layers;
@@ -646,11 +646,11 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                                 Ext.MessageBox.alert('Foutmelding', "Fout bij laden plannen" + res.error);
                             }
                             this.setLayer(plan.wms,ogcProps,options);
-                        }, 
+                        },
                         failure: function ( result, request) {
-                            Ext.MessageBox.alert('Foutmelding', "Fout bij ophalen plannen" + result.responseText);                        
-                        } 
-                    });                
+                            Ext.MessageBox.alert('Foutmelding', "Fout bij ophalen plannen" + result.responseText);
+                        }
+                    });
                 }else{ //Ro-online plan
                     prePlanText="(RO) ";
                     ogcProps.layers=this.roonlineLayers.split(",");
@@ -661,18 +661,18 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                         this.sldUrl=this.sldUrl.replace("http://192.168.1.31:8084","http://webkaarttest.b3p.nl")
                     }
                     this.setLayer(this.roonlineServiceUrl,ogcProps,options);
-                    
+
                 }
                 this.selectedPlanContainer.update(prePlanText+this.selectedPlan.identificatie);
             }
-            
+
             if (plan.bbox){
                 var map=this.viewerController.mapComponent.getMap();
                 map.zoomToExtent(new viewer.viewercontroller.controller.Extent(plan.bbox.minx,plan.bbox.miny,plan.bbox.maxx,plan.bbox.maxy));
             }
             if (plan.verwijzingNaarTekst){
                 var docs = plan.verwijzingNaarTekst.split(",");
-                this.setDocs(docs);            
+                this.setDocs(docs);
             }
             if (user){
                 this.drawCommentButton.show();
@@ -687,16 +687,16 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         this.docContainer.removeAll();
         Ext.Array.forEach(docs, function(item,index){
             var key=item.replace(" ","");
-            var value=key;                                        
-            var name=this.getDocType(key);            
+            var value=key;
+            var name=this.getDocType(key);
             var el={
                 xtype: 'container',
                 html: name,
-                width: '100%',                
+                width: '100%',
                 listeners:{
                     element: 'el',
                     click: function(){
-                        window.open(value,"name",'location=no,status=no,toolbar=no,menubar=no');
+                        window.open(value,"name",'location=no,status=no,toolbar=no,menubar=no,scrollbars=yes');
                     }
                 },
                 style: {
@@ -706,13 +706,13 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             this.docContainer.add(el);
         },this);
     },
-    
+
     setPlanCommentFilter: function(planId){
         if (planId==null && this.planCommentFilter!==null){
             this.viewerController.removeFilter(this.planCommentFilter.id,this.getCommentAppLayer());
             this.planCommentFilter=null;
             this.commentMapLayer.setVisible(false);
-        }else if (planId !=null){            
+        }else if (planId !=null){
             this.planCommentFilter = Ext.create("viewer.components.CQLFilterWrapper",{
                 id: "planFilter_"+this.getName(),
                 cql: this.roComment.planIdAttributeName.toLowerCase()+"='"+planId+"'",
@@ -721,12 +721,12 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             });
             this.viewerController.setFilter(this.planCommentFilter,this.getCommentAppLayer());
             this.commentMapLayer.setVisible(true);
-            
+
             //ugly fix: DB has attributes in uppercase, WMS in lowercase. To avoid this filter to override the filter set as a SLD, register a handler. This handler
             // is executed AFTER the filter (with lowerceesing) is set on the WMS layer. This filter is used for queries to the featureSource (Oracle Db in this cees)
             var setDBAttributesHandler = function(){
                 this.viewerController.removeListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, setDBAttributesHandler ,this);
-                
+
                 this.planCommentFilter = Ext.create("viewer.components.CQLFilterWrapper",{
                     id: "planFilter_"+this.getName(),
                     cql: this.roComment.planIdAttributeName+"='"+planId+"'",
@@ -742,7 +742,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         if (this.commentAppLayer==null || this.commentAppLayer == undefined){
             if (this.layers){
                 this.commentAppLayer = this.viewerController.getAppLayerById(this.layers[0]);
-                if (this.commentAppLayer){                    
+                if (this.commentAppLayer){
                     var found=false;
                     for (var i=0; i< this.viewerController.app.selectedContent.length; i++){
                         var contentItem = this.viewerController.app.selectedContent[i];
@@ -750,7 +750,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                             found=true;
                             break;
                         }
-                    }                    
+                    }
                     if (!found){
                        this.viewerController.app.selectedContent.push({
                             id: "l"+this.commentAppLayer.id,
@@ -799,9 +799,9 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 info.layers["usRooTercera"]={
                     name: options.layers.join(","),
                     queryable: true
-                }                
+                }
                 me.viewerController.addOrReplaceService(info);
-                
+
                 var appLayer={
                     background: false,
                     checked: true,
@@ -816,7 +816,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                         "summary.image": "",
                         "summary.title": " ",
                         "transparency": 30,
-                        "legendImageUrl": me.roLegendUrl                        
+                        "legendImageUrl": me.roLegendUrl
                     }
                 };
                 me.viewerController.addOrReplaceAppLayer(appLayer);
@@ -843,14 +843,14 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 }
                 //init the comment layer
                 me.getCommentAppLayer();
-                
+
                 me.viewerController.setSelectedContent(me.viewerController.app.selectedContent);
             },
             function(msg) {
-                Ext.MessageBox.alert("Foutmelding", msg);                
+                Ext.MessageBox.alert("Foutmelding", msg);
             }
         );
-      
+
     },
     clearLayer: function (){
         //todo: hier de layer uit zetten.
@@ -875,11 +875,11 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             }
         }
         return plans;
-    },            
+    },
     /**
      * Create a plan item.
      */
-    createPlanItem: function(planObj){   
+    createPlanItem: function(planObj){
         var me=this;
         var color="#000000";
         if (planObj.origin == "Tercera"){
@@ -944,7 +944,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         }
         return returnValue;
     },
-            
+
     setCreateInfoHtmlElements: function(){
         var comps=this.viewerController.getComponentsByClassName("viewer.components.FeatureInfo");
         var me = this;
@@ -991,7 +991,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         }
         return returnVal;
     },
-            
+
     addStyleSheet: function(){
         var css=".planinfo-table tbody tr .td0{font-weight: bold;}\
                 .planinfo-table tbody tr td{padding-right: 5px;}\
@@ -999,8 +999,8 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 .planinfo-feature{border-bottom: 1px solid #D7D7D7;}\
                 .selected{background-color: #F79481;color: #000000;}";
         Ext.util.CSS.createStyleSheet(css);
-    },      
-    
+    },
+
     highlight: function (fid,sldLayer){
         //first handle the images buttons.
         if (this.previousSLDFid!=null){
@@ -1018,13 +1018,13 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         else{
             this.previousSLDFid=fid;
             document.getElementById("image_"+this.previousSLDFid).src=this.parser.highlightedImage;
-            
-            
+
+
             var useRuleFilter = false;
             if (this.selectedPlan.origin == 'Tercera'){
                 useRuleFilter=true;
             }
-            var url=this.wmsLayer.getUrl();                 
+            var url=this.wmsLayer.getUrl();
             var sldUrl = Ext.create("viewer.SLD").createURL(sldLayer,null,"fid='"+fid+"'",null,null,null,"#FF0000",useRuleFilter);
             if(this.viewerController.isDebug() && sldUrl.indexOf("http://192.168.1.31:8084/viewer/action/sld")===0){
                 sldUrl=sldUrl.replace("http://192.168.1.31:8084","http://webkaarttest.b3p.nl")
@@ -1033,7 +1033,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                  var ogcProps={
                     exceptions: "application/vnd.ogc.se_inimage",
                     srs: "EPSG:28992",
-                    version: "1.1.1",                
+                    version: "1.1.1",
                     styles: "",
                     format: "image/png",
                     transparent: true,
@@ -1047,7 +1047,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                     alpha: 50
                 }
                 this.highlightLayer = this.viewerController.mapComponent.createWMSLayer("highlightLayer", url ,ogcProps,options,this.viewerController);
-                
+
                 this.viewerController.mapComponent.getMap().addLayer(this.highlightLayer);
             }else{
                 this.highlightLayer.setOGCParams({
@@ -1059,7 +1059,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             this.highlightLayer.setVisible(true);
         }
     },
-            
+
     getExtComponents: function() {
         return [ (this.panel !== null) ? this.panel.getId() : '' ];
     }
