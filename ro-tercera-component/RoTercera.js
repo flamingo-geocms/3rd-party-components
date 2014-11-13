@@ -720,6 +720,10 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 type: "ATTRIBUTE"
             });
             this.viewerController.setFilter(this.planCommentFilter,this.getCommentAppLayer());
+            var sldUrl = this.commentMapLayer.frameworkLayer.params.SLD;
+            sldUrl = sldUrl.replace("https","http");
+            this.commentMapLayer.setOGCParams ({ "SLD": sldUrl});
+            this.commentMapLayer.reload();
             this.commentMapLayer.setVisible(true);
 
             //ugly fix: DB has attributes in uppercase, WMS in lowercase. To avoid this filter to override the filter set as a SLD, register a handler. This handler
@@ -734,6 +738,11 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                     type: "ATTRIBUTE"
                 });
                 this.getCommentAppLayer().filter.addOrReplace(this.planCommentFilter);
+                var sldUrl = this.commentMapLayer.frameworkLayer.params.SLD;
+                sldUrl = sldUrl.replace("https", "http");
+                this.commentMapLayer.setOGCParams({"SLD": sldUrl});
+                this.commentMapLayer.reload();
+
             };
             this.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, setDBAttributesHandler ,this);
         }
