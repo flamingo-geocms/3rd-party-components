@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2014 ARIS B.V.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  */
 /**
  * Dbk component
- * 
+ *
  * @author <a href="mailto:eddy.scheper@aris.nl">Eddy Scheper</a>
  * @author <a href="mailto:anke.keuren@aris.nl">Anke Keuren</a>
  */
@@ -48,9 +48,9 @@ Ext.define ("viewer.components.Dbk",{
     },
     constructor: function(conf){
         var me = this;
-        
+
         viewer.components.Dbk.superclass.constructor.call(this, conf);
-        
+
         this.initConfig(conf);
 
         // Create url to get base path/url of component.
@@ -63,13 +63,10 @@ Ext.define ("viewer.components.Dbk",{
             this.basePath=Ext.String.urlAppend(this.basePath,"className="+Ext.getClass(me).getName());
             this.basePath=Ext.String.urlAppend(this.basePath,"resource=");
         };
- 
+
         // DEBUG!!!
         //this.basePath = "/viewer/3rd-party-components/dbk-component/";
- 
-        // Set icon path for dbkjs.config.styles.dbkfeature.
-        this.imageBasePath = this.basePath + "public";
-        
+
         // Install an event listener to register the Dbk component for printing.
         this.viewerController.addListener(
                 viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,
@@ -83,41 +80,50 @@ Ext.define ("viewer.components.Dbk",{
     },
     initApp: function(){
         var me = this;
-        
+
         // Set the map.
         dbkjs.map = this.viewerController.mapComponent.getMap().getFrameworkMap();
 
         // Make sure i18n is initialized. Set the proper resource directory.
         i18n.init({
-            lng: "nl", 
+            lng: "nl",
             debug: false,
             resGetPath: this.basePath + "locales/__lng__/translation.json"
         }, function() {
 
+            // Set icon path for dbkjs.config.styles.dbkfeature.
+            me.imageBasePath = me.basePath + "public/";
+
             // Set media path.
-            me.mediaPath = me.dataPath + "/media";
+            me.mediaPath = me.dataPath + (me.dataPath.charAt(me.dataPath.length - 1) === "/" ? "" : "/") + "media/";
 
             // Set paths of dbkjs.
-            dbkjs.dataPath = me.dataPath;
+            dbkjs.dataPath = (me.dataPath.charAt(me.dataPath.length - 1) === "/" ? me.dataPath : me.dataPath + "/");
             dbkjs.mediaPath = me.mediaPath;
-            dbkjs.imageBasePath = me.imageBasePath;
+            dbkjs.basePath = me.imageBasePath;
 
             // Set the viewcontroller.
             dbkjs.viewerController = me.viewerController;
 
+            dbkjs.dbkComp = dbkjs.viewerController.getComponentsByClassName("viewer.components.Dbk")[0];
+
             // Load css file.
             me.loadCssFile(me.basePath+"public/css/bootstrap.min.css");
+            //me.loadCssFile(me.basePath+"public/css/font-awesome-base64.css");
             me.loadCssFile(me.basePath+"public/css/dbk.css");
-            
+
             // Initialize.
             dbkjs.init();
-            
+
             // Get organisation info.
             me.initOrganisation();
-            
+
+            // Set showStatus
+            dbkjs.showStatus = true;
+
             // Create the dialogs.
             me.createDialogs();
-        
+
             // Initialize jsonDBK.init and register modules.
             dbkjs.successAuth();
        });
@@ -146,7 +152,7 @@ Ext.define ("viewer.components.Dbk",{
     },
     /* Returns the object info for use in the prints. The print component
      * converts the json info to xml.
-     * 
+     *
      * {
      *    aap:"noot",
      *   K: 12,
@@ -181,7 +187,7 @@ Ext.define ("viewer.components.Dbk",{
 
         // Get the selected dbk-object.
         currentDbkObject = this.getSelectedDBKObject();
-        
+
         // No dbk-object selected?
         if (!currentDbkObject) {
             return {};
@@ -254,7 +260,7 @@ Ext.define ("viewer.components.Dbk",{
                 }
             }
         }
-        
+
         // Return the dbk object info.
         return newDbkObject;
     },
@@ -275,7 +281,7 @@ Ext.define ("viewer.components.Dbk",{
              "gevaarlijkestof"];
          return propNames;
     },
-    /* If field values match the queryId, then add feature data to array. 
+    /* If field values match the queryId, then add feature data to array.
      * Only supports features with a point geometry. */
     getSearchFeatureData: function(searchResult,
                                    queryFields,queryFieldTypes,
@@ -338,13 +344,13 @@ Ext.define ("viewer.components.Dbk",{
 
         // Set bufeer for geometry.
         buffer = 300;
-        
+
         // Specify query fields.
         queryFields = ['identificatie','OMSNummer', "informeleNaam", "formeleNaam"];
 
         // Specify the query fields types/labels.
         queryFieldTypes = ['Objectnummer','OMS-nummer', 'Informele naam', 'Formele naam'];
- 
+
         try {
             // Loop features.
             for (i=0,len1=features.length;i!==len1;i++) {
@@ -355,7 +361,7 @@ Ext.define ("viewer.components.Dbk",{
                       this.getSearchFeatureData(searchResult,
                                                 queryFields,queryFieldTypes,
                                                 queryId,clusterFeature,buffer);
-                    } 
+                    }
                 } else {
                     this.getSearchFeatureData(searchResult,
                                               queryFields,queryFieldTypes,
@@ -377,7 +383,7 @@ Ext.define ("viewer.components.Dbk",{
                 searchRequestId: searchRequestId
             };
         };
-            
+
         return result;
     },
     getSelectedDBKObject: function () {

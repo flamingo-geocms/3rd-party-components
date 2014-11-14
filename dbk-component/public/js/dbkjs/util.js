@@ -1,8 +1,8 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
- * 
+ *
  *  This file is part of safetymapDBK
- *  
+ *
  *  safetymapDBK is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -17,6 +17,11 @@
  *  along with safetymapDBK. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+Array.prototype.unique = function(){
+  return this.filter(
+      function(a){return !this[a] ? this[a] = true : false;}, {}
+  );
+};
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 $.browser = {};
@@ -25,7 +30,7 @@ $.browser.webkit = /webkit/.test(navigator.userAgent.toLowerCase());
 $.browser.opera = /opera/.test(navigator.userAgent.toLowerCase());
 $.browser.msie = /msie/.test(navigator.userAgent.toLowerCase());
 $.browser.device = (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent.toLowerCase()));
-dbkjs.argParser = 
+dbkjs.argParser =
     OpenLayers.Class(OpenLayers.Control.ArgParser, {
         setMap: function(map) {
             OpenLayers.Control.prototype.setMap.apply(this, arguments);
@@ -36,12 +41,12 @@ dbkjs.argParser =
                 if ( (control !== this) &&
                      (control.CLASS_NAME === "OpenLayers.Control.ArgParser") ) {
 
-                    // If a second argparser is added to the map, then we 
+                    // If a second argparser is added to the map, then we
                     // override the displayProjection to be the one added to the
-                    // map. 
+                    // map.
                     if (control.displayProjection !== this.displayProjection) {
                         this.displayProjection = control.displayProjection;
-                    }    
+                    }
 
                     break;
                 }
@@ -51,8 +56,8 @@ dbkjs.argParser =
                 var args = this.getParameters();
                 // Be careful to set layer first, to not trigger unnecessary layer loads
                 if (args.b) {
-                    // when we add a new layer, set its visibility 
-                    this.map.events.register('addlayer', this, 
+                    // when we add a new layer, set its visibility
+                    this.map.events.register('addlayer', this,
                                              this.configureLayers);
                     this.configureLayers();
                 }
@@ -64,7 +69,7 @@ dbkjs.argParser =
                     }
 
                     // when we add a new baselayer to see when we can set the center
-                    this.map.events.register('changebaselayer', this, 
+                    this.map.events.register('changebaselayer', this,
                                              this.setCenter);
                     this.setCenter();
                 }
@@ -75,14 +80,14 @@ dbkjs.argParser =
             if(!dbkjs.disableloadlayer){
                 if(args.ly && args.b) {
                     for(var i=0, len=this.map.layers.length; i<len; i++) {
-                        if (!this.map.layers[i].isBaseLayer && 
+                        if (!this.map.layers[i].isBaseLayer &&
                                 $.inArray(this.map.layers[i].metadata.pl, args.ly) !== -1) {
                             this.map.layers[i].setVisibility(true);
-                        } else if (!this.map.layers[i].isBaseLayer && 
+                        } else if (!this.map.layers[i].isBaseLayer &&
                                 !dbkjs.util.isJsonNull(this.map.layers[i].metadata.pl)) {
                             this.map.layers[i].setVisibility(false);
                         }
-                    }                
+                    }
                 }
                 if(args[i18n.t('app.queryDBK')] && dbkjs.modules.feature){
                     dbkjs.options.dbk = args[i18n.t('app.queryDBK')];
@@ -95,7 +100,7 @@ dbkjs.argParser =
                     }
                 }
             }
-        },    
+        },
         configureLayers: function() {
             var args = this.getParameters();
             if(args.ly && args.b){
@@ -104,12 +109,12 @@ dbkjs.argParser =
                         this.map.setBaseLayer(this.map.layers[i]);
                         this.map.raiseLayer(this.map.layers[i], -1000);
                     }
-                }                
+                }
             }
-        },     
+        },
         CLASS_NAME: "dbkjs.ArgParser"
     });
-dbkjs.Permalink = 
+dbkjs.Permalink =
     OpenLayers.Class(OpenLayers.Control.Permalink, {
     argParserClass: dbkjs.ArgParser,
     SELECT_ARGUMENT_KEY: "select",
@@ -137,12 +142,12 @@ dbkjs.Permalink =
         else {
             this.element.href = href;
         }
-    }, 
+    },
     createParams: function(center, zoom, layers) {
         center = center || this.map.getCenter();
-          
+
         var params = OpenLayers.Util.getParameters(this.base);
-        // If there's still no center, map is not initialized yet. 
+        // If there's still no center, map is not initialized yet.
         // Break out of this function, and simply return the params from the
         // base link.
         if(dbkjs.options){
@@ -150,28 +155,28 @@ dbkjs.Permalink =
                 params[i18n.t('app.queryDBK')]  = dbkjs.options.dbk;
             }
         }
-        if (center) { 
+        if (center) {
 
             //zoom
-            params.zoom = zoom || this.map.getZoom(); 
+            params.zoom = zoom || this.map.getZoom();
 
             //lon,lat
             var lat = center.lat;
             var lon = center.lon;
-            
+
             if (this.displayProjection) {
                 var mapPosition = OpenLayers.Projection.transform(
-                  { x: lon, y: lat }, 
-                  this.map.getProjectionObject(), 
+                  { x: lon, y: lat },
+                  this.map.getProjectionObject(),
                   this.displayProjection );
-                lon = mapPosition.x;  
-                lat = mapPosition.y;  
-            }       
+                lon = mapPosition.x;
+                lat = mapPosition.y;
+            }
             params.lat = Math.round(lat*100000)/100000;
             params.lon = Math.round(lon*100000)/100000;
 
-            
-            //layers        
+
+            //layers
             layers = this.map.layers;
             params.ly = [];
             for (var i=0, len=layers.length; i<len; i++) {
@@ -184,14 +189,14 @@ dbkjs.Permalink =
                     if (layer.metadata.pl && layer.getVisibility()){
                         params.ly.push(layer.metadata.pl);
                     }
-                    //params.layers += (layer.getVisibility()) ? "T" : "F";           
+                    //params.layers += (layer.getVisibility()) ? "T" : "F";
                 }
             }
-            
+
         }
 
         return params;
-    }, 
+    },
     CLASS_NAME: "dbkjs.Permalink"
 });
 
@@ -314,7 +319,7 @@ OpenLayers.Renderer.SVG.prototype.drawText = function(featureId, style, location
 //        if ( fn.length > 0 ) p = fn.pop()
 //            .replace(/^\s*|\s(?=\s)|\s*$|,/g, '').split(' ') ;
 //        // prepend a return if not already there.
-//        fn = ( ( ! /\s*return\s+/.test( b ) ) ? "return " : "" ) + b ;   
+//        fn = ( ( ! /\s*return\s+/.test( b ) ) ? "return " : "" ) + b ;
 //        p.push( fn ) ;
 //        try {
 //            return Function.apply( {}, p ) ;
@@ -324,7 +329,7 @@ OpenLayers.Renderer.SVG.prototype.drawText = function(featureId, style, location
 //    };
 //
 //    var fn = f;
-//    // if type of parameter is string         
+//    // if type of parameter is string
 //    if (typeof f === "string")
 //        // try to make it into a function
 //        if ((fn = lambda(fn)) === null)
@@ -335,7 +340,7 @@ OpenLayers.Renderer.SVG.prototype.drawText = function(featureId, style, location
 //    var l = this.length;
 //    // set up parameters for filter function call
 //    var p = [0, 0, res];
-//    // append any pass-through parameters to parameter array               
+//    // append any pass-through parameters to parameter array
 //    for (var i = 1; i < arguments.length; i++)
 //        p.push(arguments[i]);
 //    // for each array element, pass to filter function
@@ -343,11 +348,11 @@ OpenLayers.Renderer.SVG.prototype.drawText = function(featureId, style, location
 //        // skip missing elements
 //        if (typeof this[ i ] === "undefined")
 //            continue;
-//        // param1 = array element             
+//        // param1 = array element
 //        p[ 0 ] = this[ i ];
 //        // param2 = current indeex
 //        p[ 1 ] = i;
-//        // call filter function. if return true, copy element to results            
+//        // call filter function. if return true, copy element to results
 //        if (!!fn.apply(this, p))
 //            res.push(this[i]);
 //    }
@@ -357,8 +362,9 @@ OpenLayers.Renderer.SVG.prototype.drawText = function(featureId, style, location
 
 dbkjs.util = {
     layersLoading: [],
+    modalPopupStore: {},
     /**
-     * script voor updaten zichtbaarheid van overlays 
+     * script voor updaten zichtbaarheid van overlays
      * @param {<OpenLayers.Layer>} obj
      */
     toggleOverlay: function(obj) {
@@ -422,7 +428,7 @@ dbkjs.util = {
         return hr + min + ':' + sec;
     },
     /**
-     * 
+     *
      * @param {String} variable
      * @param {String} defaultvalue
      * @returns {String} the value for the given queryparameter
@@ -517,7 +523,7 @@ dbkjs.util = {
         if (msg) {
             msg.html('<a href="' + e.src + '">' + e.src + '</a><br>' + i18n.t('dialogs.invalidImage'));
         }
-        e.src = "images/missing.gif";
+        e.src = dbkjs.basePath + "images/missing.gif";
         e.onerror = "";
         return true;
     },
@@ -608,14 +614,14 @@ dbkjs.util = {
         if (!alert[0]) {
             var alert = $('<div id="systeem_meldingen" class="alert alert-dismissable alert-info"></div>');
             alert.append('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
-            alert.append('<i class="icon-spinner icon-spin"></i> ' + i18n.t('dialogs.busyloading') + ' ' + this.layersLoading.join(', ') + '...');
+            alert.append('<i class="fa fa-spinner fa-spin"></i> ' + i18n.t('dialogs.busyloading') + ' ' + this.layersLoading.join(', ') + '...');
             $('body').append(alert);
             alert.show();
         } else {
             alert.removeClass('alert-success alert-info alert-warning alert-danger').addClass('alert-info');
             alert.html('');
             alert.append('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
-            alert.append('<i class="icon-spinner icon-spin"></i> ' + i18n.t('dialogs.busyloading') + ' ' + this.layersLoading.join(', ') + '...');
+            alert.append('<i class="fa fa-spinner fa-spin"></i> ' + i18n.t('dialogs.busyloading') + ' ' + this.layersLoading.join(', ') + '...');
             alert.show();
         }
 
@@ -637,7 +643,7 @@ dbkjs.util = {
                 } else {
                     var alert = $('<div id="systeem_meldingen" class="alert alert-dismissable alert-info"></div>');
                     alert.append('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
-                    alert.append('<i class="icon-spinner icon-spin"></i> ' + i18n.t('dialogs.busyloading') + ' ' + this.layersLoading.join(', ') + '...');
+                    alert.append('<i class="fa fa-spinner fa-spin"></i> ' + i18n.t('dialogs.busyloading') + ' ' + this.layersLoading.join(', ') + '...');
                     $('body').append(alert);
                     alert.show();
                 }
@@ -651,7 +657,7 @@ dbkjs.util = {
                     alert.removeClass('alert-success alert-info alert-warning alert-danger').addClass('alert-info');
                     alert.html('');
                     alert.append('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
-                    alert.append('<i class="icon-spinner icon-spin"></i> ' + i18n.t('dialogs.busyloading') + ' ' + this.layersLoading.join(', ') + '...');
+                    alert.append('<i class="fa fa-spinner fa-spin"></i> ' + i18n.t('dialogs.busyloading') + ' ' + this.layersLoading.join(', ') + '...');
                     alert.show();
                 }
             }
@@ -692,7 +698,7 @@ dbkjs.util = {
     },
     /**
      * Verander de titel van de opgegeven panel
-     * 
+     *
      * @param {string} title
      * @param {string} dialogid
      */
@@ -709,7 +715,7 @@ dbkjs.util = {
         }
     },
     /**
-     * 
+     *
      * @param {string} id (optioneel)
      * @returns {jQuery.DOMElement} de nieuwe tabtabel
      */
@@ -726,10 +732,10 @@ dbkjs.util = {
         return tabbable;
     },
     /**
-     * Retourneert de tab_content id placeholder zodat hierop 
+     * Retourneert de tab_content id placeholder zodat hierop
      * kan worden ingevoerd, kan eventueel met een bestaande id worden
      * aangeroepen.
-     * 
+     *
      * @param {string} parent_id
      * @param {string} tab_title
      * @param {string} tab_content
@@ -803,8 +809,10 @@ dbkjs.util = {
         var modal_content = $('<div class="modal-content"></div>');
         var modal_header = $('<div id="' + id + '_h" class="modal-header"><h4 class="modal-title">' + title + '</h4></div>');
         var modal_body = $('<div id="' + id + '_b" class="modal-body"></div>');
+        var modal_footer = $('<div id="' + id + '_f" class="modal-footer"></div>');
         modal_content.append(modal_header);
         modal_content.append(modal_body);
+        modal_content.append(modal_footer);
         modal_wrapper.append(modal_dialog.append(modal_content));
         modal_wrapper.modal('hide');
         return modal_wrapper;
@@ -856,6 +864,12 @@ dbkjs.util = {
             return '\n' + url;
         });
     },
+    nl2br: function(s) {
+        return s === null ? null : s.replace(/\n/g, "<br>");
+    },
+    endsWith: function(str, suffix) {
+        return str.indexOf(suffix, str.length - suffix.length) !== -1;
+    },
     renderHTML: function(text) {
         var rawText = this.strip(text);
         var urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
@@ -867,9 +881,8 @@ dbkjs.util = {
             }
         });
     },
-    //@@ Get the outerHtml of an element.
     outerHtml: function(element) {
-      return element.clone().wrap('<p>').parent().html();  
+      return element.clone().wrap('<p>').parent().html();
     },
     bearing: function(pt1,pt2){
         var bx = 0;
@@ -880,8 +893,113 @@ dbkjs.util = {
         var angle = 360/(2*Math.PI)*angle_rad;
         if (ax < 0){
             return 360 - angle;
-        } else { 
+        } else {
             return angle;
+        }
+    },
+    createModalPopup: function(options) {
+        // Init default options
+        if(options === undefined) {
+            options = {};
+        }
+        if(!options.name) {
+            options.name = 'modal' + (this.modalPopupStore.length + 1);
+        }
+        // Create the popup
+        var popup = $('<div></div>')
+            .attr({
+                'class': 'modal-popup'
+            })
+            .appendTo('body');
+        $('<a></a>')
+            .attr({
+                'class': 'modal-popup-close',
+                'href': '#'
+            })
+            .html('<i class="fa fa-arrow-left"></i> Terug')
+            .on('click', function(e) {
+                e.preventDefault();
+                hidingFunction();
+            })
+            .appendTo(popup);
+        $('<div></div>')
+            .addClass('modal-popup-title')
+            .html(options.title || '')
+            .appendTo(popup);
+        var view = $('<div></div>')
+            .addClass('modal-popup-view')
+            .appendTo(popup);
+
+        var hideCallback = function() {};
+        if(options.hideCallback) {
+            hideCallback = options.hideCallback;
+        }
+
+        var hidingFunction = function() {
+            popup.removeClass('modal-popup-active');
+            if(hideCallback) {
+                hideCallback();
+            }
+        };
+
+        // Return object to handle popup related functions
+        this.modalPopupStore[options.name] = {
+            getView: function() {
+                return view;
+            },
+            show: function() {
+                // request css property to force layout computation, making animation possible
+                // see http://stackoverflow.com/questions/7069167/css-transition-not-firing
+                popup.css('width');
+                popup.addClass('modal-popup-active');
+            },
+            hide: function() {
+                hidingFunction();
+            },
+            setHideCallback: function(fn) {
+                hideCallback = fn;
+            }
+        };
+
+        return this.modalPopupStore[options.name];
+    },
+    getModalPopup: function(name) {
+        if(!this.modalPopupStore.hasOwnProperty(name)) {
+            // Return 'fake' popup object so no errors arise
+            return {
+                getView: function() { return $([]); },
+                show: function() {},
+                hide: function() {},
+                setHideCallback: function() {}
+            };
+        }
+        return this.modalPopupStore[name];
+    },
+    isMultitouchCapableBrowser: function() {
+        var _browser = {}, uagent = navigator.userAgent.toLowerCase();
+        try {
+            _browser.opera = /mozilla/.test(uagent) && /applewebkit/.test(uagent) && /chrome/.test(uagent) && /safari/.test(uagent) && /opr/.test(uagent);
+            _browser.safari = /applewebkit/.test(uagent) && /safari/.test(uagent) && !/chrome/.test(uagent);
+            _browser.firefox = /mozilla/.test(uagent) && /firefox/.test(uagent);
+            _browser.chrome = /webkit/.test(uagent) && /chrome/.test(uagent);
+            _browser.msie = /msie/.test(uagent);
+            _browser.browsername = _browser.opera ? 'opr' : _browser.safari ? 'safari' : _browser.firefox ? 'firefox' : _browser.chrome ? 'chrome' : 'msie';
+            _browser.version = uagent.match(new RegExp("(" + _browser.browsername + ")( |/)([0-9]+)"))[3];
+            _browser.touchevents = (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
+            // For now just Firefox and IE below version 11 are regarded as not multitouch capable
+            if(!_browser.touchevents || (_browser.msie && _browser.version <= 11) || _browser.firefox) {
+                return false;
+            }
+            return true;
+        } catch(e) {}
+        return true;
+    },
+    configureLayers: function() {
+        for(var i=0, len=dbkjs.map.layers.length; i<len; i++) {
+            if (dbkjs.map.layers[i].isBaseLayer && dbkjs.map.layers[i].visibility) {
+                dbkjs.map.setBaseLayer(dbkjs.map.layers[i]);
+                dbkjs.map.raiseLayer(dbkjs.map.layers[i], -1000);
+            }
         }
     }
 };

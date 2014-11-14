@@ -1,8 +1,8 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
- * 
+ *
  *  This file is part of safetymapDBK
- *  
+ *
  *  safetymapDBK is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -22,99 +22,34 @@ var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.modules = dbkjs.modules || [];
 dbkjs.overlays = dbkjs.overlays || [];
-
-//@@ ARIS
 dbkjs.map = dbkjs.map || null;
 dbkjs.dataPath = dbkjs.dataPath || null;
 dbkjs.mediaPath = dbkjs.mediaPath || null;
-dbkjs.imageBasePath = dbkjs.imageBasePath || null;
-dbkjs.viewerController = dbkjs.viewerController || null;
+dbkjs.basePath = dbkjs.basePath || null;
+
+dbkjs.viewmode = 'default';
 
 dbkjs.init = function() {
-    
-    //@@dbkjs.map = new OpenLayers.Map(dbkjs.options.map.options);
-    if (!dbkjs.map) {
-        dbkjs.map = new OpenLayers.Map(dbkjs.options.map.options);
-    };
 
+    dbkjs.setPaths();
+
+    if (!dbkjs.map) {
+      dbkjs.map = new OpenLayers.Map(dbkjs.options.map.options);
+    };
     dbkjs.options.organisation = {
         id: dbkjs.util.getQueryVariable(i18n.t('app.organisation'), 'demo')
     };
     dbkjs.options.adres = dbkjs.util.getQueryVariable(i18n.t('app.queryAddress'));
     dbkjs.options.omsnummer = dbkjs.util.getQueryVariable(i18n.t('app.queryNumber'));
     dbkjs.options.dbk = dbkjs.util.getQueryVariable(i18n.t('app.queryDBK'));
+    dbkjs.challengeAuth();
 
-    // ARIS: Load api/organisation.json.
-    //@@
-    //dbkjs.challengeAuth();
-    
-    /*@@
-    // Show mouseposition
-    var mousePos = new OpenLayers.Control.MousePosition({
-        numDigits: dbkjs.options.projection.coordinates.numDigits,
-        div: OpenLayers.Util.getElement('coords')
-    });
+    dbkjs.mapcontrols.createMapControls();
 
-    dbkjs.map.addControl(mousePos);
-    var attribution = new OpenLayers.Control.Attribution({
-        div: OpenLayers.Util.getElement('attribution')
-    });
-    dbkjs.map.addControl(attribution);
+    dbkjs.mapcontrols.registerMapEvents(dbkjs.layers.createBaseLayers());
 
-    var scalebar = new OpenLayers.Control.Scale(OpenLayers.Util.getElement('scale'));
-    dbkjs.map.addControl(scalebar);
-    dbkjs.naviHis = new OpenLayers.Control.NavigationHistory();
-    dbkjs.map.addControl(dbkjs.naviHis);
-    dbkjs.naviHis.activate();
-    */
+    dbkjs.showStatus = false;
 
-    /*@@
-    var baselayer_ul = $('<ul id="baselayerpanel_ul" class="nav nav-pills nav-stacked">');
-    $.each(dbkjs.options.baselayers, function(bl_index, bl) {
-        var _li = $('<li class="bl"><a href="#">' + bl.name + '</a></li>');
-        baselayer_ul.append(_li);
-        bl.events.register("loadstart", bl, function() {
-            dbkjs.util.loadingStart(bl);
-        });
-        bl.events.register("loadend", bl, function() {
-            dbkjs.util.loadingEnd(bl);
-        });
-        dbkjs.map.addLayer(bl);
-        _li.click(function() {
-            dbkjs.toggleBaseLayer(bl_index);
-        });
-    });
-    $('#baselayerpanel_b').append(baselayer_ul);
-    dbkjs.map.events.register("moveend", dbkjs.map, function() {
-        //check if the naviHis has any content
-        if (dbkjs.naviHis.nextStack.length > 0) {
-            //enable next button
-            $('#zoom_next').removeClass('disabled');
-        } else {
-            $('#zoom_next').addClass('disabled');
-        }
-        if (dbkjs.naviHis.previousStack.length > 1) {
-            //enable previous button
-            $('#zoom_prev').removeClass('disabled');
-        } else {
-            $('#zoom_prev').addClass('disabled');
-        }
-    });
-    */
-   
-    /*@@
-    dbkjs.overview = new OpenLayers.Control.OverviewMap({
-        theme: null,
-        div: document.getElementById('minimappanel_b'),
-        size: new OpenLayers.Size(180, 180)
-    });
-    dbkjs.map.addControl(dbkjs.overview);
-    dbkjs.map.addControl(new OpenLayers.Control.Zoom({
-            zoomInId: "zoom_in",
-            zoomOutId: "zoom_out"
-        })
-    );
-    */
 };
 
 /**
@@ -136,6 +71,14 @@ dbkjs.toggleBaseLayer = function(nr) {
     }
 };
 
+dbkjs.setDbkCategoryVisibility = function(category, visible) {
+    if(!dbkjs.options.visibleCategories) {
+        dbkjs.options.visibleCategories = {};
+    }
+    dbkjs.options.visibleCategories[category] = visible;
+    dbkjs.protocol.jsonDBK.layerBrandweervoorziening.redraw();
+};
+
 dbkjs.activateClick = function() {
     dbkjs.map.events.register('click', dbkjs.map, dbkjs.util.onClick);
     dbkjs.map.events.register('touchend', dbkjs.map, dbkjs.util.onClick);
@@ -143,7 +86,7 @@ dbkjs.activateClick = function() {
 
 dbkjs.challengeAuth = function() {
     var params = {srid: dbkjs.options.projection.srid};
-    $.getJSON('api/organisation.json', params).done(function(data) {
+    $.getJSON(dbkjs.dataPath + 'organisation.json', params).done(function(data) {
         if (data.organisation) {
             dbkjs.options.organisation = data.organisation;
             if (dbkjs.options.organisation.title) {
@@ -155,11 +98,10 @@ dbkjs.challengeAuth = function() {
 };
 
 dbkjs.successAuth = function() {
-    
     dbkjs.hoverControl = new OpenLayers.Control.SelectFeature(
         [],
         {
-            hover: true, 
+            hover: true,
             highlightOnly: true,
             renderIntent: "temporary"
         }
@@ -167,37 +109,37 @@ dbkjs.successAuth = function() {
     dbkjs.hoverControl.handlers.feature.stopDown = false;
     dbkjs.hoverControl.handlers.feature.stopUp = false;
     dbkjs.map.addControl(dbkjs.hoverControl);
-    
     dbkjs.selectControl = new OpenLayers.Control.SelectFeature(
         [],
         {
-            clickout: true, 
+            clickout: true,
             toggle: true,
-            multiple: false 
+            multiple: false
         }
     );
     dbkjs.selectControl.handlers.feature.stopDown = false;
     dbkjs.selectControl.handlers.feature.stopUp = false;
     dbkjs.map.addControl(dbkjs.selectControl);
-
     dbkjs.protocol.jsonDBK.init();
-    
-    /*@@
-    if (dbkjs.options.organisation.logo) {
-        $('#logo').css('background-image', 'url(' + dbkjs.options.organisation.logo + ')');
-    }
-    */
-   
+
+    dbkjs.gui.setLogo();
+
     //register modules
     $.each(dbkjs.modules, function(mod_index, module) {
         if ($.inArray(mod_index, dbkjs.options.organisation.modules) > -1) {
             if (module.register) {
-                module.register({namespace: dbkjs.options.organisation.workspace, url: 'geoserver/', visible: true});
+                module.register({namespace: dbkjs.options.organisation.workspace, url: 'geoserver/', visible: true, viewmode: dbkjs.viewmode });
             }
         }
     });
 
-    /*@@
+    dbkjs.loadOrganisationCapabilities();
+
+
+    $(dbkjs).trigger('dbkjs_init_complete');
+};
+
+dbkjs.loadOrganisationCapabilities = function() {
     if(dbkjs.options.organisation.wms){
         dbkjs.loadingcapabilities = 0;
             $.each(dbkjs.options.organisation.wms, function (wms_k, wms_v){
@@ -205,10 +147,10 @@ dbkjs.successAuth = function() {
                 if(wms_v.getcapabilities === true){
                     dbkjs.loadingcapabilities = dbkjs.loadingcapabilities + 1;
                     var options = {
-                        url: wms_v.url, 
-                        title: wms_v.name, 
-                        proxy: wms_v.proxy, 
-                        index: index, 
+                        url: wms_v.url,
+                        title: wms_v.name,
+                        proxy: wms_v.proxy,
+                        index: index,
                         parent: wms_v.parent
                     };
                     if (!dbkjs.util.isJsonNull(wms_v.pl)){
@@ -264,16 +206,23 @@ dbkjs.successAuth = function() {
             }
         } else {
             dbkjs.finishMap();
-        }
-    */
+    }
 };
 
 dbkjs.finishMap = function(){
+    //find the div that contains the baseLayer.name
+    var listItems = $("#baselayerpanel_ul li");
+    listItems.each(function(idx, li) {
+        var test = $(li).children(':first').text();
+        if(test === dbkjs.map.baseLayer.name){
+            $(li).addClass('active');
+        }
+    });
     if (dbkjs.layout) {
         dbkjs.layout.activate();
     }
     dbkjs.activateClick();
-    
+
     dbkjs.selectControl.activate();
     var hrefzoom = dbkjs.util.getQueryVariable('zoom');
     var hreflat = dbkjs.util.getQueryVariable('lat');
@@ -304,43 +253,106 @@ dbkjs.finishMap = function(){
     }
     dbkjs.permalink = new dbkjs.Permalink('permalink');
     dbkjs.map.addControl(dbkjs.permalink);
+    dbkjs.util.configureLayers();
     //get dbk!
 };
 
-/*@@
-$(document).ready(function() {
+dbkjs.setPaths = function() {
+    if (!dbkjs.basePath) {
+        dbkjs.basePath = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port;
+        var pathname = window.location.pathname;
+        // ensure basePath always ends with '/', remove 'index.html' if exists
+        if(pathname.charAt(pathname.length - 1) !== '/') {
+            pathname = pathname.substring(0, pathname.lastIndexOf('/')+1);
+        }
+        // ensure single '/' between hostname and path
+        dbkjs.basePath = dbkjs.basePath + (pathname.charAt(0) === "/" ? pathname : "/" + pathname);
+    }
+
+    if (!dbkjs.dataPath) {
+        dbkjs.dataPath = 'api/';
+    }
+
+    if (!dbkjs.mediaPath) {
+        dbkjs.mediaPath = dbkjs.basePath + 'media/';
+    }
+
+};
+
+// dbkjs.js: $(document).ready
+dbkjs.documentReady = function() {
     // Make sure i18n is initialized
     i18n.init({
-            lng: "nl", debug: false 
+            lng: "nl", debug: false, postProcess: "doReplacements"
     }, function(t) {
+        i18n.addPostProcessor("doReplacements", function(val, key, options) {
+            if(dbkjs.options.i18nReplacements) {
+                var lngReplacements = dbkjs.options.i18nReplacements[i18n.lng()];
+                if(lngReplacements && lngReplacements[key]) {
+                    return lngReplacements[key];
+                }
+            }
+            return val;
+        });
         document.title = dbkjs.options.APPLICATION + ' ' + dbkjs.options.VERSION;
-        $('body').append(dbkjs.util.createDialog('infopanel', '<i class="icon-info-sign"></i> ' + t("dialogs.info"), 'right:0;bottom:0;'));
-        $('body').append(dbkjs.util.createDialog('wmsclickpanel', '<i class="icon-info-sign"></i> ' + t("dialogs.clickinfo"), 'right:0;bottom:0;'));
-        $('body').append(dbkjs.util.createDialog('vectorclickpanel', '<i class="icon-info-sign"></i> ' + t("dialogs.clickinfo"), 'left:0;bottom:0;'));
-        $('body').append(dbkjs.util.createModal('printpanel', '<i class="icon-print"></i> ' + t("app.print"), ''));
-        dbkjs.wms_panel = dbkjs.util.createTabbable();
-        $('#wmsclickpanel_b').append(dbkjs.wms_panel);
-        $('body').append(dbkjs.util.createDialog('minimappanel', '<i class="icon-picture"></i> ' + i18n.t("dialogs.refmap"), 'bottom:0;'));
-        $('.dialog').drags({handle: '.panel-heading'});
-        $('.btn-group').drags({handle: '.drag-handle'});
-        dbkjs.util.setModalTitle('overlaypanel', i18n.t('map.overlays'));
-        dbkjs.util.setModalTitle('baselayerpanel', i18n.t('map.baselayers'));
+        if(dbkjs.viewmode !== 'fullscreen') {
+            $('body').append(dbkjs.util.createDialog('infopanel', '<i class="fa fa-info-circle"></i> ' + t("dialogs.info"), 'right:0;bottom:0;'));
+        } else {
+            // Create the infopanel
+            dbkjs.util.createModalPopup({ name: 'infopanel' }).getView().append($('<div></div>').attr({ 'id': 'infopanel_b' }));
+            // Create the DBK infopanel
+            dbkjs.util.createModalPopup({ name: 'dbkinfopanel' }).getView().append($('<div></div>').attr({ 'id': 'dbkinfopanel_b' }));
+
+            // We are removing / moving some existing DIVS from HTML to convert prev. popups to fullscreen modal popups
+            $('#baselayerpanel').remove();
+            $('#overlaypanel').attr('id', 'tmp_overlaypanel');
+            var baseLayerPopup = dbkjs.util.createModalPopup({ name: 'baselayerpanel' });
+            baseLayerPopup.getView().append($('<div></div>').attr({ 'id': 'baselayerpanel_b' }));
+            var overlaypanelPopup = dbkjs.util.createModalPopup({ name: 'overlaypanel' });
+            overlaypanelPopup.getView().append($('#tmp_overlaypanel .tabbable'));
+            $('#tmp_overlaypanel').remove();
+
+            $('#tb01, #tb02').on('click', function(e) {
+                e.preventDefault();
+                var panelId = $(this).attr('href').replace('#', '');
+                if(panelId === 'baselayerpanel') {
+                    $.each(dbkjs.options.baselayers, function(bl_index, bl) {
+                        if(bl.getVisibility()) {
+                            $('#bl' + bl_index).addClass('active');
+                        }
+                    });
+                }
+                dbkjs.util.getModalPopup(panelId).show();
+            });
+
+        }
+        if(dbkjs.viewmode !== 'fullscreen') {
+            $('body').append(dbkjs.util.createDialog('wmsclickpanel', '<i class="fa fa-info-circle"></i> ' + t("dialogs.clickinfo"), 'right:0;bottom:0;'));
+            $('body').append(dbkjs.util.createDialog('vectorclickpanel', '<i class="fa fa-info-circle"></i> ' + t("dialogs.clickinfo"), 'left:0;bottom:0;'));
+            $('body').append(dbkjs.util.createModal('printpanel', '<i class="fa fa-print"></i> ' + t("app.print"), ''));
+            dbkjs.wms_panel = dbkjs.util.createTabbable();
+            $('#wmsclickpanel_b').append(dbkjs.wms_panel);
+            $('body').append(dbkjs.util.createDialog('minimappanel', '<i class="fa fa-picture-o"></i> ' + i18n.t("dialogs.refmap"), 'bottom:0;'));
+            $('.dialog').drags({handle: '.panel-heading'});
+            $('.btn-group').drags({handle: '.drag-handle'});
+            dbkjs.util.setModalTitle('overlaypanel', i18n.t('map.overlays'));
+            dbkjs.util.setModalTitle('baselayerpanel', i18n.t('map.baselayers'));
+
+        }
         dbkjs.init();
+
         $('#infopanel_b').html(dbkjs.options.info);
-        $('.btn').click(function() {
+        $('#tb03, #c_minimap').click(function() {
             if (this.id === "tb03") {
-                $('#infopanel').toggle();
+                if(dbkjs.viewmode !== 'fullscreen') {
+                    $('#infopanel').toggle();
+                } else {
+                    dbkjs.util.getModalPopup('dbkinfopanel').show();
+                }
             } else if (this.id === "c_minimap") {
                 $('#minimappanel').toggle();
             }
         });
-        $('#zoom_prev').click(function() {
-            dbkjs.naviHis.previousTrigger();
-        });
-        $('#zoom_next').click(function() {
-            dbkjs.naviHis.nextTrigger();
-        });
-
         $('#zoom_extent').click(function() {
             if (dbkjs.options.organisation.modules.regio) {
                 dbkjs.modules.regio.zoomExtent();
@@ -363,6 +375,41 @@ $(document).ready(function() {
                 }
             }
         });
+
+        $(dbkjs).bind('dbkjs_init_complete', function() {
+
+             if(dbkjs.viewmode !== 'fullscreen') {
+                $('#zoom_prev').click(function() {
+                    dbkjs.naviHis.previousTrigger();
+                });
+                $('#zoom_next').click(function() {
+                    dbkjs.naviHis.nextTrigger();
+                });
+            } else {
+                FastClick.attach(document.body);
+            }
+            (function() {
+                function calcMaxWidth() {
+                    // Calculate the max width for dbk title so other buttons are never pushed down when name is too long
+                    var childWidth = 0;
+                    $('.main-button-group .btn-group').each(function() {
+                        childWidth += $(this).outerWidth();
+                    });
+                    var maxWidth = $('.main-button-group').outerWidth() - childWidth;
+                    $('.dbk-title').css('max-width', (maxWidth - 25) + 'px');
+                }
+                // Listen for orientation changes
+                window.addEventListener("orientationchange", function() {
+                    calcMaxWidth();
+                }, false);
+                calcMaxWidth();
+            }());
+        });
     });
+};
+
+$(document).ready(function() {
+
+    dbkjs.documentReady();
+
 });
-*/

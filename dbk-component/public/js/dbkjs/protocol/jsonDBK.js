@@ -1,8 +1,8 @@
 /*!
  *  Copyright (c) 2014 Milo van der Linden (milo@dogodigi.net)
- * 
+ *
  *  This file is part of safetymapDBK
- *  
+ *
  *  safetymapDBK is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -29,6 +29,7 @@ dbkjs.protocol.jsonDBK = {
     panel_tabs: null,
     panel_algemeen: null,
     active_tab:'algemeen',
+    layersVisible: false,
     init: function() {
         var _obj = dbkjs.protocol.jsonDBK;
         _obj.layerPandgeometrie = new OpenLayers.Layer.Vector("Pandgeometrie",{
@@ -36,10 +37,8 @@ dbkjs.protocol.jsonDBK = {
         });
          dbkjs.map.events.register("moveend", null, function() {
             if (dbkjs.map.zoom < 12){
-                //@@
                 _obj.hideLayers();
             } else {
-                //@@
                 _obj.showLayers();
             }
         });
@@ -69,11 +68,11 @@ dbkjs.protocol.jsonDBK = {
             styleMap: dbkjs.config.styles.tekstobject
         });
         _obj.layers = [
-            _obj.layerPandgeometrie, 
+            _obj.layerPandgeometrie,
             _obj.layerBrandcompartiment,
             _obj.layerHulplijn2,
             _obj.layerHulplijn1,
-            _obj.layerHulplijn, 
+            _obj.layerHulplijn,
             _obj.layerToegangterrein,
             _obj.layerBrandweervoorziening,
             _obj.layerGevaarlijkestof,
@@ -89,73 +88,79 @@ dbkjs.protocol.jsonDBK = {
         ];
         dbkjs.map.addLayers(_obj.layers);
         dbkjs.selectControl.setLayer((dbkjs.selectControl.layers || dbkjs.selectControl.layer).concat(_obj.hoverlayers));
-        
         dbkjs.hoverControl.setLayer((dbkjs.hoverControl.layers || dbkjs.hoverControl.layer).concat(_obj.hoverlayers));
         dbkjs.hoverControl.activate();
-        
         dbkjs.selectControl.activate();
+
     },
     hideLayers: function(){
         var _obj = dbkjs.protocol.jsonDBK;
+        _obj.layersVisible = false;
         $.each(_obj.layers, function(lindex, lyr) {
             lyr.setVisibility(false);
         });
     },
     showLayers: function(){
         var _obj = dbkjs.protocol.jsonDBK;
+        _obj.layersVisible = true;
         $.each(_obj.layers, function(lindex, lyr) {
-            lyr.setVisibility(true);
+            //afhankelijkheid van module layertoggle kan niet worden afgedwongen.
+            if(dbkjs.modules.layertoggle){
+                if(dbkjs.modules.layertoggle.isLayerEnabled(lyr.name)) {
+                    lyr.setVisibility(true);
+                }
+            } else {
+                lyr.setVisibility(true);
+            }
+        });
+    },
+    resetLayers: function() {
+        var _obj = dbkjs.protocol.jsonDBK;
+        $.each(_obj.layers, function(lindex, lyr) {
+            var currentVisibility = _obj.layersVisible;
+            if(currentVisibility && !dbkjs.modules.layertoggle.isLayerEnabled(lyr.name)) {
+                currentVisibility = false;
+            }
+            lyr.setVisibility(currentVisibility);
         });
     },
     getfeatureinfo: function(e){
-        
-//@@        $('#vectorclickpanel_h').html('<span class="h4"><i class="icon-info-sign">&nbsp;' + e.feature.layer.name + '</span>');
-        
-        var dbkComp = dbkjs.viewerController.getComponentsByClassName("viewer.components.Dbk")[0];
-        dbkComp.detailsPanel.updateTitle('<span class="h4"><i class="icon-info-sign"></i> &nbsp;' + e.feature.layer.name + '</span>');
-//        html = '<div class="table-responsive">';
-        var divId = dbkComp.detailsPanel.divId;
-        var html;
-        if (divId) {
-            html = '<div id="' + divId + '" style:"width: 100%" class="table-responsive">';
-        }
-        else {
-            html = '<div style:"width: 100%" class="table-responsive">';
-        }
-        html += '<table class="table table-hover">';
-        for (var j in e.feature.attributes) {
-            //if ($.inArray(j, ['Omschrijving', 'GEVIcode', 'UNnr', 'Hoeveelheid', 'NaamStof']) > -1) {
-            if (!dbkjs.util.isJsonNull(e.feature.attributes[j])) {
-                html += '<tr><td><span>' + j + "</span>: </td><td>" + e.feature.attributes[j] + "</td></tr>";
+        dbkjs.gui.detailsPanelUpdateTitle(e.feature.layer.name);
+        html = '<div style:"width: 100%" class="table-responsive">';
+            html += '<table class="table table-hover">';
+            for (var j in e.feature.attributes) {
+                //if ($.inArray(j, ['Omschrijving', 'GEVIcode', 'UNnr', 'Hoeveelheid', 'NaamStof']) > -1) {
+                    if (!dbkjs.util.isJsonNull(e.feature.attributes[j])) {
+                        html += '<tr><td><span>' + j + "</span>: </td><td>" + e.feature.attributes[j] + "</td></tr>";
+                    }
+                //}
             }
-            //}
-        }
-        html += "</table>";
+            html += '</table>';
         html += '</div>';
-        //dbkjs.util.appendTab(dbkjs.wms_panel.attr("id"),'Brandcompartiment',html, true, 'br_comp_tab');
-        
-        dbkComp.detailsPanel.updateHtml(html);
-        dbkComp.detailsPanel.show();
-
-//@@        $('#vectorclickpanel_b').html(html);
-//@@        $('#vectorclickpanel').show();
-        
+        dbkjs.gui.detailsPanelUpdateHtml(html);
+        dbkjs.gui.detailsPanelShow();
     },
     process: function(feature) {
-        //@@
-        var dbkComp = dbkjs.viewerController.getComponentsByClassName("viewer.components.Dbk")[0];
-        var infoPanel = dbkComp.infoPanel;
-        
-        //@@$('#infopanel_f').html('');
-        infoPanel.updateFooterHtml('');
-        //infoPanel.hideFooterPanel();
+        dbkjs.gui.infoPanelUpdateFooterHtml('');
         if (feature && feature.attributes && feature.attributes.typeFeature) {
+            if(feature.data && feature.data.hasOwnProperty('formeleNaam') && feature.data.hasOwnProperty('informeleNaam')) {
+                $('.dbk-title')
+                    .text(feature.data.formeleNaam + ' ' + feature.data.informeleNaam)
+                    .css('visibility', 'visible')
+                    .on('click', function() {
+                        dbkjs.modules.feature.zoomToFeature(feature);
+                    });
+            }
             if (!dbkjs.options.feature || feature.id !== dbkjs.options.feature.id) {
                 if (!dbkjs.protocol.jsonDBK.processing) {
-                    //@@$('#infopanel').hide();
-                    infoPanel.hide();
+                    if(dbkjs.viewmode === 'fullscreen') {
+                        dbkjs.util.getModalPopup('infopanel').hide();
+                        dbkjs.util.getModalPopup('dbkinfopanel').hide();
+                    } else {
+                        dbkjs.gui.infoPanelHide();
+                    }
                     dbkjs.protocol.jsonDBK.processing = true;
-                    dbkjs.util.alert('<i class="icon-spinner icon-spin"></i>', i18n.t('dialogs.running'), 'alert-info');
+                    dbkjs.util.alert('<i class="fa fa-spinner fa-spin"></i>', i18n.t('dialogs.running'), 'alert-info');
                         if(feature.attributes.typeFeature === 'Object'){
                             dbkjs.protocol.jsonDBK.getObject(feature);
                         } else if (feature.attributes.typeFeature === 'Gebied') {
@@ -165,13 +170,14 @@ dbkjs.protocol.jsonDBK = {
             } else {
                 //Check if processing is finished
                 if (!dbkjs.protocol.jsonDBK.processing) {
-                    /*@@$('#infopanel_b').html(dbkjs.options.feature.div);
-                    $('#infopanel_f').html('');
-                    $('#infopanel').show();
-                    @@*/
-                    infoPanel.updateHtml(dbkjs.options.feature.div);
-                    infoPanel.updateFooterHtml('');
-                    infoPanel.show();
+
+                    if(dbkjs.viewmode === 'fullscreen') {
+                        $('#dbkinfopanel_b').html(dbkjs.options.feature.div);
+                    } else {
+                        dbkjs.gui.infoPanelUpdateHtml(dbkjs.options.feature.div);
+                        dbkjs.gui.infoPanelUpdateFooterHtml('');
+                        dbkjs.gui.infoPanelShow();
+                    }
                 }
             }
         }
@@ -183,16 +189,11 @@ dbkjs.protocol.jsonDBK = {
             "featuresadded": function() {
             },
             "featureunselected": function(e) {
-               //@@$('#vectorclickpanel').hide();
-               var dbkComp = dbkjs.viewerController.getComponentsByClassName("viewer.components.Dbk")[0];
-               dbkComp.detailsPanel.hide();
+               dbkjs.gui.detailsPanelHide();
             }
         });
     },
-    info: function(data) {
-        var dbkComp = dbkjs.viewerController.getComponentsByClassName("viewer.components.Dbk")[0];
-        var infoPanel = dbkComp.infoPanel;
-
+    info: function(data, noZoom) {
         var _obj = dbkjs.protocol.jsonDBK;
         var objecttype = "object";
         if (data.DBKObject || data.DBKGebied) {
@@ -206,42 +207,53 @@ dbkjs.protocol.jsonDBK = {
             _obj.panel_tabs = $('<ul class="nav nav-pills"></ul>');
             var div = $('<div class="tabbable"></div>');
             if (_obj.constructAlgemeen(dbkjs.options.feature, objecttype)) {
-                infoPanel.updateTitle('<span class="h4"><i class="icon-building"></i> ' + dbkjs.options.feature.formeleNaam) + '</span>';
-
+                dbkjs.gui.infoPanelUpdateTitle('<i class="fa fa-building"></i> ' + dbkjs.options.feature.formeleNaam);
                 _obj.constructContact(dbkjs.options.feature);
+                _obj.constructOmsdetail(dbkjs.options.feature);
                 _obj.constructBijzonderheid(dbkjs.options.feature);
                 _obj.constructVerblijf(dbkjs.options.feature);
                 _obj.constructMedia(dbkjs.options.feature);
                 _obj.constructFloors(dbkjs.options.feature);
                 _obj.constructBrandweervoorziening(dbkjs.options.feature);
-                _obj.constructGevaarlijkestof(dbkjs.options.feature); 
-
+                _obj.constructGevaarlijkestof(dbkjs.options.feature);
                 div.append(_obj.panel_group);
                 div.append(_obj.panel_tabs);
-                //@@$('#infopanel_b').html(div);
-                var s = dbkjs.util.outerHtml(div);
-                infoPanel.updateHtml(s);
-
+                if(dbkjs.viewmode === 'fullscreen') {
+                    $('#dbkinfopanel_b').html(div);
+                } else {
+                dbkjs.gui.infoPanelUpdateHtml('');
+                dbkjs.gui.infoPanelAddItems(div);
+                }
                 $('#systeem_meldingen').hide();
-            };
-            
+            }
+
             // Construct additional geometries.
             _obj.constructPandGeometrie(dbkjs.options.feature);
-            _obj.constructGeometrie(dbkjs.options.feature); 
+            _obj.constructGeometrie(dbkjs.options.feature);
             _obj.constructHulplijn(dbkjs.options.feature);
-            _obj.constructToegangterrein(dbkjs.options.feature); 
-            _obj.constructBrandcompartiment(dbkjs.options.feature); 
-            _obj.constructTekstobject(dbkjs.options.feature); 
-            
-            //@@$('#infopanel').show();
-            infoPanel.show();
+            _obj.constructToegangterrein(dbkjs.options.feature);
+            _obj.constructBrandcompartiment(dbkjs.options.feature);
+            _obj.constructTekstobject(dbkjs.options.feature);
+
+
+            if(!noZoom){
+                if(dbkjs.options.zoomToPandgeometrie) {
+                    dbkjs.modules.feature.zoomToPandgeometrie();
+                }
+            }
+
+            if(dbkjs.viewmode === 'fullscreen') {
+                //dbkjs.util.getModalPopup('infopanel').show();
+            } else {
+                dbkjs.gui.infoPanelShow();
+            }
 
             _obj.addMouseoverHandler("#bwvlist", _obj.layerBrandweervoorziening);
             _obj.addMouseoutHandler("#bwvlist", _obj.layerBrandweervoorziening);
             _obj.addMouseoverHandler("#gvslist", _obj.layerGevaarlijkestof);
             _obj.addMouseoutHandler("#gvslist", _obj.layerGevaarlijkestof);
             _obj.addRowClickHandler("#floorslist", "verdiepingen");
-                
+
             _obj.processing = false;
         } else {
             dbkjs.options.feature = null;
@@ -259,19 +271,20 @@ dbkjs.protocol.jsonDBK = {
     constructAlgemeen: function(DBKObject, dbktype) {
         var _obj = dbkjs.protocol.jsonDBK;
         /** Algemene dbk info **/
-        //@@dbkjs.util.changeDialogTitle('<i class="icon-building"></i> ' + DBKObject.formeleNaam);
-        var controledatum = dbkjs.util.isJsonNull(DBKObject.controleDatum) ? '<span class="label label-warning">'+ 
+        var controledatum = dbkjs.util.isJsonNull(DBKObject.controleDatum) ? '<span class="label label-warning">'+
                 i18n.t('dbk.unknown')+ '</span>' : DBKObject.controleDatum;
-        var status = dbkjs.util.isJsonNull(DBKObject.status) ? '<span class="label label-warning">'+ 
-                i18n.t('dbk.unknown')+ '</span>' : DBKObject.status;
-        var bhvaanwezig = '<span class="label label-warning">'+ 
+        if (dbkjs.showStatus) {
+            var status = dbkjs.util.isJsonNull(DBKObject.status) ? '<span class="label label-warning">'+
+                      i18n.t('dbk.unknown')+ '</span>' : DBKObject.status;
+        };
+        var bhvaanwezig = '<span class="label label-warning">'+
                 i18n.t('dbk.noEmergencyResponse') +'</span>';
         if(!dbkjs.util.isJsonNull(DBKObject.BHVaanwezig)) {
            if(DBKObject.BHVaanwezig === true){
-              bhvaanwezig = '<span class="label label-success">'+ 
-                i18n.t('dbk.emergencyResponsePresent') + '</span>'; 
+              bhvaanwezig = '<span class="label label-success">'+
+                i18n.t('dbk.emergencyResponsePresent') + '</span>';
            } else {
-           bhvaanwezig = '<span class="label label-warning">'+ 
+           bhvaanwezig = '<span class="label label-warning">'+
                 i18n.t('dbk.noEmergencyResponse') +'</span>';
            }
         }
@@ -281,12 +294,11 @@ dbkjs.protocol.jsonDBK = {
         var gebouwconstructie = dbkjs.util.isJsonNull(DBKObject.gebouwconstructie) ? '' : DBKObject.gebouwconstructie;
         var inzetprocedure = dbkjs.util.isJsonNull(DBKObject.inzetprocedure) ? '' : DBKObject.inzetprocedure;
         var gebruikstype = dbkjs.util.isJsonNull(DBKObject.gebruikstype) ? '' : DBKObject.gebruikstype;
-        
+
         // @todo: Losse regel voor laagste en hoogste
         // Hoogste altijd positief (zegt Dennis, ik sla hem kort als het niet zo is)
         // Laagste; minnetje er voor, bij 0 niet tonen.
         // Verdiepingen berekenen. Bij hoogste; 1 = BG/0, 2 = 1 etc.
-        var bouwlaag;
         var laagstebouwlaag;
         var hoogstebouwlaag;
         if(!dbkjs.util.isJsonNull(DBKObject.bouwlaag)){
@@ -305,8 +317,6 @@ dbkjs.protocol.jsonDBK = {
             hoogstebouwlaag = i18n.t('dbk.unknown');
         };
         dbkjs.options.feature.bouwlaag = bouwlaag;
-        dbkjs.options.feature.laagstebouwlaag = laagstebouwlaag;
-        dbkjs.options.feature.hoogstebouwlaag = hoogstebouwlaag;
         var active_tab = _obj.active_tab === 'algemeen' ?  'active' : '';
         dbkjs.options.dbk = DBKObject.identificatie;
         dbkjs.disableloadlayer = true;
@@ -319,7 +329,9 @@ dbkjs.protocol.jsonDBK = {
         if(dbktype === "object"){
             algemeen_table.append(_obj.constructRow(informelenaam, i18n.t('dbk.alternativeName')));
             algemeen_table.append(_obj.constructRow(controledatum, i18n.t('dbk.dateChecked')));
-            algemeen_table.append(_obj.constructRow(status, i18n.t('dbk.status')));
+            if (dbkjs.showStatus) {
+                algemeen_table.append(_obj.constructRow(status, i18n.t('dbk.status')));
+            };
             algemeen_table.append(_obj.constructRow(bhvaanwezig, i18n.t('dbk.emergencyResponse')));
             algemeen_table.append(_obj.constructRow(inzetprocedure, i18n.t('dbk.procedure')));
             algemeen_table.append(_obj.constructRow(gebouwconstructie, 'Gebouwconstructie'));
@@ -345,7 +357,7 @@ dbkjs.protocol.jsonDBK = {
                 var postcode = dbkjs.util.isJsonNull(waarde.postcode) ? '' : ' ' + waarde.postcode;
                 var woonplaatsnaam = dbkjs.util.isJsonNull(waarde.woonplaatsNaam) ? '' : ' ' + waarde.woonplaatsNaam;
                 var gemeentenaam = dbkjs.util.isJsonNull(waarde.gemeenteNaam) ? '' : ' ' + waarde.gemeenteNaam;
-                var adresText = openbareruimtenaam + 
+                var adresText = openbareruimtenaam +
                     huisnummer + huisnummertoevoeging + huisletter + '<br/>' +
                     woonplaatsnaam + postcode + gemeentenaam;
                 adres_div.append(adresText);
@@ -355,7 +367,7 @@ dbkjs.protocol.jsonDBK = {
                     if (!dbkjs.util.isJsonNull(waarde.bagId)){
                         var bag_div = $('<td></td>');
                         var bag_p = $('<p></p>');
-                        var bag_button = $('<button type="button" class="btn btn-primary">' + i18n.t('dbk.tarryobjectid') + ' ' + waarde.bagId + '</button>');
+                        var bag_button = $('<button type="button" class="btn btn-primary">' + i18n.t('dbk.tarryobjectid') + ' ' + dbkjs.util.pad(waarde.bagId,16) + '</button>');
                         bag_p.append(bag_button);
                         bag_button.click(function() {
                             if($.inArray('bag', dbkjs.options.organisation.modules) > -1) {
@@ -366,7 +378,7 @@ dbkjs.protocol.jsonDBK = {
                                             '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
                                             '<strong>' + i18n.t('app.fail') +
                                             '</strong>' +
-                                             waarde.bagId + ' ' + i18n.t('dialogs.infoNotFound') +
+                                             dbkjs.util.pad(waarde.bagId,16) + ' ' + i18n.t('dialogs.infoNotFound') +
                                             '</div>'
                                         );
                                     } else {
@@ -386,7 +398,7 @@ dbkjs.protocol.jsonDBK = {
                     }
                 } else {
                     adres_row.append('<td></td>');
-                } 
+                }
             });
         }
         algemeen_table_div.append(algemeen_table);
@@ -400,61 +412,43 @@ dbkjs.protocol.jsonDBK = {
             _obj.panel_tabs.html();
             return true;
     },
-    //@@ LETOP: ARGUMENT IS VERANDERD - feature ipv. brandweervoorziening.
-    //@@ DIT IVM feature.identificatie.
-    //@@ constructBrandweervoorziening: function(brandweervoorziening){
     constructBrandweervoorziening: function(feature){
         var _obj = dbkjs.protocol.jsonDBK;
         if(feature.brandweervoorziening){
-            //@@
             var id = 'collapse_brandweervoorziening_' + feature.identificatie;
-            //@@var id = 'collapse_brandweervoorziening_' + dbkjs.options.feature.identificatie;
             var bv_div = $('<div class="tab-pane" id="' + id + '"></div>');
             var bv_table_div = $('<div class="table-responsive"></div>');
-//@@            var bv_table = $('<table class="table table-hover"></table>');
             var bv_table = $('<table id="bwvlist" class="table table-hover"></table>');
-            bv_table.append('<tr><th>' + 
-                    i18n.t('prevention.type') + '</th><th>' + 
-                    i18n.t('prevention.name') + '</th><th>' + 
+            bv_table.append('<tr><th>' +
+                    i18n.t('prevention.type') + '</th><th>' +
+                    i18n.t('prevention.name') + '</th><th>' +
                     i18n.t('prevention.comment') + '</th></tr>');
-            
+
             var features = [];
-            //@@ $.each(brandweervoorziening, function(idx, myGeometry){
             $.each(feature.brandweervoorziening, function(idx, myGeometry){
                 var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
-                myFeature.attributes = { 
-                    "type" : myGeometry.typeVoorziening, 
+                myFeature.attributes = {
+                    "type" : myGeometry.typeVoorziening,
                     "name": myGeometry.naamVoorziening,
                     "information": myGeometry.aanvullendeInformatie,
                     "rotation": myGeometry.hoek,
+                    "category": myGeometry.categorie,
                     "namespace": myGeometry.namespace,
                     "radius": myGeometry.radius,
-                    "fid": "brandweervoorziening_ft_" + idx 
+                    "fid": "brandweervoorziening_ft_" + idx
                 };
-                //@@ var myrow = $('<tr>' +
-                //@@        '<td><img class="thumb" src="' + window.location.protocol + '//' + 
-                //@@            window.location.hostname + '/' + window.location.pathname + "/images/" + myFeature.attributes.namespace + '/' + 
 
-//@@                var myrow = $('<tr>' +
                 var myrow = $('<tr id="' +idx +'">' +
-                        '<td><img class="thumb" src="' + dbkjs.imageBasePath + 
-                            "/images/" + myFeature.attributes.namespace + '/' + 
-                            myFeature.attributes.type + '.png" alt="'+ 
-                            myFeature.attributes.type +'" title="'+ 
+                        '<td><img class="thumb" src="' + dbkjs.basePath + "images/" + myFeature.attributes.namespace + '/' +
+                            myFeature.attributes.type + '.png" alt="'+
+                            myFeature.attributes.type +'" title="'+
                             myFeature.attributes.type+'"></td>' +
                         '<td>' + myFeature.attributes.name + '</td>' +
                         '<td>' + myFeature.attributes.information + '</td>'
                         + '</tr>');
-                //@@ Toekennen van callback verplaatst naar info().
-/*@@                myrow.mouseover(function(){
-                    dbkjs.selectControl.select(myFeature);
-                });
-                myrow.mouseout(function(){
-                    dbkjs.selectControl.unselect(myFeature);
-                }); */
                 bv_table.append(myrow);
                 features.push(myFeature);
-                
+
             });
             _obj.layerBrandweervoorziening.addFeatures(features);
             _obj.activateSelect(_obj.layerBrandweervoorziening);
@@ -462,65 +456,48 @@ dbkjs.protocol.jsonDBK = {
             bv_div.append(bv_table_div);
             _obj.panel_group.append(bv_div);
             _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">'+ i18n.t('dbk.prevention')+ '</a></li>');
-            
+
         }
     },
-    //@@ LETOP: ARGUMENT IS VERANDERD - feature ipv. gevaarlijkestof.
-    //@@ DIT IVM feature.identificatie.
-    //@@ constructGevaarlijkestof: function(gevaarlijkestof){
     constructGevaarlijkestof: function(feature){
         var _obj = dbkjs.protocol.jsonDBK;
-        //@@if(gevaarlijkestof){
         if(feature.gevaarlijkestof){
-            //@@var id = 'collapse_gevaarlijkestof_' + dbkjs.options.feature.identificatie;
             var id = 'collapse_gevaarlijkestof_' + feature.identificatie;
             var bv_div = $('<div class="tab-pane" id="' + id + '"></div>');
             var bv_table_div = $('<div class="table-responsive"></div>');
-//@@            var bv_table = $('<table class="table table-hover"></table>');
             var bv_table = $('<table id="gvslist" class="table table-hover"></table>');
-            bv_table.append('<tr><th>' + 
-                i18n.t('chemicals.type') + '</th><th>' + 
-                i18n.t('chemicals.indication') + '</th><th>' + 
-                i18n.t('chemicals.name') + '</th><th>' + 
-                i18n.t('chemicals.quantity') + '</th><th>' + 
+            bv_table.append('<tr><th>' +
+                i18n.t('chemicals.type') + '</th><th>' +
+                i18n.t('chemicals.indication') + '</th><th>' +
+                i18n.t('chemicals.name') + '</th><th>' +
+                i18n.t('chemicals.quantity') + '</th><th>' +
                 i18n.t('chemicals.information') + '</th></tr>');
             var features = [];
-             //@@ $.each(gevaarlijkestof, function(idx, myGeometry){
              $.each(feature.gevaarlijkestof, function(idx, myGeometry){
                 var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
-                myFeature.attributes = { 
-                    "type" : myGeometry.symboolCode, 
+                myFeature.attributes = {
+                    "type" : myGeometry.symboolCode,
                     "name": myGeometry.naamStof,
-                    "quantity": myGeometry.hoeveelheid,
+                    "namespace": myGeometry.namespace,
+                    "quantity": myGeometry.hoeveelheid ? myGeometry.hoeveelheid.replace(/([0-9]+)([lL])/,"$1\u2113") : myGeometry.hoeveelheid,
                     "indication": myGeometry.gevaarsindicatienummer,
                     "information": myGeometry.aanvullendeInformatie,
                     "unnumber": myGeometry.UNnummer,
                     "fid": "gevaarlijkestof_ft_" + idx
                 };
-                //@@ var myrow = $('<tr>' +
-                //@@        '<td><img class="thumb" src="' + window.location.protocol + '//' + 
-                //@@            window.location.hostname + '/' + window.location.pathname + '/images/eughs/' + 
-//@@                var myrow = $('<tr>' +
                 var myrow = $('<tr id="' +idx +'">' +
-                        '<td><img class="thumb" src="' + dbkjs.imageBasePath + 
-                            '/images/eughs/' + 
-                            myFeature.attributes.type + '.png" alt="'+ 
-                            myFeature.attributes.type +'" title="'+ 
+                        '<td><img class="thumb" src="' + dbkjs.basePath + 'images/' + myFeature.attributes.namespace + '/' +
+                            myFeature.attributes.type + '.png" alt="'+
+                            myFeature.attributes.type +'" title="'+
                             myFeature.attributes.type+'"></td>' +
-                        '<td>' + '<div class="gevicode">' + myFeature.attributes.indication + 
-                            '</div><div class="unnummer">' + 
+                        '<td>' + '<div class="gevicode">' + myFeature.attributes.indication +
+                            '</div><div class="unnummer">' +
                             myFeature.attributes.unnumber + '</div>' + '</td>' +
                         '<td>' + myFeature.attributes.name + '</td>' +
                         '<td>' + myFeature.attributes.quantity + '</td>' +
-                        
+
                         '<td>' + myFeature.attributes.information + '</td>' +
                         '</tr>');
-/*@@                myrow.mouseover(function(){
-                    dbkjs.selectControl.select(myFeature);
-                });
-                myrow.mouseout(function(){
-                    dbkjs.selectControl.unselect(myFeature);
-                }); */
                 bv_table.append(myrow);
                 features.push(myFeature);
             });
@@ -532,37 +509,28 @@ dbkjs.protocol.jsonDBK = {
             _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">'+ i18n.t('dbk.chemicals')+ '</a></li>');
         }
     },
-    //@@constructFloors: function(verdiepingen) {
     constructFloors: function(feature) {
         var _obj = dbkjs.protocol.jsonDBK;
-//@@        if (verdiepingen && verdiepingen.length > 1) {
         if (feature.verdiepingen && feature.verdiepingen.length > 1) {
-//@@            var id = 'collapse_floors_' + dbkjs.options.feature.identificatie;
             var id = 'collapse_floors_' + feature.identificatie;
             var active_tab = _obj.active_tab === 'verdiepingen' ?  'active' : '';
             var verdiepingen_div = $('<div class="tab-pane ' + active_tab + '" id="' + id + '"></div>');
             var verdiepingen_table_div = $('<div class="table-responsive"></div>');
-//@@            var verdiepingen_table = $('<table class="table table-hover"></table>');
             var verdiepingen_table = $('<table id ="floorslist" class="table table-hover"></table>');
-            verdiepingen_table.append('<tr><th>' + 
+            verdiepingen_table.append('<tr><th>' +
                     i18n.t('dbk.floor') + '</th></tr>');
-//@@            $.each(verdiepingen, function(verdiepingen_index, waarde) {
             $.each(feature.verdiepingen, function(verdiepingen_index, waarde) {
                 var myrow;
                 var sterretje = '';
                 if (waarde.type === 'hoofdobject'){
-                    sterretje = ' (' + i18n.t('dbk.mainobject') + ')';   
+                    sterretje = ' (' + i18n.t('dbk.mainobject') + ')';
                 }
-//@@                if(waarde.identificatie !== dbkjs.options.feature.identificatie){
                 if(waarde.identificatie !== feature.identificatie){
-                        
+
                         //Show the hyperlink!
                         myrow = $('<tr id="' + waarde.identificatie + '">' +
                             '<td>' + waarde.bouwlaag + sterretje +'</td>' +
                             '</tr>');
-//@@                        myrow.click(function(){
-//@@                            _obj.getObject(waarde.identificatie, 'verdiepingen');
-//@@                        });
                 } else {
                     //No hyperlink, current object
                     myrow = $('<tr>' +
@@ -582,19 +550,17 @@ dbkjs.protocol.jsonDBK = {
             }
         }
     },
-//@@    constructContact: function(contact) {
     constructContact: function(feature) {
         var _obj = dbkjs.protocol.jsonDBK;
-//@@        var id = 'collapse_contact_' + dbkjs.options.feature.identificatie;
         var id = 'collapse_contact_' + feature.identificatie;
         if (feature.contact) {
             var active_tab = _obj.active_tab === 'gevaarlijkestof' ?  'active' : '';
             var contact_div = $('<div class="tab-pane" ' + active_tab + ' id="' + id + '"></div>');
             var contact_table_div = $('<div class="table-responsive"></div>');
             var contact_table = $('<table class="table table-hover"></table>');
-            contact_table.append('<tr><th>' + 
-                    i18n.t('contact.role') + '</th><th>' + 
-                    i18n.t('contact.name') + '</th><th>' + 
+            contact_table.append('<tr><th>' +
+                    i18n.t('contact.role') + '</th><th>' +
+                    i18n.t('contact.name') + '</th><th>' +
                     i18n.t('contact.telephone') + '</th></tr>');
             $.each(feature.contact, function(contact_index, waarde) {
                 contact_table.append(
@@ -611,10 +577,51 @@ dbkjs.protocol.jsonDBK = {
             _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">'+ i18n.t('dbk.contact')+ '</a></li>');
         }
     },
-//@@    constructBijzonderheid: function(bijzonderheid) {
+    constructOmsdetail: function(feature) {
+        //console.log(omsdetail);
+        var _obj = dbkjs.protocol.jsonDBK;
+        var id = 'collapse_omsdetail_' + feature.identificatie;
+        if (feature.oms_details) {
+            var active_tab = _obj.active_tab === 'gevaarlijkestof' ?  'active' : '';
+            var omsdetail_div = $('<div class="tab-pane" ' + active_tab + ' id="' + id + '"></div>');
+            var omsdetail_table_div = $('<div class="table-responsive"></div>');
+            var omsdetail_table = $('<table class="table table-hover"></table>');
+            omsdetail_table.append('<tr><th>' +
+                    i18n.t('omsdetail.name') + '</th><th>' +
+                    i18n.t('omsdetail.mobile') + '</th><th>' +
+                    i18n.t('omsdetail.telephone') + '</th></tr>');
+            $.each(omsdetail, function(omsdetail_index, waarde) {
+                omsdetail_table.append(
+                        '<tr>' +
+                        '<td>Algemeen</td>' +
+                        '<td> </td>' +
+                        '<td>' + waarde.tel_alg + '</td>' +
+                        '</tr>' +
+                        '<tr>' +
+                        '<td>' + waarde.sh_1_naam + '</td>' +
+                        '<td>' + waarde.sh_1_tel_vast + '</td>' +
+                        '<td>' + waarde.sh_1_tel_mob + '</td>' +
+                        '</tr>' +
+                        '<tr>' +
+                        '<td>' + waarde.sh_2_naam + '</td>' +
+                        '<td>' + waarde.sh_2_tel_vast + '</td>' +
+                        '<td>' + waarde.sh_2_tel_mob + '</td>' +
+                        '</tr>' +
+                        '<tr>' +
+                        '<td>' + waarde.sh_3_naam + '</td>' +
+                        '<td>' + waarde.sh_3_tel_vast + '</td>' +
+                        '<td>' + waarde.sh_3_tel_mob + '</td>' +
+                        '</tr>'
+                        );
+            });
+            omsdetail_table_div.append(omsdetail_table);
+            omsdetail_div.append(omsdetail_table_div);
+            _obj.panel_group.append(omsdetail_div);
+            _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">'+ i18n.t('dbk.omsdetail')+ '</a></li>');
+        }
+    },
     constructBijzonderheid: function(feature) {
         var _obj = dbkjs.protocol.jsonDBK;
-//@@        var id = 'collapse_bijzonderheid_' + dbkjs.options.feature.identificatie;
         var id = 'collapse_bijzonderheid_' + feature.identificatie;
         if (feature.bijzonderheid) {
             var bijzonderheid_div = $('<div class="tab-pane" id="' + id + '"></div>');
@@ -649,11 +656,8 @@ dbkjs.protocol.jsonDBK = {
             _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">'+ i18n.t('dbk.particularities')+ '</a></li>');
         }
     },
-//@@    constructMedia: function(foto) {
     constructMedia: function(feature) {
         var _obj = dbkjs.protocol.jsonDBK;
-//@@        var id = 'collapse_foto_' + dbkjs.options.feature.identificatie;
-//@@        var car_id = 'carousel_foto_' + dbkjs.options.feature.identificatie;
         var id = 'collapse_foto_' + feature.identificatie;
         var car_id = 'carousel_foto_' + feature.identificatie;
         if (feature.foto) {
@@ -670,28 +674,27 @@ dbkjs.protocol.jsonDBK = {
                     active = '';
                 }
                 var timestamp = new Date().getTime();
-//@@                var realpath = window.location.protocol + '//' + window.location.hostname + '/' + window.location.pathname +
-                var realpath = dbkjs.mediaPath + '/' + waarde.URL;
+                var realpath = dbkjs.mediaPath + waarde.URL;
                 if (waarde.filetype === "document" || waarde.filetype === "pdf" || waarde.filetype === "doc" || waarde.filetype === "docx") {
-                    image_carousel_inner.append('<div class="item ' + active + 
-                            '"><img src="' + dbkjs.imageBasePath + '/images/missing.gif""><div class="carousel-caption"><a href="' + realpath + 
-                            '" target="_blank"><h1><i class="icon-download icon-large"></h1></i></a><h3>' + 
-                            waarde.naam + 
+                    image_carousel_inner.append('<div class="item ' + active +
+                            '"><img src="' + dbkjs.basePath + 'images/missing.gif""><div class="carousel-caption"><a href="' + realpath +
+                            '" target="_blank"><h1><i class="fa fa-download fa-3"></h1></i></a><h3>' +
+                            waarde.naam +
                             '</h3><a href="' + realpath + '" target="_blank"><h2>' + i18n.t('app.download')  + '</h2></a></div></div>');
                 } else if(waarde.filetype === "weblink") {
-                    image_carousel_inner.append('<div class="item ' + active + 
-                            '"><img src="' + dbkjs.imageBasePath + '/images/missing.gif""><div class="carousel-caption"><a href="' + waarde.URL + 
-                            '" target="_blank"><h1><i class="icon-external-link icon-large"></i></h1><h2>' + 
+                    image_carousel_inner.append('<div class="item ' + active +
+                            '"><img src="' + dbkjs.basePath + 'images/missing.gif""><div class="carousel-caption"><a href="' + waarde.URL +
+                            '" target="_blank"><h1><i class="fa fa-external-link fa-3"></i></h1><h2>' +
                             i18n.t('app.hyperlink')  + '</h2></a></div></div>'
                         );
                 } else if(waarde.filetype === 'afbeelding') {
-                    image_carousel_inner.append('<div class="item ' + active + '"><img src="' + realpath + 
-                            '" onerror="dbkjs.util.mediaError(this);"><div class="carousel-caption"><h3>' + 
+                    image_carousel_inner.append('<div class="item ' + active + '"><img src="' + realpath +
+                            '" onerror="dbkjs.util.mediaError(this);"><div class="carousel-caption"><h3>' +
                             waarde.naam + '</h3></div></div>');
                     feature.images.push(realpath);
                 }
                 if (feature.foto.length > 1) {
-                    image_carousel_nav.append('<li data-target="#' + car_id + '" data-slide-to="' + 
+                    image_carousel_nav.append('<li data-target="#' + car_id + '" data-slide-to="' +
                             foto_index + '" class="' + active + '"></li>');
                 }
             });
@@ -699,29 +702,27 @@ dbkjs.protocol.jsonDBK = {
             image_carousel.append(image_carousel_inner);
             if (feature.foto.length > 1) {
                 image_carousel.append('<a class="left carousel-control" href="#' + car_id + '" data-slide="prev">' +
-                        '<span class="icon-prev"></span></a>');
+                        '<span class="fa fa-arrow-left"></span></a>');
                 image_carousel.append('<a class="right carousel-control" href="#' + car_id + '" data-slide="next">' +
-                        '<span class="icon-next"></span></a>');
+                        '<span class="fa fa-arrow-right"></span></a>');
             }
             foto_div.append(image_carousel);
             _obj.panel_group.append(foto_div);
             _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">'+ i18n.t('dbk.media')+ '</a></li>');
         }
     },
-//@@    constructVerblijf: function(verblijf) {
     constructVerblijf: function(feature) {
         var _obj = dbkjs.protocol.jsonDBK;
-//@@        var id = 'collapse_verblijf_' + dbkjs.options.feature.identificatie;
         var id = 'collapse_verblijf_' + feature.identificatie;
         if (feature.verblijf) {
             var verblijf_div = $('<div class="tab-pane" id="' + id + '"></div>');
             var verblijf_table_div = $('<div class="table-responsive"></div>');
             var verblijf_table = $('<table class="table table-hover"></table>');
-            verblijf_table.append('<tr><th>' + i18n.t('tarry.from')+ '</th><th>' + 
-                    i18n.t('tarry.to')+ '</th><th>' + 
-                    i18n.t('tarry.ammount')+ '</th><th>' + 
-                    i18n.t('tarry.notSelfReliant')+ '</th><th>' + 
-                    i18n.t('tarry.group')+ '</th><th>' + 
+            verblijf_table.append('<tr><th>' + i18n.t('tarry.from')+ '</th><th>' +
+                    i18n.t('tarry.to')+ '</th><th>' +
+                    i18n.t('tarry.ammount')+ '</th><th>' +
+                    i18n.t('tarry.notSelfReliant')+ '</th><th>' +
+                    i18n.t('tarry.group')+ '</th><th>' +
                     i18n.t('tarry.days')+ '</th></tr>');
             $.each(feature.verblijf, function(verblijf_index, waarde) {
                 var dagen = '';
@@ -747,7 +748,6 @@ dbkjs.protocol.jsonDBK = {
             _obj.panel_tabs.append('<li><a data-toggle="tab" href="#' + id + '">'+ i18n.t('dbk.tarry')+ '</a></li>');
         }
     },
-    //@@
     constructPandGeometrie: function(feature) {
         var _obj = dbkjs.protocol.jsonDBK;
         if (feature.pandgeometrie){
@@ -761,7 +761,6 @@ dbkjs.protocol.jsonDBK = {
             _obj.activateSelect(_obj.layerPandgeometrie);
         }
     },
-    //@@
     constructGeometrie: function(feature) {
         var _obj = dbkjs.protocol.jsonDBK;
         if (feature.geometry){
@@ -774,7 +773,6 @@ dbkjs.protocol.jsonDBK = {
             _obj.activateSelect(_obj.layerPandgeometrie);
         }
     },
-    //@@
     constructHulplijn: function(feature) {
         var _obj = dbkjs.protocol.jsonDBK;
         if (feature.hulplijn){
@@ -784,7 +782,7 @@ dbkjs.protocol.jsonDBK = {
             $.each(feature.hulplijn, function(idx, myGeometry){
                 var myBearing = 0;
                 var myline = new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry");
-                var myFeature = new OpenLayers.Feature.Vector(myline); 
+                var myFeature = new OpenLayers.Feature.Vector(myline);
                 if (myGeometry.typeHulplijn === "Arrow"){
                     var myVertices = myline.getVertices();
                     var myEndpoint = myVertices[myVertices.length -1];
@@ -804,6 +802,9 @@ dbkjs.protocol.jsonDBK = {
                 if(myGeometry.typeHulplijn === "Fence" ){
                     features1.push(myFeature.clone());
                 }
+                if(myGeometry.typeHulplijn === "Fence_O" ){
+                    features1.push(myFeature.clone());
+                }
                 if(myGeometry.typeHulplijn === "Gate" ){
                     features1.push(myFeature.clone());
                     features2.push(myFeature.clone());
@@ -820,7 +821,6 @@ dbkjs.protocol.jsonDBK = {
             _obj.activateSelect(_obj.layerHulplijn);
         }
     },
-    //@@
     constructToegangterrein: function(feature) {
         var _obj = dbkjs.protocol.jsonDBK;
         if(feature.toegangterrein){
@@ -828,7 +828,7 @@ dbkjs.protocol.jsonDBK = {
             $.each(feature.toegangterrein, function(idx, myGeometry){
                 var myBearing = 0;
                 var myline = new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry");
-                var myFeature = new OpenLayers.Feature.Vector(myline); 
+                var myFeature = new OpenLayers.Feature.Vector(myline);
                 var myVertices = myline.getVertices();
                 var myEndpoint = myVertices[myVertices.length -1];
                     //revert bearing. Don't knwo why, but it works ;-)
@@ -842,7 +842,6 @@ dbkjs.protocol.jsonDBK = {
             _obj.activateSelect(_obj.layerToegangterrein);
         }
     },
-    //@@
     constructBrandcompartiment: function(feature) {
         var _obj = dbkjs.protocol.jsonDBK;
         if(feature.brandcompartiment){
@@ -864,15 +863,14 @@ dbkjs.protocol.jsonDBK = {
                    } else {
                     var myFeature = new OpenLayers.Feature.Vector(myline);
                     myFeature.attributes = { "type" : myGeometry.typeScheiding};
-                    features.push(myFeature); 
+                    features.push(myFeature);
                 }
 
             });
             _obj.layerBrandcompartiment.addFeatures(features);
-            _obj.activateSelect(_obj.layerBrandcompartiment);           
+            _obj.activateSelect(_obj.layerBrandcompartiment);
         }
     },
-    //@@
     constructTekstobject: function(feature) {
         var _obj = dbkjs.protocol.jsonDBK;
         if(feature.tekstobject){
@@ -880,7 +878,7 @@ dbkjs.protocol.jsonDBK = {
             $.each(feature.tekstobject, function(idx, myGeometry){
                 var myFeature = new OpenLayers.Feature.Vector(new OpenLayers.Format.GeoJSON().read(myGeometry.geometry, "Geometry"));
                 //@todo: De omschrijving moet er nog bij, ook in de database!
-                myFeature.attributes = { 
+                myFeature.attributes = {
                     "title" : myGeometry.tekst,
                     "rotation" : myGeometry.hoek,
                     "scale": myGeometry.schaal + 2
@@ -890,32 +888,83 @@ dbkjs.protocol.jsonDBK = {
             _obj.layerTekstobject.addFeatures(features);
             _obj.activateSelect(_obj.layerTekstobject);
         }
-    },   
-    //@@
+    },
+    getObject: function(feature, activetab, noZoom) {
+        var _obj = dbkjs.protocol.jsonDBK;
+        if(activetab){
+         _obj.active_tab = activetab;
+        }
+        //clear all layers first!
+        $.each(_obj.layers, function(idx, lyr){
+           lyr.destroyFeatures();
+        });
+        var params = {
+            srid: dbkjs.options.projection.srid,
+            timestamp: new Date().getTime()
+        };
+        var fid;
+        if(feature.attributes){
+            fid = feature.attributes.identificatie;
+        } else {
+            //the function is not recieving a feature, but a string
+            fid = feature;
+        }
+        $.getJSON(dbkjs.dataPath + 'object/' + fid + '.json', params).done(function(data) {
+                dbkjs.protocol.jsonDBK.info(data, noZoom);
+            }).fail(function( jqxhr, textStatus, error ) {
+                dbkjs.options.feature = null;
+                dbkjs.util.alert(i18n.t('app.error'), i18n.t('dialogs.infoNotFound'), 'alert-danger');
+            });
+    },
+    getGebied: function(feature, activetab) {
+        var _obj = dbkjs.protocol.jsonDBK;
+        if(activetab){
+            _obj.active_tab = activetab;
+        }
+        //clear all layers first!
+        $.each(_obj.layers, function(idx, lyr){
+           lyr.destroyFeatures();
+        });
+        var params = {
+            srid: dbkjs.options.projection.srid,
+            timestamp: new Date().getTime()
+        };
+        var fid;
+        if(feature.attributes){
+            fid = feature.attributes.identificatie;
+        } else {
+            //the function is not recieving a feature, but a string
+            fid = feature;
+        }
+        $.getJSON(dbkjs.dataPath + 'gebied/' + fid + '.json', params).done(function(data) {
+            dbkjs.protocol.jsonDBK.info(data);
+        }).fail(function( jqxhr, textStatus, error ) {
+            dbkjs.options.feature = null;
+            dbkjs.util.alert(i18n.t('app.error'), i18n.t('dialogs.infoNotFound'), 'alert-danger');
+        });
+    },
     addMouseoverHandler: function(tableid, vLayer) {
         $(tableid).on("mouseover", "tr", function() {
             //event.preventDefault();
             var idx = $ (this).attr("id");
             var feature = vLayer.features[idx];
             if (feature) {
-                dbkjs.selectControl.select(feature);                        
+                dbkjs.selectControl.select(feature);
             }
             return false;
         });
     },
-    //@@
     addMouseoutHandler: function(tableid, vLayer) {
             $(tableid).on("mouseout", "tr", function() {
                 //event.preventDefault();
                 var idx = $ (this).attr("id");
                 var feature = vLayer.features[idx];
                 if (feature) {
-                    dbkjs.selectControl.unselect(feature);                        
+                    dbkjs.selectControl.unselect(feature);
                 }
                 return false;
             });
     },
-    //@@
     addRowClickHandler: function(tableid, detailtype) {
             $(tableid).on("click", "tr", function() {
                 var _obj = dbkjs.protocol.jsonDBK;
@@ -923,68 +972,12 @@ dbkjs.protocol.jsonDBK = {
                 if (identificatie) {
                     _obj.getObject(identificatie, detailtype);
                 }
+                if(dbkjs.viewmode === 'fullscreen') {
+                    dbkjs.util.getModalPopup('dbkinfopanel').hide();
+                }
                 return false;
             });
-        
-    },
-    /*
-     * Feature is feature or fid.
-     */
-    getObject: function(feature, activetab) {
-        var _obj = dbkjs.protocol.jsonDBK;
-        if(activetab){
-         _obj.active_tab = activetab;   
-        }
-        //clear all layers first!
-        $.each(_obj.layers, function(idx, lyr){
-           lyr.destroyFeatures();
-        });
-        var params = {
-            srid: dbkjs.options.projection.srid,
-            timestamp: new Date().getTime()
-        };
-        var fid;
-        if(feature.attributes){
-            fid = feature.attributes.identificatie;
-        } else {
-            //the function is not recieving a feature, but a string
-            fid = feature;
-        }
-        //@@ $.getJSON('api/object/' + fid + '.json', params).done(function(data) {
-        $.getJSON(dbkjs.dataPath + '/object/' + fid + '.json', params).done(function(data) {
-            //@@
-            dbkjs.protocol.jsonDBK.info(data);
-        }).fail(function( jqxhr, textStatus, error ) {
-            dbkjs.options.feature = null;
-            dbkjs.util.alert(i18n.t('app.error'), i18n.t('dialogs.infoNotFound'), 'alert-danger');
-        });
-    },
-    getGebied: function(feature, activetab) {
-        var _obj = dbkjs.protocol.jsonDBK;
-        if(activetab){
-            _obj.active_tab = activetab;   
-        }
-        //clear all layers first!
-        $.each(_obj.layers, function(idx, lyr){
-           lyr.destroyFeatures();
-        });
-        var params = {
-            srid: dbkjs.options.projection.srid,
-            timestamp: new Date().getTime()
-        };
-        var fid;
-        if(feature.attributes){
-            fid = feature.attributes.identificatie;
-        } else {
-            //the function is not recieving a feature, but a string
-            fid = feature;
-        }
-        $.getJSON('api/gebied/' + fid + '.json', params).done(function(data) {
-            dbkjs.protocol.jsonDBK.info(data);
-        }).fail(function( jqxhr, textStatus, error ) {
-            dbkjs.options.feature = null;
-            dbkjs.util.alert(i18n.t('app.error'), i18n.t('dialogs.infoNotFound'), 'alert-danger');
-        });
+
     }
 };
 
