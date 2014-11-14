@@ -98,7 +98,7 @@ Ext.define ("viewer.components.Dbk",{
             me.mediaPath = me.dataPath + (me.dataPath.charAt(me.dataPath.length - 1) === "/" ? "" : "/") + "media/";
 
             // Set paths of dbkjs.
-            dbkjs.dataPath = (me.dataPath.charAt(me.dataPath.length - 1) === "/" ? me.dataPath : me.dataPath + "/");
+            dbkjs.dataPath = (me.dataPath.charAt(me.dataPath.length - 1) === "/" ? me.dataPath : me.dataPath + "/") + "api/";
             dbkjs.mediaPath = me.mediaPath;
             dbkjs.basePath = me.imageBasePath;
 
