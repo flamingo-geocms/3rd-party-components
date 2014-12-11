@@ -36,9 +36,7 @@ Ext.define("viewer.components.DbkDialog",{
         fitWindow: false
     },
     constructor: function(config){
-
         this.initConfig(config);
-        
         this.createWindow(this.getId());
     },
     createWindow: function(itemId) {
@@ -46,8 +44,8 @@ Ext.define("viewer.components.DbkDialog",{
         var panelId = itemId+"Panel";
         var footerId = itemId+"Footer";
         var htmlId = itemId+"Html";
-        var windowWidth = this.width;
-        var windowHeight = this.height;
+        var windowWidth = this.config.width;
+        var windowHeight = this.config.height;
         this.dialog = Ext.create("Ext.window.Window", {
             itemId: itemId,
             title: "Informatie",
@@ -83,7 +81,7 @@ Ext.define("viewer.components.DbkDialog",{
                    }
                },
                show: function() {
-                   me.dialog.alignTo(Ext.getBody(), me.align);
+                   me.dialog.alignTo(Ext.getBody(), me.config.align);
                }
            }
         });
@@ -160,7 +158,7 @@ Ext.define("viewer.components.DbkDialog",{
     },
     updateHtml: function(html) {
         // Need to grow or shrink window later?
-        if (this.fitWindow) {
+        if (this.config.fitWindow) {
             // Get delta width and height.
             this.initDeltaWidthHeight();
         };
@@ -169,7 +167,7 @@ Ext.define("viewer.components.DbkDialog",{
         this.getPanel().update(html);
         
         // Need to grow or shrink window?
-        if (this.fitWindow) {
+        if (this.config.fitWindow) {
             // Need grow or shrink window.
             this.resizeWindow();
         }
