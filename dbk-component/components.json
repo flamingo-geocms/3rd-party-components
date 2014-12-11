@@ -59,7 +59,7 @@
         "public/js/dbkjs/modules/feature.js",
         "public/js/dbkjs/dbkjs.js",
         "public/js/libs/moment/lang/nl.js",
-        "public/js/dbkjs/config/options-rd.js",
+        "public/js/dbkjs/config/options-dbk.js",
         "Dbk_ol_overrides.js",
         "Dbk_dbkjs_overrides.js",
         "Dbk_gui_overrides.js",
