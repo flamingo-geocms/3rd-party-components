@@ -25,7 +25,6 @@
         "selectContrast": "app.selectContrast",
         "scaleStyle": "app.scaleStyle",
         "styleSizeAdjust": "app.styleSizeAdjust",
-        "alwaysShowInformationLabels": "app.alwaysShowInformationLabels",
         "next": "app.next",
         "map": "app.map",
         "correctBuildings": "app.correctBuildings",
