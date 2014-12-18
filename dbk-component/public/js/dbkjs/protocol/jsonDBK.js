@@ -36,7 +36,7 @@ dbkjs.protocol.jsonDBK = {
             styleMap: dbkjs.config.styles.dbkpand
         });
          dbkjs.map.events.register("moveend", null, function() {
-            if (dbkjs.map.zoom < 9){
+            if (dbkjs.map.zoom < 12){
                 _obj.hideLayers();
             } else {
                 _obj.showLayers();
