@@ -337,11 +337,15 @@ Ext.define ("viewer.components.Dbk",{
 
         queryId = queryId.toLowerCase();
 
-        // Get features.
-        if (!dbkjs.modules.feature.layer)
-          return [];
-        if (!dbkjs.modules.feature.layer.features)
-          return [];
+        if(!dbkjs.modules.feature || dbkjs.modules.feature.features.length === 0) {
+            return {
+                success: false,
+                errorMessage: "DBK features not loaded",
+                results: [],
+                searchRequestId: searchRequestId
+            };
+        }
+
         features = dbkjs.modules.feature.features;
 
         // Set bufeer for geometry.
