@@ -98,7 +98,7 @@ dbkjs.config.styles = {
     }, {
         context: {
             mydisplay: function(feature) {
-                if(dbkjs.map.getResolution() > 1) {
+                if(dbkjs.map.getResolution() > 5) {
                     // pandgeometrie not visible above resolution 1, always show feature icon
                     return "true";
                 } else {

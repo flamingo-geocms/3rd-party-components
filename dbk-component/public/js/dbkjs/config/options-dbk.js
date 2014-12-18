@@ -33,7 +33,7 @@ dbkjs.options = {
     APPLICATION: "DBK component",
     REMARKS: "",
     INFO: "",
-    zoom: 13,
+    zoom: 10,
 
     alwaysShowDbkFeature: true
 
