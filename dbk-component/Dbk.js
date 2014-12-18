@@ -342,7 +342,7 @@ Ext.define ("viewer.components.Dbk",{
           return [];
         if (!dbkjs.modules.feature.layer.features)
           return [];
-        features = dbkjs.modules.feature.layer.features;
+        features = dbkjs.modules.feature.features;
 
         // Set bufeer for geometry.
         buffer = 300;
