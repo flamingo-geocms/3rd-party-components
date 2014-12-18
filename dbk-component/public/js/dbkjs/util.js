@@ -17,11 +17,7 @@
  *  along with safetymapDBK. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-Array.prototype.unique = function(){
-  return this.filter(
-      function(a){return !this[a] ? this[a] = true : false;}, {}
-  );
-};
+
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 $.browser = {};
