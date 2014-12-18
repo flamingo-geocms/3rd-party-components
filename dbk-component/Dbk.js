@@ -335,6 +335,8 @@ Ext.define ("viewer.components.Dbk",{
         var result;
         var err;
 
+        queryId = queryId.toLowerCase();
+
         // Get features.
         if (!dbkjs.modules.feature.layer)
           return [];
