@@ -4,7 +4,7 @@
   <xsl:template name="dbk_titleBk">
     <xsl:for-each select="extra/info[@classname='viewer.components.Dbk']/root">
       <fo:block-container width="7.046cm" height="6.66cm" top="0cm" left="0cm" xsl:use-attribute-sets="column-block-border">
-        <fo:block margin-top="0.1cm" margin-left="0.2cm" xsl:use-attribute-sets="title-font">Digitale bereikbaarheidskaart Utrecht</fo:block>
+        <fo:block margin-top="0.1cm" margin-left="0.2cm" xsl:use-attribute-sets="title-font">Digitale bereikbaarheidskaart</fo:block>
         <fo:block margin-top="0.2cm" margin-left="0.2cm" xsl:use-attribute-sets="default-font">
           <xsl:choose>
             <xsl:when test="identificatie='null'">-</xsl:when>
@@ -565,7 +565,7 @@
         <!-- Map Info Text Header Block.-->
         <fo:block-container width="5.102cm" height="1.059cm" top="0cm" left="0cm" background-color="white" xsl:use-attribute-sets="column-block">
           <fo:block margin-top="0.15cm" margin-left="0.2cm" xsl:use-attribute-sets="mapinfo-font">
-            <fo:inline font-family="Helvetica" font-weight="bold">Digitale bereikbaarheidskaart Utrecht</fo:inline>
+            <fo:inline font-family="Helvetica" font-weight="bold">Digitale bereikbaarheidskaart</fo:inline>
           </fo:block>
           <fo:block margin-top="0.15cm" margin-left="0.2cm" xsl:use-attribute-sets="mapinfo-font">
             <xsl:choose>
