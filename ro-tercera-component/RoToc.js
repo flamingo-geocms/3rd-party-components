@@ -41,7 +41,7 @@ Ext.define ("viewer.components.rotercera.RoToc",{
                          me.window.close();
                  }},
                  { xtype: 'button', text: 'Ok',handler: function(){
-                         legendController.refreshMap();
+                         if(me.legendController) me.legendController.refreshMap();
                          me.window.close();
                  } }
             ],
@@ -115,11 +115,11 @@ Ext.define ("viewer.components.rotercera.RoToc",{
         conf.roToc=this;
         //welke layer
         if (conf.type === 'Roonline') {
-            legendController = new viewer.components.rotercera.RoOnlineLegendController(conf);
+            this.legendController = new viewer.components.rotercera.RoOnlineLegendController(conf);
         } else {
-            legendController = new viewer.components.rotercera.TerceraLegendController(conf);
+            this.legendController = new viewer.components.rotercera.TerceraLegendController(conf);
         }
-        legendController.reset();
+        this.legendController.reset();
     },
     show: function(){
         this.window.show();
