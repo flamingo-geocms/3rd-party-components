@@ -242,14 +242,14 @@ Ext.define ("viewer.components.rotercera.LegendController",{
      *Reload the layer
      */
     reloadLayer : function(){
-        if (this.wmsLayer){
+        if (this.config.wmsLayer){
           var newLayers=this.getEnabledLayers();
-            this.wmsLayer.setOGCParams({
+            this.config.wmsLayer.setOGCParams({
                 "SLD" : this.sldUrl,
                 "LAYERS" : newLayers
             });
             
-            this.wmsLayer.reload();
+            this.config.wmsLayer.reload();
         }
     },
     getAllCheckboxValues : function(){
@@ -282,7 +282,7 @@ Ext.define ("viewer.components.rotercera.RoOnlineLegendController",{
             
     reset : function(){
         this.callParent();   
-        this.layers= this.wmsLayer.getLayers();
+        this.layers= this.config.wmsLayer.getLayers();
         if (!(this.layers instanceof Array)){
             this.layers=this.layers.split(",");
         }
@@ -297,21 +297,21 @@ Ext.define ("viewer.components.rotercera.RoOnlineLegendController",{
         //Enkelbestemming
         if (values["enkelbestemming"].length>0 && document.getElementsByName("enkelbestemming").length != values["enkelbestemming"].length){                       
             var sldFilter = this.createSLDFilter("bestemmingshoofdgroep",values["enkelbestemming"]);
-            sldFilter = this.addPlanFilter(sldFilter,this.planId);
+            sldFilter = this.addPlanFilter(sldFilter,this.config.planId);
             sldLayers.push(this.EB_LAYER_NAME);
             sldFilters.push(sldFilter);
         }
         //DubbelBestemming
         if (values["dubbelbestemming"].length>0 && document.getElementsByName("dubbelbestemming").length != values["dubbelbestemming"].length){            
             var sldFilter = this.createSLDFilter("bestemmingshoofdgroep",values["dubbelbestemming"]);
-            sldFilter = this.addPlanFilter(sldFilter,this.planId);
+            sldFilter = this.addPlanFilter(sldFilter,this.config.planId);
             sldLayers.push(this.DB_LAYER_NAME);
             sldFilters.push(sldFilter);
         }
         //gebiedsaanduiding
         if (values["gebiedsaanduiding"].length>0 && document.getElementsByName("gebiedsaanduiding").length != values["gebiedsaanduiding"].length){            
             var sldFilter = this.createSLDFilter("gebiedsaanduidinggroep",values["gebiedsaanduiding"]);
-            sldFilter = this.addPlanFilter(sldFilter,this.planId);
+            sldFilter = this.addPlanFilter(sldFilter,this.config.planId);
             sldLayers.push(this.GA_LAYER_NAME);
             sldFilters.push(sldFilter);
         }
@@ -366,7 +366,7 @@ Ext.define ("viewer.components.rotercera.RoOnlineLegendController",{
             //if not a filter is set, add the layer with filter
             if (!Ext.Array.contains(sldLayers,layers[i])){
                 sldLayers.push(layers[i]);
-                sldFilters.push(this.addPlanFilter("",this.planId));
+                sldFilters.push(this.addPlanFilter("",this.config.planId));
             }
         }
         
@@ -377,7 +377,7 @@ Ext.define ("viewer.components.rotercera.RoOnlineLegendController",{
             filterParam=sldFilters;
         }
         
-        this.sldUrl=Ext.create("viewer.SLD").createURL(layerParam,null,filterParam,null,null,this.PG_ATTR_NAME +" = '"+this.planId +"'");
+        this.sldUrl=Ext.create("viewer.SLD").createURL(layerParam,null,filterParam,null,null,this.PG_ATTR_NAME +" = '"+this.config.planId +"'");
         if (this.sldUrl.indexOf("http://192.168.1.18:8084/viewer/action/sld")==0){
             this.sldUrl = this.sldUrl.replace("http://192.168.1.18:8084","http://webkaart.b3p.nl");
         }
@@ -455,14 +455,14 @@ Ext.define ("viewer.components.rotercera.TerceraLegendController",{
      *Implement Reset function
      */
     reset : function(){
-        var url = this.wmsLayer.getUrl();
+        var url = this.config.wmsLayer.getUrl();
         
         var me=this;
-        this.layers= this.wmsLayer.getLayers();
+        this.layers= this.config.wmsLayer.getLayers();
         if (!(this.layers instanceof Array)){
             this.layers=this.layers.split(",");
         }
-        var availableLayers = this.wmsLayer.getLayers();
+        var availableLayers = this.config.wmsLayer.getLayers();
         
         //walk the inputs and disable/enable them
         

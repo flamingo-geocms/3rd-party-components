@@ -100,10 +100,10 @@ Ext.define ("viewer.components.RoTercera",{
                 handler: function(){
                     me.buttonClick();
                 },
-                text: me.title,
+                text: me.config.title,
                 icon: Ext.String.urlAppend(me.resourceUrl,"resource=resources/images/icon38_gray.png"),
-                tooltip: me.tooltip,
-                label: me.label
+                tooltip: me.config.tooltip,
+                label: me.config.label
             });
         }
         this.roToc = Ext.create("viewer.components.rotercera.RoToc",{});
@@ -198,7 +198,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         });
         this.docStore;
         //create comboboxes
-        this.ownerCombo = Ext.create('viewer.components.FlamingoCombobox', {
+        this.ownerCombo = Ext.create('Ext.form.ComboBox', {
             fieldLabel: 'Eigenaar',
             labelAlign: 'top',
             store: this.ownerStore,
@@ -214,7 +214,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 }
             }
         });
-        this.typeCombo = Ext.create('viewer.components.FlamingoCombobox', {
+        this.typeCombo = Ext.create('Ext.form.ComboBox', {
             fieldLabel: 'Plan type',
             labelAlign: 'top',
             store: this.typeStore,
@@ -230,7 +230,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 }
             }
         });
-        this.statusCombo = Ext.create('viewer.components.FlamingoCombobox', {
+        this.statusCombo = Ext.create('Ext.form.ComboBox', {
             fieldLabel: 'Plan status',
             labelAlign: 'top',
             store: this.statusStore,
@@ -323,7 +323,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                     if (user){
                         var link = document.getElementById("linkForVerwerk");
                         link.target = "_blank";
-                        var url= this.terceraRequestPage;
+                        var url= this.config.terceraRequestPage;
                         url+= url.indexOf("?")>0 ? "&" : "?";
                         url+= "user="+user.name;
                         link.href = url;
@@ -402,7 +402,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             } else {
                 this.viewerController.logger.error("Commentlayer does not yet exist, but is expected to.");
             }
-        }else if (mapLayer.id == this.layers[0]){
+        }else if (mapLayer.id == this.config.layers[0]){
             this.commentMapLayer = mapLayer;
 
             var cql = "("+this.roComment.publicAttributeName.toLowerCase()+"='Y'";
@@ -450,7 +450,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         this.setSelectedPlan(null);
         this.panel.setLoading("Bezig met laden plannen");
         Ext.Ajax.request({
-            url: this.roServiceUrl,
+            url: this.config.roServiceUrl,
             timeout: 240000,
             scope:this,
             params: {
@@ -601,7 +601,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                             if (user!=null){
                                 username= encodeURIComponent(user.name);
                             }
-                            var url= me.terceraRequestPage;
+                            var url= me.config.terceraRequestPage;
                             url+= url.indexOf("?")>0 ? "&" : "?";
                             url+="idn="+encodeURIComponent(plan.identificatie);
                             if (username){
@@ -629,7 +629,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 if (plan.origin == 'Tercera'){
                     prePlanText = "(L0K) ";
                     Ext.Ajax.request({
-                        url: this.roServiceUrl,
+                        url: this.config.roServiceUrl,
                         timeout: 240000,
                         scope:this,
                         params: {
@@ -653,14 +653,14 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                     });
                 }else{ //Ro-online plan
                     prePlanText="(RO) ";
-                    ogcProps.layers=this.roonlineLayers.split(",");
-                    ogcProps.query_layers=this.roonlineLayers.split(",");
-                    options.layers= this.roonlineLayers.split(",");
+                    ogcProps.layers=this.config.roonlineLayers.split(",");
+                    ogcProps.query_layers=this.config.roonlineLayers.split(",");
+                    options.layers= this.config.roonlineLayers.split(",");
                     this.sldUrl= Ext.create("viewer.SLD").createURL(options.layers,null,null,null,null,"app:plangebied='"+plan.identificatie+"'");
                     if(this.viewerController.isDebug() && this.sldUrl.indexOf("http://192.168.1.31:8084/viewer/action/sld")===0){
                         this.sldUrl=this.sldUrl.replace("http://192.168.1.31:8084","http://webkaarttest.b3p.nl")
                     }
-                    this.setLayer(this.roonlineServiceUrl,ogcProps,options);
+                    this.setLayer(this.config.roonlineServiceUrl,ogcProps,options);
 
                 }
                 this.selectedPlanContainer.update(prePlanText+this.selectedPlan.identificatie);
@@ -749,8 +749,8 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
     },
     getCommentAppLayer: function(){
         if (this.commentAppLayer==null || this.commentAppLayer == undefined){
-            if (this.layers){
-                this.commentAppLayer = this.viewerController.getAppLayerById(this.layers[0]);
+            if (this.config.layers){
+                this.commentAppLayer = this.viewerController.getAppLayerById(this.config.layers[0]);
                 if (this.commentAppLayer){
                     var found=false;
                     for (var i=0; i< this.viewerController.app.selectedContent.length; i++){

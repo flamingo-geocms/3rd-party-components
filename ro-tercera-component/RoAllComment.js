@@ -43,7 +43,7 @@ Ext.define ("viewer.components.rotercera.RoAllComment",{
         var fs = this.getFeatureService();
         var options = {limit: 1000,edit:true};
         var me = this;
-        fs.loadFeatures(this.viewerController.getAppLayerById(this.layers[0]),
+        fs.loadFeatures(this.config.viewerController.getAppLayerById(this.config.layers[0]),
                 function(features){
                     me.showFeatures(features);
                     if (show){
@@ -62,7 +62,7 @@ Ext.define ("viewer.components.rotercera.RoAllComment",{
             this.createWindow();
         }
         this.featureContainer.removeAll();
-        this.planContainer.update(this.component.selectedPlan.identificatie);
+        this.planContainer.update(this.config.component.selectedPlan.identificatie);
         
         
         for (var i=0; i < features.length; i++){
@@ -137,7 +137,7 @@ Ext.define ("viewer.components.rotercera.RoAllComment",{
         Ext.MessageBox.alert('Foutmelding', "Fout bij laden features" + message);
     },
     onEditClick: function(feature){
-        this.component.roComment.editComment(this.planId,feature);
+        this.config.component.roComment.editComment(this.planId,feature);
     },
     createWindow: function(){        
         this.planContainer = Ext.create("Ext.container.Container",{
@@ -170,7 +170,7 @@ Ext.define ("viewer.components.rotercera.RoAllComment",{
             
     getFeatureService: function(){
         if (this.featureService==null){
-            this.featureService = this.viewerController.getAppLayerFeatureService(this.viewerController.getAppLayerById(this.layers[0]));        
+            this.featureService = this.config.viewerController.getAppLayerFeatureService(this.config.viewerController.getAppLayerById(this.config.layers[0]));        
         }
         return this.featureService;
     }

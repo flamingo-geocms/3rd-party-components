@@ -196,9 +196,9 @@ Ext.define ("viewer.components.rotercera.RoComment",{
         if (user==null){
             throw "Er is niet ingelogd. Er kan geen commentaar worden aangemaakt";
         }
-        feature[this.planIdAttributeName]=this.planId;
+        feature[this.config.planIdAttributeName]=this.planId;
         //add user
-        feature[this.ownerAttributeName] = user.name;
+        feature[this.config.ownerAttributeName] = user.name;
         return feature;
     },
     /**
@@ -206,7 +206,7 @@ Ext.define ("viewer.components.rotercera.RoComment",{
      */
     saveSucces  : function(fid){
         Ext.getCmp(this.name + "saveButton").enable();
-        this.component.roAllComment.reload();
+        this.config.component.roAllComment.reload();
         this.callParent(arguments);
         Ext.getCmp(this.name + "deleteButton").show();
     },
@@ -221,14 +221,14 @@ Ext.define ("viewer.components.rotercera.RoComment",{
      * @override
      */
     deleteSucces: function(){
-        this.component.roAllComment.reload();
+        this.config.component.roAllComment.reload();
         this.callParent(arguments);
     },
     /**
      * @override
      */
     allowedEditable: function(attribute){
-        if (attribute.name === this.ownerAttributeName){
+        if (attribute.name === this.config.ownerAttributeName){
             return false;
         }else{
             return true;
