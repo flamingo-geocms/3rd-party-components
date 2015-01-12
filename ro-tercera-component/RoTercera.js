@@ -373,8 +373,31 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             ]
 
         });
+
+        // Listen to clicks on plans
+        var planContainer = Ext.getCmp('planContainerValues');
+        // Add listener on container, use delegation
+        planContainer.getEl().dom.addEventListener('click', function(e) {
+            // planselect item clicked
+            if(e.target && e.target.className && e.target.className.indexOf('planselect') !== -1 && me.currentPlans) {
+                // get identificatie
+                var planId = e.target.getAttribute('data-planid');
+                // Find plan
+                for(var i = 0; i < me.currentPlans.length; i++) {
+                    if(me.currentPlans[i].identificatie === planId) {
+                        // Execute planClicked function
+                        me.onPlanClicked(me.currentPlans[i]);
+                        return;
+                    }
+                }
+            }
+        });
+
         //make sure the info html elements function is created.
         this.setCreateInfoHtmlElements();
+    },
+    getDomId: function(identificatie) {
+        return identificatie.replace(/\W+/g, "");
     },
     onAddLayer: function(map,options){
         var mapLayer=options.layer;
@@ -491,7 +514,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
      * Set the loaded plans.
      * @param {object} plans a object array with plans.
      */
-    setPlans: function (plans){
+    setPlans: function (plans) {
         this.currentPlans = plans;
         this.updatePlansContainer(plans);
         var uniqueTypes = this.getUniqueType(this.currentPlans);
@@ -570,7 +593,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
     setSelectedPlan: function(plan){
         this.sldUrl=null;
         if (this.selectedPlan !==null){
-            Ext.get(this.selectedPlan.identificatie).removeCls("selected");
+            Ext.get(this.getDomId(this.selectedPlan.identificatie)).removeCls("selected");
         }
         this.previouslySelectedPlan = this.selectedPlan;
         this.selectedPlan = plan;
@@ -584,7 +607,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             this.setPlanCommentFilter(null);
             this.customInfoEnabled=false
         }else{
-            Ext.get(this.selectedPlan.identificatie).addCls("selected");
+            Ext.get(this.getDomId(this.selectedPlan.identificatie)).addCls("selected");
             this.customInfoEnabled=true
             if(plan.origin == 'Tercera' && plan.wms==undefined){
                 var me=this;
@@ -891,8 +914,8 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
      * Create a plan item.
      */
     createPlanItem: function(planObj){
-        var me=this;
-        var color="#000000";
+        var me = this;
+        var color = "#000000";
         if (planObj.origin == "Tercera"){
             if (planObj.wms){
                 color="green";
@@ -900,18 +923,11 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 color="#888888";
             }
         }
-        var el={
+        var el = {
             xtype: 'container',
-            id: planObj.identificatie,
-            html: planObj.naam,
+            html: '<div id="' + me.getDomId(planObj.identificatie) + '" class="planselect" data-planid="' + planObj.identificatie + '">' + planObj.naam + '</div>',
             width: '100%',
             border: 1,
-            listeners:{
-                element: 'el',
-                click: function(){
-                    me.onPlanClicked(planObj);
-                }
-            },
             style: {
                 color: color,
                 cursor: 'pointer'
