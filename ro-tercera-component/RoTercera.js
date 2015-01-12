@@ -400,7 +400,9 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                     this.viewerController.mapComponent.getMap().setLayerIndex(this.commentMapLayer, index);
                 }
             } else {
-                this.viewerController.logger.error("Commentlayer does not yet exist, but is expected to.");
+                if (user){
+                    this.viewerController.logger.error("Commentlayer does not yet exist, but is expected to.");
+                }// When no user is present, no comment layer will be added
             }
         }else if (mapLayer.id == this.config.layers[0]){
             this.commentMapLayer = mapLayer;
@@ -657,8 +659,8 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                     ogcProps.query_layers=this.config.roonlineLayers.split(",");
                     options.layers= this.config.roonlineLayers.split(",");
                     this.sldUrl= Ext.create("viewer.SLD").createURL(options.layers,null,null,null,null,"app:plangebied='"+plan.identificatie+"'");
-                    if(this.viewerController.isDebug() && this.sldUrl.indexOf("http://192.168.1.31:8084/viewer/action/sld")===0){
-                        this.sldUrl=this.sldUrl.replace("http://192.168.1.31:8084","http://webkaarttest.b3p.nl")
+                    if(this.viewerController.isDebug() && this.sldUrl.indexOf("http://192.168.1.18:8084/viewer/action/sld")===0){
+                        this.sldUrl=this.sldUrl.replace("http://192.168.1.18:8084","http://webkaarttest.b3p.nl")
                     }
                     this.setLayer(this.config.roonlineServiceUrl,ogcProps,options);
 
@@ -1035,8 +1037,8 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             }
             var url=this.wmsLayer.getUrl();
             var sldUrl = Ext.create("viewer.SLD").createURL(sldLayer,null,"fid='"+fid+"'",null,null,null,"#FF0000",useRuleFilter);
-            if(this.viewerController.isDebug() && sldUrl.indexOf("http://192.168.1.31:8084/viewer/action/sld")===0){
-                sldUrl=sldUrl.replace("http://192.168.1.31:8084","http://webkaarttest.b3p.nl")
+            if(this.viewerController.isDebug() && sldUrl.indexOf("http://192.168.1.18:8084/viewer/action/sld")===0){
+                sldUrl=sldUrl.replace("http://192.168.1.18:8084","http://webkaarttest.b3p.nl")
             }
             if (!this.highlightLayer){
                  var ogcProps={
