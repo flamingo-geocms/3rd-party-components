@@ -64,6 +64,8 @@ Ext.define ("viewer.components.RoTercera",{
     customInfoEnabled: false,
     previousSLDFid: null,
     wmsLayerId: "ulRooTercera",
+
+    previousState: null,
     config:{
         name: "Ro-Tercera client",
         title: "",
@@ -117,6 +119,62 @@ Ext.define ("viewer.components.RoTercera",{
         this.getViewerController().mapComponent.getMap().addListener(viewer.viewercontroller.controller.Event.ON_LAYER_ADDED,this.onAddLayer,this);
 
         return this;
+    },
+    getBookmarkState : function(shortUrl){
+        var state = {
+            selectedPlan: this.selectedPlan,
+            commentAppLayerId: this.commentAppLayer.id,
+            enableType: this.typeCombo.getValue() !== null,
+            enableStatus: this.statusCombo.getValue() !== null
+        };
+        return state;
+    },
+    loadVariables : function(state){
+        var jsonState = Ext.JSON.decode(state);
+        this.previousState = jsonState;
+        this.getViewerController().addListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.restoreState,this);
+    },
+
+    restoreState : function(){
+        this.removeListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.restoreState,this);
+        if(this.previousState){
+            var me = this;
+            var plan = this.previousState.selectedPlan;
+        
+            var commentAppLayerId = this.previousState.commentAppLayerId;
+            for (var i=0; i< me.viewerController.app.selectedContent.length; i++){
+                var contentItem = me.viewerController.app.selectedContent[i];
+                if (contentItem && contentItem.id === "l"+me.wmsLayerId){
+                    Ext.Array.remove(me.viewerController.app.selectedContent, contentItem);
+                    break;
+                }
+            }
+
+            for (var i=0; i< me.viewerController.app.selectedContent.length; i++){
+                var contentItem = me.viewerController.app.selectedContent[i];
+                if (contentItem && contentItem.id === "l"+commentAppLayerId){
+                    Ext.Array.remove(me.viewerController.app.selectedContent, contentItem);
+                    break;
+                }
+            }
+            
+
+            Ext.Array.remove(this.viewerController.app.levels, this.viewerController.app.levels["l"+me.wmsLayerId]);
+            Ext.Array.remove(this.viewerController.app.levels, this.viewerController.app.levels["l"+commentAppLayerId]);
+            var f = function(){
+                if(this.previousState.enableType){
+                    this.typeCombo.setValue(plan.typePlan);    
+                }
+                if(this.previousState.enableStatus){
+                    this.statusCombo.setValue(plan.planstatus);
+                }
+                this.onPlanClicked (plan);
+                this.removeListener("ownerchanged",f,this);
+            };
+            this.addListener("ownerchanged",f,this);
+            this.buttonClick();
+            this.ownerCombo.setValue(plan.overheidscode);
+        }
     },
     setDefaults: function(conf){
         //set minWidth:
@@ -489,6 +547,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                     Ext.MessageBox.alert('Foutmelding', "Fout bij laden plannen" + res.error);
                 }
                 this.panel.setLoading(false);
+                this.fireEvent("ownerchanged", this);
             },
             failure: function ( result, request) {
                 Ext.MessageBox.alert('Foutmelding', "Fout bij ophalen plannen" + result.responseText);
@@ -682,8 +741,8 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                     ogcProps.query_layers=this.config.roonlineLayers.split(",");
                     options.layers= this.config.roonlineLayers.split(",");
                     this.sldUrl= Ext.create("viewer.SLD").createURL(options.layers,null,null,null,null,"app:plangebied='"+plan.identificatie+"'");
-                    if(this.viewerController.isDebug() && this.sldUrl.indexOf("http://192.168.1.18:8084/viewer/action/sld")===0){
-                        this.sldUrl=this.sldUrl.replace("http://192.168.1.18:8084","http://webkaarttest.b3p.nl")
+                    if(this.viewerController.isDebug() && this.sldUrl.indexOf("http://192.168.1.29:8084/viewer/action/sld")===0){
+                        this.sldUrl=this.sldUrl.replace("http://192.168.1.29:8084","http://webkaarttest.b3p.nl")
                     }
                     this.setLayer(this.config.roonlineServiceUrl,ogcProps,options);
 
@@ -1053,8 +1112,8 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             }
             var url=this.wmsLayer.getUrl();
             var sldUrl = Ext.create("viewer.SLD").createURL(sldLayer,null,"fid='"+fid+"'",null,null,null,"#FF0000",useRuleFilter);
-            if(this.viewerController.isDebug() && sldUrl.indexOf("http://192.168.1.18:8084/viewer/action/sld")===0){
-                sldUrl=sldUrl.replace("http://192.168.1.18:8084","http://webkaarttest.b3p.nl")
+            if(this.viewerController.isDebug() && sldUrl.indexOf("http://192.168.1.29:8084/viewer/action/sld")===0){
+                sldUrl=sldUrl.replace("http://192.168.1.29:8084","http://webkaarttest.b3p.nl")
             }
             if (!this.highlightLayer){
                  var ogcProps={

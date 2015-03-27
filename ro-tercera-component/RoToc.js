@@ -378,8 +378,8 @@ Ext.define ("viewer.components.rotercera.RoOnlineLegendController",{
         }
         
         this.sldUrl=Ext.create("viewer.SLD").createURL(layerParam,null,filterParam,null,null,this.PG_ATTR_NAME +" = '"+this.config.planId +"'");
-        if (this.sldUrl.indexOf("http://192.168.1.18:8084/viewer/action/sld")==0){
-            this.sldUrl = this.sldUrl.replace("http://192.168.1.18:8084","http://webkaart.b3p.nl");
+        if (this.sldUrl.indexOf("http://192.168.1.29:8084/viewer/action/sld")==0){
+            this.sldUrl = this.sldUrl.replace("http://192.168.1.29:8084","http://webkaart.b3p.nl");
         }
         this.reloadLayer();
     },
