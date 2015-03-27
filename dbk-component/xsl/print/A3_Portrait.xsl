@@ -2,8 +2,16 @@
 <xsl:stylesheet version="1.1" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:fox="http://xmlgraphics.apache.org/fop/extensions" xmlns:svg="http://www.w3.org/2000/svg" exclude-result-prefixes="fo">
   <!-- Title Block.-->
   <xsl:template name="dbk_titleBk">
+    <xsl:variable name="printDate">
+      <xsl:choose>
+        <xsl:when test="date='null'">-</xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="date"></xsl:value-of>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
     <xsl:for-each select="extra/info[@classname='viewer.components.Dbk']/root">
-      <fo:block-container width="13.55cm" height="12.936cm" top="0cm" left="0cm" xsl:use-attribute-sets="column-block-border">
+      <fo:block-container width="13.55cm" height="15.68cm" top="0cm" left="0cm" xsl:use-attribute-sets="column-block-border">
         <fo:block margin-top="0.1cm" margin-left="0.2cm" xsl:use-attribute-sets="title-font">Digitale bereikbaarheidskaart</fo:block>
         <fo:block margin-top="0.2cm" margin-left="0.2cm" xsl:use-attribute-sets="default-font">
           <xsl:choose>
@@ -14,12 +22,7 @@
           </xsl:choose>
         </fo:block>
         <fo:block margin-top="0.2cm" margin-left="0.2cm" xsl:use-attribute-sets="default-font">Datum afdruk:
-          <xsl:choose>
-            <xsl:when test="date='null'">-</xsl:when>
-            <xsl:otherwise>
-              <xsl:value-of select="date"></xsl:value-of>
-            </xsl:otherwise>
-          </xsl:choose>
+          <xsl:value-of select="$printDate"></xsl:value-of>
         </fo:block>
         <fo:block margin-top="0.2cm" margin-left="0.2cm" xsl:use-attribute-sets="default-font">
           <xsl:choose>
@@ -38,6 +41,61 @@
               </xsl:otherwise>
             </xsl:choose>
           </fo:inline>
+        </fo:block>
+        <!-- Algemeen.-->
+        <fo:block margin-top="0.2cm" margin-left="0.2cm" xsl:use-attribute-sets="title-font">Algemeen</fo:block>
+        <fo:block margin-top="0cm" margin-left="0.2cm" xsl:use-attribute-sets="default-font">BHV:
+          <xsl:choose>
+            <xsl:when test="BHVaanwezig">
+              <xsl:choose>
+                <xsl:when test="BHVaanwezig='true'">BHV aanwezig</xsl:when>
+                <xsl:otherwise>Geen BHV aanwezig</xsl:otherwise>
+              </xsl:choose>
+            </xsl:when>
+            <xsl:otherwise>Geen BHV aanwezig</xsl:otherwise>
+          </xsl:choose>
+        </fo:block>
+        <fo:block margin-top="0cm" margin-left="0.2cm" xsl:use-attribute-sets="default-font">Gebouwconstructie:
+          <xsl:choose>
+            <xsl:when test="gebouwconstructie">
+              <xsl:choose>
+                <xsl:when test="gebouwconstructie='null'">-</xsl:when>
+                <xsl:when test="gebouwconstructie=''">-</xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="gebouwconstructie"></xsl:value-of>
+                </xsl:otherwise>
+              </xsl:choose>
+            </xsl:when>
+            <xsl:otherwise>-</xsl:otherwise>
+          </xsl:choose>
+        </fo:block>
+        <fo:block margin-top="0cm" margin-left="0.2cm" xsl:use-attribute-sets="default-font">OMS nummer:
+          <xsl:choose>
+            <xsl:when test="OMSnummer">
+              <xsl:choose>
+                <xsl:when test="OMSnummer='null'">-</xsl:when>
+                <xsl:when test="OMSnummer=''">-</xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="OMSnummer"></xsl:value-of>
+                </xsl:otherwise>
+              </xsl:choose>
+            </xsl:when>
+            <xsl:otherwise>-</xsl:otherwise>
+          </xsl:choose>
+        </fo:block>
+        <fo:block margin-top="0cm" margin-left="0.2cm" xsl:use-attribute-sets="default-font">Gebruik:
+          <xsl:choose>
+            <xsl:when test="gebruikstype">
+              <xsl:choose>
+                <xsl:when test="gebruikstype='null'">-</xsl:when>
+                <xsl:when test="gebruikstype=''">-</xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="gebruikstype"></xsl:value-of>
+                </xsl:otherwise>
+              </xsl:choose>
+            </xsl:when>
+            <xsl:otherwise>-</xsl:otherwise>
+          </xsl:choose>
         </fo:block>
         <!-- Gebouwinformatie.-->
         <fo:block margin-top="0.2cm" margin-left="0.2cm" xsl:use-attribute-sets="title-font">Gebouwinformatie</fo:block>
@@ -82,7 +140,10 @@
               <!-- Header.-->
               <fo:table-row>
                 <fo:table-cell margin-left="0.05cm">
-                  <fo:block>Functie</fo:block>
+                  <fo:block>
+                     
+                    Functie
+                  </fo:block>
                 </fo:table-cell>
                 <fo:table-cell margin-left="0.05cm">
                   <fo:block>Naam</fo:block>
@@ -152,7 +213,7 @@
   <!-- Special Block.-->
   <xsl:template name="dbk_specialBk">
     <xsl:for-each select="extra/info[@classname='viewer.components.Dbk']/root">
-      <fo:block-container width="13.55cm" height="12.936cm" top="0cm" left="13.75cm" xsl:use-attribute-sets="column-block-border">
+      <fo:block-container width="13.55cm" height="15.68cm" top="0cm" left="13.75cm" xsl:use-attribute-sets="column-block-border">
         <!-- Bijzonderheden.-->
         <fo:block margin-top="0.1cm" margin-left="0.2cm" xsl:use-attribute-sets="title-font">Bijzonderheden</fo:block>
         <fo:block margin-top="0.2cm" margin-left="0.2cm" xsl:use-attribute-sets="default-font">
@@ -162,7 +223,10 @@
             <fo:table-body>
               <fo:table-row>
                 <fo:table-cell margin-left="0.05cm">
-                  <fo:block>Soort</fo:block>
+                  <fo:block>
+                     
+                    Soort
+                  </fo:block>
                 </fo:table-cell>
                 <fo:table-cell margin-left="0.05cm">
                   <fo:block>Informatie</fo:block>
@@ -213,18 +277,28 @@
         <fo:block margin-top="0.2cm" margin-left="0.2cm" xsl:use-attribute-sets="title-font">Verblijf</fo:block>
         <fo:block margin-top="0.2cm" margin-left="0.2cm" xsl:use-attribute-sets="default-font">
           <fo:table table-layout="fixed" width="13.15cm">
-            <fo:table-column column-width="5.26cm" border-width="thin" border-right-style="solid"></fo:table-column>
-            <fo:table-column column-width="1.315cm" border-width="thin" border-right-style="solid"></fo:table-column>
-            <fo:table-column column-width="2.63cm" border-width="thin" border-right-style="solid"></fo:table-column>
-            <fo:table-column column-width="2.63cm" border-width="thin" border-right-style="solid"></fo:table-column>
-            <fo:table-column column-width="1.315cm"></fo:table-column>
+            <fo:table-column column-width="2.893cm" border-width="thin" border-right-style="solid"></fo:table-column>
+            <fo:table-column column-width="1.972cm" border-width="thin" border-right-style="solid"></fo:table-column>
+            <fo:table-column column-width="1.709cm" border-width="thin" border-right-style="solid"></fo:table-column>
+            <fo:table-column column-width="1.709cm" border-width="thin" border-right-style="solid"></fo:table-column>
+            <fo:table-column column-width="1.183cm" border-width="thin" border-right-style="solid"></fo:table-column>
+            <fo:table-column column-width="0.526cm"></fo:table-column>
+            <fo:table-column column-width="0.526cm"></fo:table-column>
+            <fo:table-column column-width="0.526cm"></fo:table-column>
+            <fo:table-column column-width="0.526cm"></fo:table-column>
+            <fo:table-column column-width="0.526cm"></fo:table-column>
+            <fo:table-column column-width="0.526cm"></fo:table-column>
+            <fo:table-column column-width="0.526cm"></fo:table-column>
             <fo:table-body>
               <fo:table-row>
                 <fo:table-cell margin-left="0.05cm">
-                  <fo:block>Groep</fo:block>
+                  <fo:block>
+                     
+                    Groep
+                  </fo:block>
                 </fo:table-cell>
                 <fo:table-cell margin-left="0.05cm" text-align="center">
-                  <fo:block>#</fo:block>
+                  <fo:block>Aantal</fo:block>
                 </fo:table-cell>
                 <fo:table-cell margin-left="0.05cm" text-align="center">
                   <fo:block>Van</fo:block>
@@ -235,13 +309,25 @@
                 <fo:table-cell margin-left="0.05cm" text-align="center">
                   <fo:block>NZR</fo:block>
                 </fo:table-cell>
+                <fo:table-cell margin-left="0.05cm" text-align="center">
+                  <fo:block>&#160;</fo:block>
+                </fo:table-cell>
+                <fo:table-cell margin-left="0.05cm" text-align="center">
+                  <fo:block>&#160;</fo:block>
+                </fo:table-cell>
+                <fo:table-cell margin-left="0.05cm" text-align="center">
+                  <fo:block>&#160;</fo:block>
+                </fo:table-cell>
+                <fo:table-cell margin-left="0.05cm" text-align="center">
+                  <fo:block>Dagen</fo:block>
+                </fo:table-cell>
               </fo:table-row>
               <xsl:choose>
                 <xsl:when test="verblijf">
                   <xsl:for-each select="verblijf">
                     <fo:table-row border-width="thin" border-top-style="solid">
                       <fo:table-cell margin-left="0.05cm">
-                        <fo:block>
+                        <fo:block> 
                           <xsl:choose>
                             <xsl:when test="typeAanwezigheidsgroep='null'">-</xsl:when>
                             <xsl:otherwise>
@@ -290,29 +376,91 @@
                           </xsl:choose>
                         </fo:block>
                       </fo:table-cell>
+                      <fo:table-cell margin-left="0.05cm" text-align="center">
+                        <fo:block>
+                          <xsl:choose>
+                            <xsl:when test="maandag='true'">m</xsl:when>
+                            <xsl:otherwise>-</xsl:otherwise>
+                          </xsl:choose>
+                        </fo:block>
+                      </fo:table-cell>
+                      <fo:table-cell margin-left="0.05cm" text-align="center">
+                        <fo:block>
+                          <xsl:choose>
+                            <xsl:when test="dinsdag='true'">d</xsl:when>
+                            <xsl:otherwise>-</xsl:otherwise>
+                          </xsl:choose>
+                        </fo:block>
+                      </fo:table-cell>
+                      <fo:table-cell margin-left="0.05cm" text-align="center">
+                        <fo:block>
+                          <xsl:choose>
+                            <xsl:when test="woensdag='true'">w</xsl:when>
+                            <xsl:otherwise>-</xsl:otherwise>
+                          </xsl:choose>
+                        </fo:block>
+                      </fo:table-cell>
+                      <fo:table-cell margin-left="0.05cm" text-align="center">
+                        <fo:block>
+                          <xsl:choose>
+                            <xsl:when test="donderdag='true'">d</xsl:when>
+                            <xsl:otherwise>-</xsl:otherwise>
+                          </xsl:choose>
+                        </fo:block>
+                      </fo:table-cell>
+                      <fo:table-cell margin-left="0.05cm" text-align="center">
+                        <fo:block>
+                          <xsl:choose>
+                            <xsl:when test="vrijdag='true'">v</xsl:when>
+                            <xsl:otherwise>-</xsl:otherwise>
+                          </xsl:choose>
+                        </fo:block>
+                      </fo:table-cell>
+                      <fo:table-cell margin-left="0.05cm" text-align="center">
+                        <fo:block>
+                          <xsl:choose>
+                            <xsl:when test="zaterdag='true'">z</xsl:when>
+                            <xsl:otherwise>-</xsl:otherwise>
+                          </xsl:choose>
+                        </fo:block>
+                      </fo:table-cell>
+                      <fo:table-cell margin-left="0.05cm" text-align="center">
+                        <fo:block>
+                          <xsl:choose>
+                            <xsl:when test="zondag='true'">z</xsl:when>
+                            <xsl:otherwise>-</xsl:otherwise>
+                          </xsl:choose>
+                        </fo:block>
+                      </fo:table-cell>
                     </fo:table-row>
                   </xsl:for-each>
                 </xsl:when>
-                <xsl:otherwise>
-                  <fo:table-row border-width="thin" border-top-style="solid">
-                    <fo:table-cell margin-left="0.05cm">
-                      <fo:block>-</fo:block>
-                    </fo:table-cell>
-                    <fo:table-cell margin-left="0.05cm" text-align="center">
-                      <fo:block>-</fo:block>
-                    </fo:table-cell>
-                    <fo:table-cell margin-left="0.05cm" text-align="center">
-                      <fo:block>-</fo:block>
-                    </fo:table-cell>
-                    <fo:table-cell margin-left="0.05cm" text-align="center">
-                      <fo:block>-</fo:block>
-                    </fo:table-cell>
-                    <fo:table-cell margin-left="0.05cm" text-align="center">
-                      <fo:block>-</fo:block>
-                    </fo:table-cell>
-                  </fo:table-row>
-                </xsl:otherwise>
               </xsl:choose>
+              <xsl:otherwise>
+                <fo:table-row border-width="thin" border-top-style="solid">
+                  <fo:table-cell margin-left="0.05cm">
+                    <fo:block>
+                       
+                      -
+                    </fo:block>
+                  </fo:table-cell>
+                  <fo:table-cell margin-left="0.05cm" text-align="center">
+                    <fo:block>-</fo:block>
+                  </fo:table-cell>
+                  <fo:table-cell margin-left="0.05cm" text-align="center">
+                    <fo:block>-</fo:block>
+                  </fo:table-cell>
+                  <fo:table-cell margin-left="0.05cm" text-align="center">
+                    <fo:block>-</fo:block>
+                  </fo:table-cell>
+                  <fo:table-cell margin-left="0.05cm" text-align="center">
+                    <fo:block>-</fo:block>
+                  </fo:table-cell>
+                  <fo:table-cell margin-left="0.05cm" text-align="center">
+                    <fo:block>-</fo:block>
+                  </fo:table-cell>
+                </fo:table-row>
+              </xsl:otherwise>
             </fo:table-body>
           </fo:table>
         </fo:block>
@@ -323,14 +471,16 @@
   <xsl:template name="dbk_photo1Bk">
     <xsl:for-each select="extra/info[@classname='viewer.components.Dbk']/root">
       <xsl:for-each select="foto">
-        <xsl:if test="position()=1">
-          <xsl:if test=".!='null'">
-            <fo:block-container width="13.55cm" height="12.936cm" top="13.136cm" left="0cm" xsl:use-attribute-sets="column-block-border">
-              <fo:block margin="0.05cm">
-                <xsl:variable name="photoUrl" select="URL"></xsl:variable>
-                <fo:external-graphic src="{$photoUrl}" width="100%" height="100%" content-width="scale-to-fit"></fo:external-graphic>
-              </fo:block>
-            </fo:block-container>
+        <xsl:if test="*">
+          <xsl:if test="position()=1">
+            <xsl:if test=".!='null'">
+              <fo:block-container width="13.55cm" height="11.76cm" top="15.88cm" left="0cm" xsl:use-attribute-sets="column-block-border">
+                <fo:block margin="0.05cm">
+                  <xsl:variable name="photoUrl" select="URL"></xsl:variable>
+                  <fo:external-graphic src="{$photoUrl}" width="100%" height="100%" content-width="scale-to-fit"></fo:external-graphic>
+                </fo:block>
+              </fo:block-container>
+            </xsl:if>
           </xsl:if>
         </xsl:if>
       </xsl:for-each>
@@ -340,14 +490,16 @@
   <xsl:template name="dbk_photo2Bk">
     <xsl:for-each select="extra/info[@classname='viewer.components.Dbk']/root">
       <xsl:for-each select="foto">
-        <xsl:if test="position()=2">
-          <xsl:if test=".!='null'">
-            <fo:block-container width="13.55cm" height="12.936cm" top="13.136cm" left="13.75cm" xsl:use-attribute-sets="column-block-border">
-              <fo:block margin="0.05cm">
-                <xsl:variable name="photoUrl" select="URL"></xsl:variable>
-                <fo:external-graphic src="{$photoUrl}" width="100%" height="100%" content-width="scale-to-fit"></fo:external-graphic>
-              </fo:block>
-            </fo:block-container>
+        <xsl:if test="*">
+          <xsl:if test="position()=2">
+            <xsl:if test=".!='null'">
+              <fo:block-container width="13.55cm" height="11.76cm" top="15.88cm" left="13.75cm" xsl:use-attribute-sets="column-block-border">
+                <fo:block margin="0.05cm">
+                  <xsl:variable name="photoUrl" select="URL"></xsl:variable>
+                  <fo:external-graphic src="{$photoUrl}" width="100%" height="100%" content-width="scale-to-fit"></fo:external-graphic>
+                </fo:block>
+              </fo:block-container>
+            </xsl:if>
           </xsl:if>
         </xsl:if>
       </xsl:for-each>
@@ -356,7 +508,7 @@
   <!-- Dangerous substances Block.-->
   <xsl:template name="dbk_dangerousSubstBk">
     <xsl:for-each select="extra/info[@classname='viewer.components.Dbk']/root">
-      <fo:block-container width="27.3cm" height="12.936cm" top="26.272cm" left="0cm" xsl:use-attribute-sets="column-block-border">
+      <fo:block-container width="27.3cm" height="11.76cm" top="27.84cm" left="0cm" xsl:use-attribute-sets="column-block-border">
         <fo:block margin-top="0.1cm" margin-left="0.2cm" xsl:use-attribute-sets="title-font">Gevaarlijke stoffen</fo:block>
         <fo:block margin-top="0.2cm" margin-left="0.2cm" xsl:use-attribute-sets="default-font">
           <fo:table table-layout="fixed" width="26.9cm">
@@ -370,7 +522,10 @@
               <!-- Header.-->
               <fo:table-row>
                 <fo:table-cell margin-left="0.05cm">
-                  <fo:block>Stof</fo:block>
+                  <fo:block>
+                     
+                    Stof
+                  </fo:block>
                 </fo:table-cell>
                 <fo:table-cell margin-left="0.05cm" text-align="center">
                   <fo:block>Gevaarsindicatienr.</fo:block>
@@ -533,6 +688,14 @@
   </xsl:template>
   <!-- Map Info Block.-->
   <xsl:template name="dbk_mapInfoBk">
+    <xsl:variable name="printDate">
+      <xsl:choose>
+        <xsl:when test="date='null'">-</xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="date"></xsl:value-of>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
     <fo:block-container width="8cm" height="3.6cm" top="36cm" left="19.3cm" xsl:use-attribute-sets="column-block">
       <!-- Map Info Graphics Block.-->
       <fo:block-container width="2.695cm" height="3.4cm" top="0.1cm" left="0.1cm" xsl:use-attribute-sets="column-block">
@@ -609,12 +772,7 @@
         </fo:block-container>
         <fo:block-container width="5.005cm" height="0.544cm" top="2.856cm" left="0cm" background-color="white" xsl:use-attribute-sets="column-block">
           <fo:block margin-top="0.15cm" margin-left="0.2cm" xsl:use-attribute-sets="mapinfo-font">Datum afdruk:
-            <xsl:choose>
-              <xsl:when test="extra/info[@classname='viewer.components.Dbk']/root/date='null'">-</xsl:when>
-              <xsl:otherwise>
-                <xsl:value-of select="extra/info[@classname='viewer.components.Dbk']/root/date"></xsl:value-of>
-              </xsl:otherwise>
-            </xsl:choose>
+            <xsl:value-of select="$printDate"></xsl:value-of>
           </fo:block>
         </fo:block-container>
       </fo:block-container>
