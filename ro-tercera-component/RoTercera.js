@@ -123,9 +123,11 @@ Ext.define ("viewer.components.RoTercera",{
     getBookmarkState : function(shortUrl){
         var state = {
             selectedPlan: this.selectedPlan,
-            commentAppLayerId: this.commentAppLayer.id,
+            commentAppLayerId: this.commentAppLayer ? this.commentAppLayer.id : -1,
+            overheidscode: this.ownerCombo.getValue(),
             enableType: this.typeCombo.getValue() !== null,
-            enableStatus: this.statusCombo.getValue() !== null
+            enableStatus: this.statusCombo.getValue() !== null,
+            openWindow: this.popup.isVisible()
         };
         return state;
     },
@@ -137,10 +139,10 @@ Ext.define ("viewer.components.RoTercera",{
 
     restoreState : function(){
         this.removeListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.restoreState,this);
-        if(this.previousState){
+        if(this.previousState ){
             var me = this;
             var plan = this.previousState.selectedPlan;
-        
+            var eigenaar = this.previousState.overheidscode;
             var commentAppLayerId = this.previousState.commentAppLayerId;
             for (var i=0; i< me.viewerController.app.selectedContent.length; i++){
                 var contentItem = me.viewerController.app.selectedContent[i];
@@ -173,7 +175,12 @@ Ext.define ("viewer.components.RoTercera",{
             };
             this.addListener("ownerchanged",f,this);
             this.buttonClick();
-            this.ownerCombo.setValue(plan.overheidscode);
+            if(!this.previousState.openWindow){
+                this.popup.hide();
+            }
+            if(eigenaar){
+                this.ownerCombo.setValue(eigenaar);
+            }
         }
     },
     setDefaults: function(conf){
