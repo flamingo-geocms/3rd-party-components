@@ -49,6 +49,8 @@ Ext.define ("viewer.components.Dbk",{
     constructor: function(conf){
         var me = this;
 
+        this.events = {};
+
         viewer.components.Dbk.superclass.constructor.call(this, conf);
 
         this.initConfig(conf);
@@ -129,6 +131,9 @@ Ext.define ("viewer.components.Dbk",{
 
             // Initialize jsonDBK.init and register modules.
             dbkjs.successAuth();
+
+            // Fire event.
+            me.fireEvent(viewer.components.DbkEvent.ON_INITIALIZED);
        });
     },
     createDialogs: function(){
