@@ -7,6 +7,6 @@ dbkjs.mapcontrols.createMapControls = function() {
     //dummy
 };
 //dbkjs.js
-dbkjs.mapcontrols.registerMapEvents = function(baselayer_ul){
+dbkjs.mapcontrols.registerMapEvents = function(){
     //dummy
 };

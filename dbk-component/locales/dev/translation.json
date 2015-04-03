@@ -22,6 +22,7 @@
         "telephone": "app.telephone",
         "refresh": "app.refresh",
         "contrast": "app.contrast",
+        "scale": "Scale 1 : ${scaleDenom}",
         "selectContrast": "app.selectContrast",
         "scaleStyle": "app.scaleStyle",
         "styleSizeAdjust": "app.styleSizeAdjust",
@@ -163,6 +164,9 @@
         "addressplaceholder": "search.addressplaceholder",
         "coordinates": "search.coordinates",
         "coordplaceholder": "search.coordplaceholder"
+    },
+    "gms":{
+        "gms": "gms.gms"
     },
     "email": {
         "annotation": "email.annotation",
