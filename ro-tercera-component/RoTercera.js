@@ -121,6 +121,9 @@ Ext.define ("viewer.components.RoTercera",{
         return this;
     },
     getBookmarkState : function(shortUrl){
+    	if(this.ownerCombo === null || this.selectedPlan === null){ // not yet opened or no plan selected. In both situations, do not use it in the bookmark
+    		return null;
+    	}
         var state = {
             selectedPlan: this.selectedPlan,
             commentAppLayerId: this.commentAppLayer ? this.commentAppLayer.id : -1,
