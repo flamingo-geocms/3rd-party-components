@@ -20,6 +20,9 @@
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 
+// Set showStatus
+dbkjs.showStatus = true;
+
 dbkjs.options = {
     projection: {
         code: "EPSG:28992",
@@ -28,8 +31,8 @@ dbkjs.options = {
             numDigits: 0
         }
     },
-    VERSION: "1.0",
-    RELEASEDATE: "11-12-2014",
+    VERSION: "1.1",
+    RELEASEDATE: "14-4-2015",
     APPLICATION: "DBK component",
     REMARKS: "",
     INFO: "",

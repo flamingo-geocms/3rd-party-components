@@ -123,9 +123,6 @@ Ext.define ("viewer.components.Dbk",{
             // Get organisation info.
             me.initOrganisation();
 
-            // Set showStatus
-            dbkjs.showStatus = true;
-
             // Create the dialogs.
             me.createDialogs();
 
