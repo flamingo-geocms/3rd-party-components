@@ -470,7 +470,7 @@ Ext.define ("viewer.components.rotercera.TerceraLegendController",{
         if (legendContainer==null){
             return;
         }
-        var allElements = Ext.query("input", legendContainer);
+        var allElements = Ext.query("input", true, legendContainer);
         for (var i=0; i < allElements.length; i++){
             var elem=allElements[i];
             if (elem.name=="all"){

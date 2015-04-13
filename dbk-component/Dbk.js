@@ -49,6 +49,8 @@ Ext.define ("viewer.components.Dbk",{
     constructor: function(conf){
         var me = this;
 
+        this.events = {};
+
         viewer.components.Dbk.superclass.constructor.call(this, conf);
 
         this.initConfig(conf);
@@ -107,10 +109,13 @@ Ext.define ("viewer.components.Dbk",{
 
             dbkjs.dbkComp = dbkjs.viewerController.getComponentsByClassName("viewer.components.Dbk")[0];
 
+            // Set css path, including the correct mimetype.
+            var cssPath = me.basePath.replace("resource=","mimeType=text/css&resource=");
+
             // Load css file.
-            me.loadCssFile(me.basePath+"public/css/bootstrap.min.css");
+            me.loadCssFile(cssPath+"public/css/bootstrap.min.css");
             //me.loadCssFile(me.basePath+"public/css/font-awesome-base64.css");
-            me.loadCssFile(me.basePath+"public/css/dbk.css");
+            me.loadCssFile(cssPath+"public/css/dbk.css");
 
             // Initialize.
             dbkjs.init();
@@ -126,6 +131,9 @@ Ext.define ("viewer.components.Dbk",{
 
             // Initialize jsonDBK.init and register modules.
             dbkjs.successAuth();
+
+            // Fire event.
+            me.fireEvent(viewer.components.DbkEvent.ON_INITIALIZED);
        });
     },
     createDialogs: function(){

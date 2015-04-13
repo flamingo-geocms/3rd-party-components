@@ -66,12 +66,23 @@
         "Dbk_layers_overrides.js",
         "Dbk_mapcontrols_overrides.js",
         "Dbk.js",
-        "DbkDialog.js"
+        "DbkDialog.js",
+        "DbkEvent.js"
     ],
     configSource: ["ConfigObject.js","Dbk-config.js"],
     restrictions: ["content"],
     closureCompilerSafe: true,
     notInCombinationWith: ["viewer.mapcomponents.FlamingoMap"],
+    singleton: true,
+    showHelp: true
+},{
+    className: "viewer.components.DbkToggle",
+    name: "Dbk Toggle",
+    shortName: "DbkTgl",
+    sources: ["DbkToggle.js","DbkEvent.js"],
+    configSource: ["ConfigObject.js","DbkToggle-config.js"],
+    restrictions: ["left_menu","top_menu"],
+    closureCompilerSafe: true,
     singleton: true,
     showHelp: true
 }]
