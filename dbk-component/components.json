@@ -79,7 +79,7 @@
     className: "viewer.components.DbkToggle",
     name: "Dbk Toggle",
     shortName: "DbkTgl",
-    sources: ["DbkToggle.js","DbkEvent.js"],
+    sources: ["DbkToggle.js"],
     configSource: ["ConfigObject.js","DbkToggle-config.js"],
     restrictions: ["left_menu","top_menu"],
     closureCompilerSafe: true,
