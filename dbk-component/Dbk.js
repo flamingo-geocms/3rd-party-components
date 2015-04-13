@@ -114,7 +114,7 @@ Ext.define ("viewer.components.Dbk",{
 
             // Load css file.
             me.loadCssFile(cssPath+"public/css/bootstrap.min.css");
-            //me.loadCssFile(me.basePath+"public/css/font-awesome-base64.css");
+            me.loadCssFile(cssPath+"public/css/font-awesome-base64.css");
             me.loadCssFile(cssPath+"public/css/dbk.css");
 
             // Initialize.
