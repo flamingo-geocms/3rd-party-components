@@ -274,7 +274,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             queryMode: 'local',
             displayField: 'name',
             valueField: 'code',
-			width: this.comboWidth,
+            width: this.comboWidth,
             listeners: {
                 change:{
                     scope: this,
@@ -290,7 +290,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             queryMode: 'local',
             displayField: 'value',
             valueField: 'key',
-			width: this.comboWidth,
+            width: this.comboWidth,
             listeners: {
                 change:{
                     scope: this,
@@ -305,7 +305,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             queryMode: 'local',
             displayField: 'value',
             valueField: 'key',
-			width: this.comboWidth,
+            width: this.comboWidth,
             listeners: {
                 change:{
                     scope: this,
@@ -813,7 +813,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         }else if (planId !=null){
             this.planCommentFilter = Ext.create("viewer.components.CQLFilterWrapper",{
                 id: "planFilter_"+this.getName(),
-                cql: this.roComment.planIdAttributeName.toLowerCase()+"='"+planId+"'",
+                cql: this.roComment.config.planIdAttributeName.toLowerCase()+"='"+planId+"'",
                 operator : "AND",
                 type: "ATTRIBUTE"
             });
@@ -831,7 +831,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
 
                 this.planCommentFilter = Ext.create("viewer.components.CQLFilterWrapper",{
                     id: "planFilter_"+this.getName(),
-                    cql: this.roComment.planIdAttributeName+"='"+planId+"'",
+                    cql: this.roComment.config.planIdAttributeName+"='"+planId+"'",
                     operator : "AND",
                     type: "ATTRIBUTE"
                 });
