@@ -66,6 +66,7 @@ Ext.define ("viewer.components.RoTercera",{
     wmsLayerId: "ulRooTercera",
 
     previousState: null,
+    zoomToPlan :null,
     config:{
         name: "Ro-Tercera client",
         title: "",
@@ -85,6 +86,7 @@ Ext.define ("viewer.components.RoTercera",{
      */
     constructor: function (conf){
         conf=this.setDefaults(conf);
+        this.zoomToPlan = true;
         this.resourceUrl = "";
         if (actionBeans && actionBeans["componentresource"]){
             this.resourceUrl=actionBeans["componentresource"];
@@ -138,6 +140,7 @@ Ext.define ("viewer.components.RoTercera",{
     },
 
     restoreState : function(){
+        this.zoomToPlan = false;
         this.removeListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE,this.restoreState,this);
         if(this.previousState ){
             var me = this;
@@ -495,9 +498,9 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
         }else if (mapLayer.id == this.config.layers[0]){
             this.commentMapLayer = mapLayer;
 
-            var cql = "("+this.roComment.publicAttributeName.toLowerCase()+"='Y'";
+            var cql = "("+this.roComment.config.publicAttributeName.toLowerCase()+"='Y'";
             if (user){
-                cql+= " OR "+this.roComment.ownerAttributeName.toLowerCase()+ "='"+user.name+"'";
+                cql+= " OR "+this.roComment.config.ownerAttributeName.toLowerCase()+ "='"+user.name+"'";
             }
             cql+=")";
             this.publicCommentfilter = Ext.create("viewer.components.CQLFilterWrapper",{
@@ -758,8 +761,12 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             }
 
             if (plan.bbox){
-                var map=this.viewerController.mapComponent.getMap();
-                map.zoomToExtent(new viewer.viewercontroller.controller.Extent(plan.bbox.minx,plan.bbox.miny,plan.bbox.maxx,plan.bbox.maxy));
+                if(this.zoomToPlan){
+                    var map=this.viewerController.mapComponent.getMap();
+                    map.zoomToExtent(new viewer.viewercontroller.controller.Extent(plan.bbox.minx,plan.bbox.miny,plan.bbox.maxx,plan.bbox.maxy));
+                }else{
+                    this.zoomToPlan = true;
+                }
             }
             if (plan.verwijzingNaarTekst){
                 var docs = plan.verwijzingNaarTekst.split(",");
