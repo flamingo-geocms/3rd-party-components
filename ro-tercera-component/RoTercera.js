@@ -519,9 +519,9 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             // is executed AFTER the filter (with lowerceesing) is set on the WMS layer. This filter is used for queries to the featureSource (Oracle Db in this cees)
             var setDBAttributesHandler = function(){
                 this.viewerController.removeListener(viewer.viewercontroller.controller.Event.ON_SELECTEDCONTENT_CHANGE, setDBAttributesHandler ,this);
-                var cql2 = "("+this.roComment.publicAttributeName+"='Y'";
+                var cql2 = "("+this.roComment.config.publicAttributeName+"='Y'";
                 if (user){
-                    cql2+= " OR "+this.roComment.ownerAttributeName+ "='"+user.name+"'";
+                    cql2+= " OR "+this.roComment.config.ownerAttributeName+ "='"+user.name+"'";
                 }
                 cql2+=")";
                 var ar = Ext.create("viewer.components.CQLFilterWrapper",{
