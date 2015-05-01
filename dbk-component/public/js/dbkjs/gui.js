@@ -2,7 +2,6 @@
 var dbkjs = dbkjs || {};
 window.dbkjs = dbkjs;
 dbkjs.gui = {
-
     // dbkjs.js: successAuth
     setLogo: function() {
         if (dbkjs.options.organisation.logo) {
@@ -16,7 +15,9 @@ dbkjs.gui = {
             i18n.t('app.refresh') + '"><i class="fa fa-refresh"></i></a>'
         );
         $('#btn_refresh').click(function() {
-            $('#btn_refresh > i').addClass('fa-spin');
+            if (dbkjs.viewmode !== 'fullscreen') {
+               $('#btn_refresh > i').addClass('fa-spin');
+            };
             obj.get();
         });
     },
@@ -30,7 +31,7 @@ dbkjs.gui = {
             limit: 10
         });
         $('#search_input').bind('typeahead:selected', function(obj, datum) {
-            obj.handleDbkOmsSearch(datum);
+            dbkjs.modules.feature.handleDbkOmsSearch(datum);
         });
     },
     // jsonDBK.js
@@ -71,8 +72,6 @@ dbkjs.gui = {
     showError: function(errMsg) {
         dbkjs.util.alert('Fout', ' ' + errMsg, 'alert-danger');
     },
-
-
     // jsonDBK.js
     detailsPanelUpdateTitle: function(text) {
         $('#vectorclickpanel_h').html('<span class="h4"><i class="fa fa-info-circle">&nbsp;' + text + '</span>');

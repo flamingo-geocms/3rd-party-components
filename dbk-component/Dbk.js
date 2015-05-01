@@ -112,9 +112,9 @@ Ext.define ("viewer.components.Dbk",{
             // Set css path, including the correct mimetype.
             var cssPath = me.basePath.replace("resource=","mimeType=text/css&resource=");
 
-            // Load css file.
-            me.loadCssFile(cssPath+"public/css/bootstrap.min.css");
-            //me.loadCssFile(me.basePath+"public/css/font-awesome-base64.css");
+            // Load css files.
+            me.loadCssFile(cssPath+"public/js/libs/bootstrap-3.2.0-dist/css/bootstrap.min.css");
+            me.loadCssFile(cssPath+"public/css/font-awesome-base64.css");
             me.loadCssFile(cssPath+"public/css/dbk.css");
 
             // Initialize.
@@ -122,9 +122,6 @@ Ext.define ("viewer.components.Dbk",{
 
             // Get organisation info.
             me.initOrganisation();
-
-            // Set showStatus
-            dbkjs.showStatus = true;
 
             // Create the dialogs.
             me.createDialogs();
