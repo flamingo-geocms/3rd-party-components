@@ -91,7 +91,6 @@ dbkjs.modules.feature = {
     },
     register: function(options) {
         var _obj = dbkjs.modules.feature;
-
         dbkjs.gui.createRefreshButton(_obj);
         _obj.namespace = options.namespace || _obj.namespace;
         _obj.url = options.url || _obj.url;
@@ -102,8 +101,8 @@ dbkjs.modules.feature = {
             },
             strategies: [
                 new OpenLayers.Strategy.Cluster({
-                    distance: 100,
-                    threshold: 2
+                    distance: 80,
+                    threshold: 3
                 })
             ],
             styleMap: dbkjs.config.styles.dbkfeature
@@ -152,12 +151,16 @@ dbkjs.modules.feature = {
                         selfeat.push(feat);
                     }
                 });
-                _obj.layer.addFeatures(selfeat);
+                if(selfeat.length > 0){
+                    _obj.layer.addFeatures(selfeat);
+                }
             } else {
-                _obj.layer.addFeatures(_obj.features);
+                if(_obj.features){
+                    _obj.layer.addFeatures(_obj.features);
+                }
             }
             $('#btn_refresh > i').removeClass('fa-spin');
-                _obj.search_dbk();
+            _obj.search_dbk();
         }).fail(function( jqxhr, textStatus, error ) {
             $('#btn_refresh > i').removeClass('fa-spin');
             dbkjs.options.feature = null;
@@ -172,13 +175,11 @@ dbkjs.modules.feature = {
     search_dbk: function() {
         var _obj = dbkjs.modules.feature;
         var dbk_naam_array = _obj.getDbkSearchValues();
-
         dbkjs.gui.updateSearchInput(_obj, dbk_naam_array);
     },
     search_oms: function() {
         var _obj = dbkjs.modules.feature;
         var dbk_naam_array = _obj.getOmsSearchValues();
-
         dbkjs.gui.updateSearchInput(_obj, dbk_naam_array);
     },
     getDbkSearchValues: function() {
@@ -308,14 +309,18 @@ dbkjs.modules.feature = {
                 }
             } else {
                 _obj.currentCluster = [];
-                dbkjs.protocol.jsonDBK.process(e.feature);
-                _obj.zoomToFeature(e.feature);
-                if(dbkjs.viewmode === 'fullscreen') {
-                    dbkjs.util.getModalPopup('infopanel').hide();
-                } else {
-                    dbkjs.gui.infoPanelHide();
-                }
+                _obj.showFeatureInfo(e.feature);
             }
+        }
+    },
+    showFeatureInfo: function(feature) {
+        var _obj = dbkjs.modules.feature;
+        dbkjs.protocol.jsonDBK.process(feature);
+        _obj.zoomToFeature(feature);
+        if(dbkjs.viewmode === 'fullscreen') {
+            dbkjs.util.getModalPopup('infopanel').hide();
+        } else {
+            dbkjs.gui.infoPanelHide();
         }
     },
     handleFeatureTitleClick: function(e) {
