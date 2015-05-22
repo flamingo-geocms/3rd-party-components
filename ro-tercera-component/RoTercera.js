@@ -1127,7 +1127,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             if (this.selectedPlan.origin == 'Tercera'){
                 useRuleFilter=true;
             }
-            var url=this.wmsLayer.getUrl();
+            var url=this.wmsLayer.url;
             var sldUrl = Ext.create("viewer.SLD").createURL(sldLayer,null,"fid='"+fid+"'",null,null,null,"#FF0000",useRuleFilter);
             if(this.viewerController.isDebug() && sldUrl.indexOf("http://192.168.1.29:8084/viewer/action/sld")===0){
                 sldUrl=sldUrl.replace("http://192.168.1.29:8084","http://webkaarttest.b3p.nl")
