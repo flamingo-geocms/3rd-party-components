@@ -106,7 +106,7 @@ Ext.define ("viewer.components.rotercera.RoComment",{
         this.window = Ext.create("Ext.window.Window",{
             title: "Ro-Commentaar",
             height: 350,
-            width: 268,
+            width: 290,
             closeAction: 'hide',
             listeners:{
                 hide:{
