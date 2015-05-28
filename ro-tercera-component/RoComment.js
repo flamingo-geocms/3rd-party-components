@@ -62,7 +62,7 @@ Ext.define ("viewer.components.rotercera.RoComment",{
     },
     newComment: function (planId){
         this.startComment(planId,this.createNew);
-        Ext.getCmp(this.name + "deleteButton").hide();
+        Ext.getCmp(this.name + "CommentDeleteButton").hide();
     },
     editComment: function(planId,feature){
         this.startComment(planId,function(){
@@ -70,7 +70,7 @@ Ext.define ("viewer.components.rotercera.RoComment",{
             this.planId=planId;
             this.mode = "edit";
             this.handleFeature(feature);
-            Ext.getCmp(this.name + "deleteButton").show();
+            Ext.getCmp(this.name + "CommentDeleteButton").show();
         });
     },
     startComment: function(planId,afterLoadAttributes){
@@ -92,13 +92,13 @@ Ext.define ("viewer.components.rotercera.RoComment",{
         if(this.newGeomType != null && this.geometryEditable){
             this.vectorLayer.drawFeature(this.newGeomType);
         }
-        Ext.getCmp(this.name + "deleteButton").hide();
+        Ext.getCmp(this.name + "CommentDeleteButton").hide();
     },
 
     createInputWindow: function(){
         var me = this;
         this.inputContainer = Ext.create("Ext.form.Panel",{
-            id: this.name + 'InputPanel',
+            id: this.name + 'CommentInputPanel',
             border: 0,
             autoScroll: true,
             flex: 1
@@ -125,7 +125,7 @@ Ext.define ("viewer.components.rotercera.RoComment",{
             items: [
                 this.inputContainer,
                 {
-                    id: this.name + 'savePanel',
+                    id: this.name + 'CommentSavePanel',
                     xtype: "container",
                     height: MobileManager.isMobile() ? 45 : 30,
                     layout: {
@@ -138,7 +138,7 @@ Ext.define ("viewer.components.rotercera.RoComment",{
                     },
                     items:[
                     {
-                        id : this.name + "cancelButton",
+                        id : this.name + "CommentCancelButton",
                         tooltip: "Annuleren",
                         text: "Annuleren",
                         listeners: {
@@ -149,21 +149,25 @@ Ext.define ("viewer.components.rotercera.RoComment",{
                         }
                     },
                     {
-                        id : this.name + "saveButton",
+                        id : this.name + "CommentSaveButton",
                         tooltip: "Opslaan",
                         text: "Opslaan",
                         listeners: {
                             click:{
                                 scope: me,
                                 fn: function(){
-                                    Ext.getCmp(this.name + "saveButton").disable();
-                                    me.save();
+                                    if(this.vectorLayer.getActiveFeature() !== null){
+                                        Ext.getCmp(this.name + "CommentSaveButton").disable();
+                                        me.save();
+                                    }else{
+                                         Ext.MessageBox.alert('Foutmelding', "Commentaar niet compleet: geometrie mist.");
+                                    }
                                 }
                             }
                         }
                     },
                     {
-                        id : this.name + "deleteButton",
+                        id : this.name + "CommentDeleteButton",
                         tooltip: "Verwijder",
                         text: "Verwijder",
                         listeners: {
@@ -208,13 +212,13 @@ Ext.define ("viewer.components.rotercera.RoComment",{
         Ext.getCmp(this.name + "saveButton").enable();
         this.config.component.roAllComment.reload();
         this.callParent(arguments);
-        Ext.getCmp(this.name + "deleteButton").show();
+        Ext.getCmp(this.name + "CommentDeleteButton").show();
     },
     /**
      * @override
      */
     saveFailed : function(fid){
-        Ext.getCmp(this.name + "saveButton").enable();
+        Ext.getCmp(this.name + "CommentSaveButton").enable();
         this.callParent(arguments);
     },
     /**
