@@ -50,7 +50,7 @@ Ext.define ("viewer.components.rotercera.RoToc",{
             closeAction: 'hide',            
             html: '<div class="legendContent" id="roLegendContainer">\n\
                 <div id="disclaimer">De legenda toont de mogelijke bestemmingen. Deze hoeven niet voor te komen op de kaart.</div>\n\
-                <div><input name="all" type="checkbox" onclick="legendController.setAllChecked(this.checked)"/>Alle Lagen</div>\n\
+                <div><input name="all" type="checkbox" id="checkAllTOC"/>Alle Lagen</div>\n\
                 <!--Enkel-->\n\
                 <h1>Enkelbestemmingen</h1>\n\
                 <div><input name="enkelbestemming" type="checkbox" value="agrarisch"/> Agrarisch </div>\n\
@@ -110,6 +110,11 @@ Ext.define ("viewer.components.rotercera.RoToc",{
         });
         this.window.show();
         this.window.hide();
+        Ext.get("checkAllTOC").addListener("change", function(){
+            if(me.legendController){
+                this.legendController.setAllChecked(Ext.get("checkAllTOC").dom.checked);
+            }
+        }, this);
     },
     reset : function(conf){           
         conf.roToc=this;
