@@ -81,7 +81,7 @@ Ext.define ("viewer.components.rotercera.RoComment",{
         if (this.window==null){
             this.createInputWindow();
         }
-        this.layerChanged(this.layerSelector.getValue(),afterLoadAttributes);
+        this.layerChanged(this.layerSelector.getValue(),null,null,afterLoadAttributes);
         this.window.show();
     },
 
