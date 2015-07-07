@@ -82,6 +82,7 @@ Ext.define ("viewer.components.rotercera.RoComment",{
             this.createInputWindow();
         }
         this.layerChanged(this.layerSelector.getValue(),null,null,afterLoadAttributes);
+        Ext.getCmp(this.name + "CommentSaveButton").enable();
         this.window.show();
     },
 
