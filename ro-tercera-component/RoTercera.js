@@ -680,6 +680,10 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             this.customInfoEnabled=false
         }else{
             Ext.get(this.getDomId(this.selectedPlan.identificatie)).addCls("selected");
+            if(this.roComment.vectorLayer){
+                this.viewerController.mapComponent.getMap().removeLayer(this.roComment.vectorLayer);
+                this.roComment.vectorLayer = null;
+            }
             this.customInfoEnabled=true
             if(plan.origin == 'Tercera' && plan.wms==undefined){
                 var me=this;
