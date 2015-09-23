@@ -729,6 +729,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 var options={id: "RoTerceraLayer"};
                 if (plan.origin == 'Tercera'){
                     prePlanText = "(L0K) ";
+                    plan.wms = plan.wms.replace(/https/g, 'http');
                     Ext.Ajax.request({
                         url: this.config.roServiceUrl,
                         timeout: 240000,
