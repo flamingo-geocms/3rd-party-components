@@ -99,6 +99,13 @@ Ext.define ("viewer.components.RoTercera",{
         this.initConfig(conf);
         var me = this;
 
+        if(user) {
+            var url = this.getTerceraRequestPage();
+            url += url.indexOf("?") > 0 ? "&" : "?";
+            url += "user=" + user.name;
+            this.setTerceraRequestPage(url);
+        }
+
         if(this.hasButton == null || this.hasButton){
             this.renderButton({
                 handler: function(){
@@ -385,25 +392,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             xtype: "container",
             html: "Geen plan geselecteerd"
         });
-        this.uploadPlanButton = Ext.create('Ext.button.Button',{
-            html: "Planregister",
-            listeners:{
-                element: 'el',
-                scope: this,
-                click: function(){
-                    if (user){
-                        var link = document.getElementById("linkForVerwerk");
-                        link.target = "_blank";
-                        var url= this.config.terceraRequestPage;
-                        url+= url.indexOf("?")>0 ? "&" : "?";
-                        url+= "user="+user.name;
-                        link.href = url;
-                        link.click();
-                    }
-                }
-            },
-            hidden: user===null
-        });
+
         //create panel
         this.panel = Ext.create('Ext.panel.Panel', {
             layout: {
@@ -432,17 +421,14 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 this.legendaButton,
                 this.drawCommentButton,
                 this.showAllCommentButton,
-                this.uploadPlanButton,
-                this.selectedPlanContainer,
                 {
-                    xtype: "container",
-                    html: "<a id='linkForVerwerk' href='javascript:void(0)' style='visibility:hidden;position:absolute;'></a>",
-                    style: {
-                        visibility: "hidden"
-                    }
-                }
+                  xtype: "container",
+                  cls: "x-btn x-unselectable x-box-item x-btn-default-small",
+                  html: '<a href="' + this.getTerceraRequestPage() + '" style="width: 100%; text-align: center" class="x-btn-inner x-btn-inner-default-small" target="_blank">Planregister</a>',
+                  hidden: user === null
+                },
+                this.selectedPlanContainer
             ]
-
         });
 
         // Listen to clicks on plans
@@ -688,32 +674,15 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
             if(plan.origin == 'Tercera' && plan.wms==undefined){
                 var me=this;
                 var id=plan.identificatie;
+
+                var url = me.getTerceraRequestPage();
+                url += url.indexOf("?") > 0 ? "&" : "?";
+                url +="idn="+encodeURIComponent(plan.identificatie);
+
                 Ext.MessageBox.confirm({titel:'Verwerk plan',
-                    msg:'Plan is niet verwerkt, wilt u het plan alsnog verwerken?',
+                    msg: 'Plan is niet verwerkt, als u het plan alsnog wilt verwerken, klik dan <a href="' + url +'" target="_blank" style="font-family: helvetica, arial, verdana, sans-serif; font-size: 13px">hier</a>.',
                     width: 100,
-                    buttons: Ext.Msg.YESNO,
-                    buttonText: {
-                        yes: "Ja",
-                        no: "Nee"
-                    },
-                    fn: function(button,event){
-                        if(button=="yes"){
-                            var username=null;
-                            if (user!=null){
-                                username= encodeURIComponent(user.name);
-                            }
-                            var url= me.config.terceraRequestPage;
-                            url+= url.indexOf("?")>0 ? "&" : "?";
-                            url+="idn="+encodeURIComponent(plan.identificatie);
-                            if (username){
-                                url+="&user="+username;
-                            }
-                            var link = document.getElementById("linkForVerwerk");
-                            link.target = "_parent";
-                            link.href = url;
-                            link.click();
-                        }
-                    }
+                    buttons: Ext.Msg.OK
                 });
             }else {
                 var prePlanText="";
