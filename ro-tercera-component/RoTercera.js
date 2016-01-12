@@ -424,7 +424,7 @@ XGB:Tijdelijkeontheffingbuitenplansgebied,XGB:Voorbereidingsbesluitgebied,PCP:Pl
                 {
                   xtype: "container",
                   cls: "x-btn x-unselectable x-box-item x-btn-default-small",
-                  html: '<a href="' + this.getTerceraRequestPage() + '" style="width: 100%; text-align: center" class="x-btn-inner x-btn-inner-default-small" target="_blank">Planregister</a>',
+                  html: '<a href="' + this.getTerceraRequestPage() + '" style="width: 100%; text-align: center; text-decoration: inherit" class="x-btn-inner x-btn-inner-default-small" target="_blank">Planregister</a>',
                   hidden: user === null
                 },
                 this.selectedPlanContainer
