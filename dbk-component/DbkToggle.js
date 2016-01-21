@@ -55,7 +55,7 @@ Ext.define ("viewer.components.DbkToggle",{
         this.iconOffUrl = basePath + "images/dbk_toggle_off.png";
 
         // Check startup state.
-        if (this.startupState === "visible") {
+        if (this.config.startupState === "visible") {
             this.layersVisible = true;
         } else {
             this.layersVisible = false;
