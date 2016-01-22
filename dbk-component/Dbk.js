@@ -307,10 +307,13 @@ Ext.define ("viewer.components.Dbk",{
             if (feature.attributes[queryField]) {
                 if (feature.attributes[queryField].toString().toLowerCase().indexOf(queryId) !== -1) {
                     // Collect feature data.
-                    if (feature.attributes['formeleNaam'])
+                    if(queryField === 'informeleNaam' && feature.attributes['informeleNaam']) {
+                        label = feature.attributes['informeleNaam'];
+                    } else if (feature.attributes['formeleNaam']) {
                         label = feature.attributes['formeleNaam'];
-                    else
+                    } else {
                         label = "onbekend";
+                    }
                     data = {
                         type: queryFieldTypes[i],
                         label: label,
