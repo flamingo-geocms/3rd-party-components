@@ -37,7 +37,7 @@ Ext.define("viewer.components.DbkDialog",{
     },
     constructor: function(config){
         this.initConfig(config);
-        this.createWindow(this.getId());
+        this.createWindow(this.config.id);
     },
     createWindow: function(itemId) {
         var me = this;
@@ -76,7 +76,7 @@ Ext.define("viewer.components.DbkDialog",{
            }],
            listeners: {
                hide: function() {
-                   if (me.getId() === "infopanel") {
+                   if (me.config.id === "infopanel") {
                        dbkjs.options.feature = null;
                    }
                },
@@ -107,7 +107,7 @@ Ext.define("viewer.components.DbkDialog",{
     initDeltaWidthHeight: function() {
         // Not yet set?
         if (!this.deltaWidth) {
-            var htmlId = this.getId()+"Html";
+            var htmlId = this.config.id+"Html";
             // Force rendering.
             this.dialog.show();
             // Immediately hide the dialog.

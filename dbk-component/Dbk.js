@@ -97,10 +97,10 @@ Ext.define ("viewer.components.Dbk",{
             me.imageBasePath = me.basePath + "public/";
 
             // Set media path.
-            me.mediaPath = me.dataPath + (me.dataPath.charAt(me.dataPath.length - 1) === "/" ? "" : "/") + "media/";
+            me.mediaPath = me.config.dataPath + (me.config.dataPath.charAt(me.config.dataPath.length - 1) === "/" ? "" : "/") + "media/";
 
             // Set paths of dbkjs.
-            dbkjs.dataPath = (me.dataPath.charAt(me.dataPath.length - 1) === "/" ? me.dataPath : me.dataPath + "/") + "api/";
+            dbkjs.dataPath = (me.config.dataPath.charAt(me.config.dataPath.length - 1) === "/" ? me.config.dataPath : me.config.dataPath + "/") + "api/";
             dbkjs.mediaPath = me.mediaPath;
             dbkjs.basePath = me.imageBasePath;
 
@@ -146,12 +146,12 @@ Ext.define ("viewer.components.Dbk",{
     },
     getExtraLayers: function() {
         var result = [{
-            url: this.printWMSPath,
-            layers: this.printLayerNames,
-            format: this.printFormat,
-            transparent: this.printTransparent,
-            srs: this.printSRS,
-            alpha: this.printAlpha
+            url: this.config.printWMSPath,
+            layers: this.config.printLayerNames,
+            format: this.config.printFormat,
+            transparent: this.config.printTransparent,
+            srs: this.config.printSRS,
+            alpha: this.config.printAlpha
         }];
         return result;
     },
