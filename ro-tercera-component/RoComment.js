@@ -32,6 +32,7 @@ Ext.define ("viewer.components.rotercera.RoComment",{
     constructor: function(conf,component){
         conf.isPopup=true;
         conf.component=component;
+        conf.allowDelete = true;
         this.initConfig(conf);
         viewer.components.Edit.superclass.constructor.call(this, conf);
         var div = this.getContentDiv();
