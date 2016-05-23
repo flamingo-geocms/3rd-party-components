@@ -22,45 +22,39 @@
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.ConfigObject",
     form: null,
-    constructor: function (parentid,config){
-        var me = this;
-
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentid,config);
+    constructor: function (parentId, configObject, configPage){
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
         
-        if(config === undefined || config === null){
-            config = new Object();
-        }
-        
-        me.labelWidth = 150;
+        this.labelWidth = 150;
         
         this.form = new Ext.form.FormPanel({
             url: 'Home/SubmitForm',
             frame: false,
             title: 'Configureer dit component',
-            width: me.formWidth,
-            bodyPadding: me.formPadding,
+            width: this.formWidth,
+            bodyPadding: this.formPadding,
             defaultType: 'textfield',
             defaults: {
                 anchor: '100%',
-                labelWidth: me.labelWidth
+                labelWidth: this.labelWidth
             },
             items: [{
 //                    name: 'tooltip',
 //                    fieldLabel: 'Tooltip',
-//                    value: config.tooltip || "Tonen/verbergen DBK's"
+//                    value: this.configObject.tooltip || "Tonen/verbergen DBK's"
 //                },{
                     xtype: 'combo',
                     name: 'startupState',
                     fieldLabel: "DBK's zijn zichtbaar na opstarten",
                     anchor: '50%',
-                    value: config.startupState || 'visible',
+                    value: this.configObject.startupState || 'visible',
                     fields: ['value','text'],
                     store: [
                         ['visible','ja'],
                         ['invisible','nee']
                     ]
             }],
-            renderTo: parentid
+            renderTo: parentId
         });      
     }
 });

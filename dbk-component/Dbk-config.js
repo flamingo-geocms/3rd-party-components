@@ -22,25 +22,20 @@
 Ext.define("viewer.components.CustomConfiguration",{
     extend: "viewer.components.ConfigObject",
     form: null,
-    constructor: function (parentid,config){
-        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentid,config);
-        if(config === undefined || config === null){
-            config = new Object();
-        }
-        var me = this;
-        
-        me.labelWidth = 150;
-        
+    constructor: function (parentId, configObject, configPage){
+        viewer.components.CustomConfiguration.superclass.constructor.call(this, parentId, configObject, configPage);
+
+        this.labelWidth = 150;
         this.form = new Ext.form.FormPanel({
             url: 'Home/SubmitForm',
             frame: false,
             title: 'Configureer dit component',
-            width: me.formWidth,
-            bodyPadding: me.formPadding,
+            width: this.formWidth,
+            bodyPadding: this.formPadding,
             defaultType: 'textfield',
             defaults: {
                 anchor: '100%',
-                labelWidth: me.labelWidth
+                labelWidth: this.labelWidth
             },
             items: [{
                     xtype: 'label',
@@ -49,7 +44,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                 },{
                     name: 'dataPath',
                     fieldLabel: 'Url van DBK data service:',
-                    value: config.dataPath || ''
+                    value: this.configObject.dataPath || ''
                 },{
                     xtype: 'label',
                     text: 'WMS service met lagen voor het printen',
@@ -57,17 +52,17 @@ Ext.define("viewer.components.CustomConfiguration",{
                 },{
                     name: 'printWMSPath',
                     fieldLabel: 'Url van de service',
-                    value: config.printWMSPath || ''
+                    value: this.configObject.printWMSPath || ''
                 },{
                     name: 'printLayerNames',
                     fieldLabel: 'Namen van de lagen',
-                    value: config.printLayerNames || ''
+                    value: this.configObject.printLayerNames || ''
                 },{
                     xtype: 'combo',
                     name: 'printFormat',
                     fieldLabel: 'Formaat',
                     anchor: '50%',
-                    value: config.printFormat || 'image/png',
+                    value: this.configObject.printFormat || 'image/png',
                     fields: ['value','text'],
                     store: [
                         ['image/png','image/png'],
@@ -79,7 +74,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     name: 'printSRS',
                     fieldLabel: 'SRS',
                     anchor: '50%',
-                    value: config.printSRS || 'EPSG%3A28992',
+                    value: this.configObject.printSRS || 'EPSG%3A28992',
                     fields: ['value','text'],
                     store: [
                         ['EPSG%3A28992','EPSG:28992'],
@@ -89,7 +84,7 @@ Ext.define("viewer.components.CustomConfiguration",{
                     xtype: 'checkbox',
                     name: 'printTransparent',
                     fieldLabel: 'Transparant',
-                    checked: typeof config.printTransparent !== "undefined" ? config.printTransparent : true
+                    checked: typeof this.configObject.printTransparent !== "undefined" ? this.configObject.printTransparent : true
                 },{
                     xtype: 'numberfield',
                     name: 'printAlpha',
@@ -97,9 +92,9 @@ Ext.define("viewer.components.CustomConfiguration",{
                     anchor: '35%',
                     minValue: 0,
                     maxValue: 100,
-                    value: config.printAlpha || 100
+                    value: this.configObject.printAlpha || 100
             }],
-            renderTo: parentid
+            renderTo: parentId
         });      
     }
 });
