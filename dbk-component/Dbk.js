@@ -74,7 +74,15 @@ Ext.define ("viewer.components.Dbk",{
                 viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,
                 this.registerExtraHandlers,
                 this);
-
+      
+        if(conf.floorTabName){
+            dbkjs.options.i18nReplacements = {
+                "nl": {
+                    "dbk.floors": conf.floorTabName
+                }
+            };
+        }
+        dbkjs.options.showFloorName = conf.showFloorName ? conf.showFloorName : false;
         // Start the application.
         this.initApp();
 
@@ -90,9 +98,18 @@ Ext.define ("viewer.components.Dbk",{
         i18n.init({
             lng: "nl",
             debug: false,
-            resGetPath: this.basePath + "locales/__lng__/translation.json"
+            resGetPath: this.basePath + "locales/__lng__/translation.json",
+            postProcess: "doReplacements"
         }, function() {
-
+            i18n.addPostProcessor("doReplacements", function (val, key, options) {
+                if (dbkjs.options.i18nReplacements) {
+                    var lngReplacements = dbkjs.options.i18nReplacements[i18n.lng()];
+                    if (lngReplacements && lngReplacements[key]) {
+                        return lngReplacements[key];
+                    }
+                }
+                return val;
+            });
             // Set icon path for dbkjs.config.styles.dbkfeature.
             me.imageBasePath = me.basePath + "public/";
 

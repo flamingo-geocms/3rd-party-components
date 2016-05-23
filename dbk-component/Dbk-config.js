@@ -93,7 +93,16 @@ Ext.define("viewer.components.CustomConfiguration",{
                     minValue: 0,
                     maxValue: 100,
                     value: this.configObject.printAlpha || 100
-            }],
+            },{
+                    name: 'floorTabName',
+                    fieldLabel: 'Naam verdiepingentabblad',
+                    value: this.configObject.floorTabName || ''
+                },{
+                    xtype: 'checkbox',
+                    name: 'showFloorName',
+                    fieldLabel: 'Laat gekoppelde DBK naam zien',
+                    checked: typeof this.configObject.showFloorName !== "undefined" ? this.configObject.showFloorName : false
+                }],
             renderTo: parentId
         });      
     }
