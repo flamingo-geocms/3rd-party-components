@@ -290,20 +290,48 @@ Ext.define ("viewer.components.Dbk",{
              "gevaarlijkestof"];
          return propNames;
     },
+
     /* If field values match the queryId, then add feature data to array.
      * Only supports features with a point geometry. */
     getSearchFeatureData: function(searchResult,
                                    queryFields,queryFieldTypes,
                                    queryId,feature,buffer) {
+        
+        // Check main feature
+        this.checkFeatureForSearch(feature,searchResult,
+                                   queryFields,queryFieldTypes,
+                                   queryId,buffer);
+
+        // Check if searching through floors is enabled, and if the feature has multiple floors. If so, search through the floors.
+        if(queryFields.indexOf("verdiepingen") !== -1 && feature.attributes["verdiepingenObjecten"] && feature.attributes["verdiepingen"] > 0){
+            for( var j = 0 ; j < feature.attributes["verdiepingenObjecten"].length; j++){
+                var verdieping = new Object();
+                //  Put the attributes of the floor in an attributes object, so the checkFeatureForSearch function can process it.
+                verdieping.attributes = feature.attributes["verdiepingenObjecten"][j];
+                // Copy the geometry of the main DBK.
+                verdieping.geometry = feature.geometry;
+                this.checkFeatureForSearch(verdieping,searchResult,
+                                   queryFields,queryFieldTypes,
+                                   queryId,buffer);
+            }
+        }
+    },
+
+    /**
+     *  Function to check if the given feature yields a results given the queryFields and the given term (queryId).
+     */
+    checkFeatureForSearch : function(feature,searchResult,
+                                   queryFields,queryFieldTypes,
+                                   queryId,buffer){
         var queryField;
         var label;
         var data;
         var len;
         var i;
-        // Loop query fiels.
+        // Loop query fields.
         for (i=0,len=queryFields.length;i!==len;i++) {
             queryField = queryFields[i];
-            // Check feature attributes.
+             // Check feature attributes.
             if (feature.attributes[queryField]) {
                 if (feature.attributes[queryField].toString().toLowerCase().indexOf(queryId) !== -1) {
                     // Collect feature data.
@@ -327,9 +355,10 @@ Ext.define ("viewer.components.Dbk",{
                     // Add to result.
                     searchResult.push(data);
                 }
-            }
+            } 
         }
     },
+
     /* Search features for values of specified fields which match the
      * queryId.
      * Returns a result object with an array of found features,
@@ -364,10 +393,10 @@ Ext.define ("viewer.components.Dbk",{
         buffer = 300;
 
         // Specify query fields.
-        queryFields = ['identificatie','OMSNummer', "informeleNaam", "formeleNaam"];
+        queryFields = ['identificatie','OMSNummer', "informeleNaam", "formeleNaam", "verdiepingen"];
 
         // Specify the query fields types/labels.
-        queryFieldTypes = ['Objectnummer','OMS-nummer', 'Informele naam', 'Formele naam'];
+        queryFieldTypes = ['Objectnummer','OMS-nummer', 'Informele naam', 'Formele naam', 'Verdiepingen'];
 
         try {
             // Loop features.
