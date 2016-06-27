@@ -83,6 +83,7 @@ Ext.define ("viewer.components.Dbk",{
             };
         }
         dbkjs.options.showFloorName = conf.showFloorName ? conf.showFloorName : false;
+        dbkjs.options.useInformalName = conf.useInformalName ? conf.useInformalName : false;
         // Start the application.
         this.initApp();
 

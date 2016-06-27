@@ -169,7 +169,11 @@ dbkjs.modules.feature = {
     },
     featureInfohtml: function(feature) {
         var ret_title = $('<li></li>');
-        ret_title.append('<a id="' + feature.attributes.identificatie + '" href="#">' + feature.attributes.formeleNaam + '</a>');
+        if(dbkjs.options.useInformalName){
+            ret_title.append('<a id="' + feature.attributes.identificatie + '" href="#">' + feature.attributes.informeleNaam + " (" + feature.attributes.formeleNaam + ")" + '</a>');
+        }else{
+            ret_title.append('<a id="' + feature.attributes.identificatie + '" href="#">' + feature.attributes.formeleNaam + '</a>');
+        }
         return ret_title;
     },
     search_dbk: function() {

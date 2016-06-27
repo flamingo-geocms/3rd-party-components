@@ -222,7 +222,12 @@ dbkjs.protocol.jsonDBK = {
             _obj.panel_tabs = $('<ul class="nav nav-pills"></ul>');
             var div = $('<div class="tabbable"></div>');
             if (_obj.constructAlgemeen(dbkjs.options.feature, objecttype)) {
-                dbkjs.gui.infoPanelUpdateTitle('<i class="fa fa-building"></i> ' + dbkjs.options.feature.formeleNaam);
+
+                if(dbkjs.options.useInformalName){
+                    dbkjs.gui.infoPanelUpdateTitle('<i class="fa fa-building"></i> ' + dbkjs.options.feature.informeleNaam);
+                }else{
+                    dbkjs.gui.infoPanelUpdateTitle('<i class="fa fa-building"></i> ' + dbkjs.options.feature.formeleNaam);
+                }
                 _obj.constructContact(dbkjs.options.feature);
                 _obj.constructOmsdetail(dbkjs.options.feature);
                 _obj.constructBijzonderheid(dbkjs.options.feature);
@@ -351,7 +356,12 @@ dbkjs.protocol.jsonDBK = {
         var algemeen_table_div = $('<div class="table-responsive"></div>');
         var algemeen_table = $('<table class="table table-hover"></table>');
         if(dbktype === "object"){
-            algemeen_table.append(_obj.constructRow(informelenaam, i18n.t('dbk.alternativeName')));
+
+            if(dbkjs.options.useInformalName){
+                algemeen_table.append(_obj.constructRow(DBKObject.formeleNaam, i18n.t('dbk.formalName')));
+            }else{
+                algemeen_table.append(_obj.constructRow(informelenaam, i18n.t('dbk.alternativeName')));
+            }
             algemeen_table.append(_obj.constructRow(controledatum, i18n.t('dbk.dateChecked')));
             if (dbkjs.showStatus) {
                 algemeen_table.append(_obj.constructRow(status, i18n.t('dbk.status')));

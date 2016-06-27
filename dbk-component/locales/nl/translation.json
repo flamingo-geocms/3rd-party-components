@@ -99,6 +99,7 @@
     },
     "dbk": {
         "alternativeName": "Informele naam",
+        "formalName": "Formele naam",
         "dateChecked": "Controledatum",
         "status": "Status",
         "emergencyResponse": "BHV",
