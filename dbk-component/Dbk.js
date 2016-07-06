@@ -495,7 +495,11 @@ Ext.define ("viewer.components.Dbk",{
         // Register to all search components.
         for (var i = 0; i < searchComponents.length; i++){
             // Register extra info handler with callback.
-            searchComponents[i].addDynamicSearchEntry(this,function(queryId,searchRequestId) {
+            var obj = {
+                instance : this,
+                title: "Digitale bereikbaarheidskaart"
+            };
+            searchComponents[i].addDynamicSearchEntry(obj,function(queryId,searchRequestId) {
                 return me.getSearchResult(queryId,searchRequestId);
             });
         };
