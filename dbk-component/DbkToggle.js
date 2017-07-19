@@ -35,7 +35,6 @@ Ext.define ("viewer.components.DbkToggle",{
     constructor: function (conf){        
         var me = this;
         var basePath;
-        var dbkComps;
 
         viewer.components.Dbk.superclass.constructor.call(this, conf);
 
@@ -75,22 +74,28 @@ Ext.define ("viewer.components.DbkToggle",{
         // Update button state.
         this.updateButtonState(this.layersVisible);
 
-        // Get DBK component.
-        dbkComps = this.viewerController.getComponentsByClassName("viewer.components.Dbk");
         
-        // DBK component found?
-        if (dbkComps && dbkComps.length>0) {
-            // Registrer handler.
-            dbkComps[0].addListener(
-                viewer.components.DbkEvent.ON_INITIALIZED,
-                this.onDbkInitialized,
-                this
-            );
-        } else {
-            //console.log("No 'viewer.components.Dbk' found.");
-            this.button.setDisabled(true);
-        };
 
+        this.config.viewerController.addListener(viewer.viewercontroller.controller.Event.ON_COMPONENTS_FINISHED_LOADING,function(){
+            // Get DBK component.
+       
+            var dbkComps = this.viewerController.getComponentsByClassName("viewer.components.Dbk");
+            
+            // DBK component found?
+            if (dbkComps && dbkComps.length>0) {
+                // Registrer handler.
+                dbkComps[0].addListener(
+                    viewer.components.DbkEvent.ON_INITIALIZED,
+                    this.onDbkInitialized,
+                    this
+                );
+            } else {
+                //console.log("No 'viewer.components.Dbk' found.");
+                this.button.setDisabled(true);
+            };
+
+        },this);
+        
         return this;
     },
     //---------------------------------------------------------------------------
